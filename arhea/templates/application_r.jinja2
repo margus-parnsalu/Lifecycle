@@ -1,0 +1,66 @@
+{% extends "base.jinja2" %}
+{% block content %}
+
+{% from 'querysorter_m.jinja2' import qsorter with context %}
+
+<h3>Applications</h3>
+
+    <div class="well">
+
+        <form action="" method="get" name="ApplicationForm" class="form-inline">
+
+          <div class="form-group">
+            {{ form.stereotype(class="form-control input-sm") }}
+          </div>
+          <div class="form-group">
+            {{ form.name(placeholder="Name", class="form-control input-sm") }}
+          </div>
+          <div class="form-group">
+            {{ form.alias(placeholder="Alias", class="form-control input-sm") }}
+          </div>
+          <div class="form-group">
+            {{ form.status(class="form-control input-sm") }}
+          </div>
+
+          <div class="form-group">
+              <button type="submit" class="btn btn-default btn-sm">Search</button>
+          </div>
+        </form>
+
+    </div>
+
+
+    <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nr</th>
+                    <th>{{ qsorter('application_view', 'Name', '+application') }}</th>
+                    <th>{{ qsorter('application_view', 'Alias', '+alias') }}</th>
+                    <th>{{ qsorter('application_view', 'Brand', '+stereotype') }}</th>
+                    <th>{{ qsorter('application_view', 'Lifecycle', '+lifecycle') }}</th>
+                    <th>Tags</th>
+                    <th>Note</th>
+                    <th>GUID</th>
+                </tr>
+            <tbody>
+                {% for application in applications: %}
+                <tr>
+                    <td> {{ loop.index }} </a></td>
+                    <td> {{ application.name or '' }} </a></td>
+                    <td> {{ application.alias or '' }} </td>
+                    <td> {{ application.stereotype  or ''  }} </td>
+                    <td> {{ application.status  or '' }} </td>
+                    <td style="word-break:break-all;">
+                        {% for tag in application.properties %}
+                                {{ tag.property }} : {{ tag.value }}<br>
+                         {% endfor %}
+                    </td>
+                    <td style="word-break:break-all;" width="220"> {{ application.note or '' }} </td>
+                    <td style="word-break:break-all;" width="80"> {{ application.ea_guid }} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+    </table>
+
+
+{% endblock %}

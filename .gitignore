@@ -1,0 +1,13 @@
+*.pyc
+*.log
+*.pid
+*.egg-info
+*.sqlite
+.idea/
+.git/
+.coverage
+*.sock
+dev.ini
+build/
+dist/
+
