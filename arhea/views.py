@@ -25,7 +25,7 @@ from .forms import (LoginForm, DepartmentForm, EmployeeForm, ApplicationForm)
 @view_config(route_name='home', renderer='home.jinja2', request_method='GET', permission='view')
 def home(request):
     """Homepage view"""
-    project_name = 'Applications Lifecycle'
+    project_name = 'Applications'
     #import pdb; pdb.set_trace()
     return {'project': project_name,
             'logged_in': authenticated_userid(request)}
@@ -37,15 +37,13 @@ def home(request):
 @view_config(route_name='department_view:page', renderer='department_r.jinja2',
              request_method='GET', permission='view')
 def department_view(request):
-    #Getting 'sort' URL query parameter and initializing if not present
+
     sort_input = request.GET.get('sort', '+department')
     #Sorting custom code from sorts.py
     sort = SortValue(sort_input)
     sort_value = sort.sort_str()
-    #If sort value not found reroute to homepage
-    if sort_value is '':
+    if sort_value == '':
         return HTTPFound(location=request.route_url('home'))
-    #For supporting two-way sorting on the template
     sort_dir = sort.reverse_direction()
 
     #SqlAlchemy query object for the report
@@ -117,13 +115,11 @@ def department_edit(request):
 def employee_view(request):
 
     sort_input = request.GET.get('sort', '+employee')
-
-    #Sorting custom code
+    #Sorting custom code from sorts.py
     sort = SortValue(sort_input)
-    if sort.validate() is False:
-        return HTTPFound(location=request.route_url('home'))
     sort_value = sort.sort_str()
-    #For supporting two-way sorting on the template
+    if sort_value == '':
+        return HTTPFound(location=request.route_url('home'))
     sort_dir = sort.reverse_direction()
 
     #SqlAlchemy query object
@@ -244,12 +240,11 @@ def application_view(request):
     form = ApplicationForm(request.GET)
 
     sort_input = request.GET.get('sort', '+application')
-    #Sorting custom code
+    #Sorting custom code from sorts.py
     sort = SortValue(sort_input)
-    if sort.validate() is False:
-        return HTTPFound(location=request.route_url('home'))
     sort_value = sort.sort_str()
-    #For supporting two-way sorting on the template
+    if sort_value == '':
+        return HTTPFound(location=request.route_url('home'))
     sort_dir = sort.reverse_direction()
 
     #Handling search Form get parameter passing to template

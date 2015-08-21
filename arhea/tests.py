@@ -64,7 +64,7 @@ class ViewHomeTests(unittest.TestCase):
         request = testing.DummyRequest()
         _registerRoutes(self.config)
         info = self._callFUT(request)
-        self.assertEqual(info['project'], 'Demo App')
+        self.assertEqual(info['project'], 'Applications')
 
 
 
@@ -159,10 +159,10 @@ class ViewEmployeeTests(unittest.TestCase):
 class FunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        from minu import main
+        from arhea import main
         settings = { 'sqlalchemy.default.url': 'sqlite://',
                      'sqlalchemy.ea.url': 'sqlite://',
-                     'jinja2.directories' : 'minu:templates',
+                     'jinja2.directories' : 'arhea:templates',
                      'session.secret' : 'sess',
                      'auth.secret' : 'auth'
                      }
@@ -182,12 +182,12 @@ class FunctionalTests(unittest.TestCase):
 
     def tearDown(self):
         del self.testapp
-        from minu.models import DBSession
+        from arhea.models import DBSession
         DBSession.remove()
 
     def test_homepage(self):
         res = self.testapp.get('/', status=200)
-        self.assertIn(b'<h1>Demo App</h1>', res.body)
+        self.assertIn(b'<h1>Applications</h1>', res.body)
 
     def test_unexisting_page(self):
         self.testapp.get('/SomePage', status=404)

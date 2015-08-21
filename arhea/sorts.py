@@ -31,7 +31,7 @@ class SortValue:
 
     #Return order_by string validated by key
     def sort_str(self):
-        if self.validate() is True:
+        if self.validate():
             return SORT_DICT[self.sort_parameter]
         return ''
 
