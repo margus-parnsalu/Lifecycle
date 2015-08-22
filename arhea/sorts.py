@@ -19,24 +19,25 @@ SORT_DICT = {'-department':'upper(hr_departments.department_name) desc',
              '-lifecycle':'upper(t_object.status) desc',}
 
 class SortValue:
+    """Sort input validation and Sql Order By string mapping"""
 
     def __init__(self, sort_parameter):
         self.sort_parameter = sort_parameter
 
-    #URL Query sort attribute validation
     def validate(self):
+        """URL Query sort attribute validation"""
         if self.sort_parameter in SORT_DICT:
             return True
         return False
 
-    #Return order_by string validated by key
     def sort_str(self):
+        """Return order_by string validated by key"""
         if self.validate():
             return SORT_DICT[self.sort_parameter]
         return ''
 
-    #Reverses sort direction for two-way sorting
     def reverse_direction(self):
+        """Reverses sort direction for two-way sorting"""
         direction = ''
         if self.sort_parameter[0] == '+':
             direction = self.sort_parameter.replace('+', '-', 1)

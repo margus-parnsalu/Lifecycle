@@ -1,14 +1,18 @@
 from wtforms import (validators, StringField, IntegerField, DateField, HiddenField, PasswordField,
                      SelectField, Form)
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.ext.csrf.session import SessionSecureForm
 from wtforms.validators import ValidationError
+from wtforms.widgets import PasswordInput
 
-from .models import DBSession, Department
+from .models import DBSession, Department, Group
 
 #LOV ehk Query_factory Departments jaoks
 def Departments():
     return DBSession.query(Department).all()
+
+def Groups():
+    return DBSession.query(Group).all()
 
 #For CSRF security override with Pyramid session get_csrf_token
 class BaseForm(SessionSecureForm):
@@ -26,6 +30,20 @@ class LoginForm(BaseForm):
     came_from = HiddenField(u'Came_from')
     login = StringField(u'Login')
     password = PasswordField(u'Password')
+
+#Security module forms
+class GroupForm(BaseForm):
+    groupname = StringField(u'Group Name', [validators.Length(min=3, max=30),
+                                         validators.InputRequired(message=(u'Input required'))])
+
+class UserForm(BaseForm):
+    username = StringField(u'Username', [validators.Length(min=3, max=30),
+                                         validators.InputRequired(message=(u'Input First Name'))])
+    pwd = PasswordField(u'Password', [validators.InputRequired(message=(u'Password required'))],
+                        widget=PasswordInput(hide_value=False))
+    groups = QuerySelectMultipleField(u'Groups', query_factory=Groups, allow_blank=True)
+
+
 
 class DepartmentForm(BaseForm):
     department_name = (StringField(u'Department Name',

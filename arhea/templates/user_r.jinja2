@@ -1,0 +1,26 @@
+{% extends "base.jinja2" %}
+{% block content %}
+
+<h3>Users</h3>
+
+    <a class="btn btn-default" href="{{ request.route_url('user_add') }}" role="button">Add User</a>
+    <hr>
+
+    <table class="table">
+            <thead>
+                <tr>
+                  <th><a href="{{ request.route_url('user_view') + '?sort=sec_user_username' }}">Username</a></th>
+                </tr>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td><a href="{{ request.route_url('user_edit', usr_id=user.id) }}">
+                             {{ user.username }} </a></td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+    </table>
+
+
+{% endblock %}

@@ -1,7 +1,7 @@
+from pyramid.view import view_config
 from pyramid.response import Response
-from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.security import remember, forget, authenticated_userid
+from pyramid.security import authenticated_userid
 
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm.exc import NoResultFound
@@ -9,16 +9,15 @@ from sqlalchemy.sql.functions import coalesce
 from sqlalchemy.orm import subqueryload
 from sqlalchemy import text
 
-from .security import (userfinder)
-from .models import (DBSession, Department, Employee, ITEMS_PER_PAGE, DBSession_EA,
-                     TObject, TPackage)
-
 #SqlAlchemy object pagination logic extends Paginate
 from paginate_sqlalchemy import SqlalchemyOrmPage
-#Sorting logic
-from .sorts import SortValue
 
-from .forms import (LoginForm, DepartmentForm, EmployeeForm, ApplicationForm)
+
+from ..models import (DBSession, Department, Employee, ITEMS_PER_PAGE, DBSession_EA,
+                     TObject, TPackage, conn_err_msg)
+#Sorting logic
+from ..sorts import SortValue
+from ..forms import (DepartmentForm, EmployeeForm, ApplicationForm)
 
 
 
@@ -200,37 +199,6 @@ def employee_edit(request):
 
 
 
-@view_config(route_name='login', renderer='login.jinja2', permission='view')
-@forbidden_view_config(renderer='login.jinja2')#For customizing default 404 forbidden template
-def login(request):
-    came_from = request.referer or request.route_url('home')
-    login_url = request.route_url('login')
-    if came_from == login_url:
-        came_from = '/' # never use the login form itself as came_from
-    login = ''
-    form = LoginForm(request.POST, came_from, login, csrf_context=request.session)
-    message = ''
-    if request.method == 'POST' and form.validate():
-        login_user = request.params['login']
-        password = request.params['password']
-        if userfinder(login_user, password) == True:
-            headers = remember(request, login_user)
-            request.session.flash('User: '+ login_user + ' logged in!')
-            return HTTPFound(location=came_from,
-                             headers=headers)
-        message = 'Failed login!'
-    return {'form' : form,
-            'message' : message,
-            'logged_in': authenticated_userid(request)}
-
-
-@view_config(route_name='logout',
-             permission='view')
-def logout(request):
-    headers = forget(request)
-    loc = request.route_url('home')
-    return HTTPFound(location=loc, headers=headers)
-
 
 
 @view_config(route_name='application_view', renderer='application_r.jinja2',
@@ -283,19 +251,5 @@ def application_view(request):
             'logged_in': authenticated_userid(request)}
 
 
-conn_err_msg = """\
-Pyramid is having a problem using your SQL database.  The problem
-might be caused by one of the following things:
 
-1.  You may need to run the "initialize_arhea_db" script
-    to initialize your database tables.  Check your virtual
-    environment's "bin" directory for this script and try to run it.
-
-2.  Your database server may not be running.  Check that the
-    database server referred to by the "sqlalchemy.url" setting in
-    your "development.ini" file is running.
-
-After you fix the problem, please restart the Pyramid application to
-try it again.
-"""
 
