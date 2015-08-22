@@ -14,7 +14,7 @@ from paginate_sqlalchemy import SqlalchemyOrmPage
 
 
 from ..models import (DBSession, Department, Employee, ITEMS_PER_PAGE, DBSession_EA,
-                     TObject, TPackage, conn_err_msg)
+                      TObject, TPackage, conn_err_msg)
 #Sorting logic
 from ..sorts import SortValue
 from ..forms import (DepartmentForm, EmployeeForm, ApplicationForm)
