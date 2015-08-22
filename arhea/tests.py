@@ -8,17 +8,20 @@ from pyramid import testing
 
 def _initTestingDB():
     from sqlalchemy import create_engine
-    from .models import (
-        DBSession,
-        Base,
-        Department,
-        Employee
-        )
+    from .models import (DBSession, Base, Department, Employee, User, Group, user_groups)
     import datetime
     engine = create_engine('sqlite://')
     Base.metadata.create_all(engine)
+    DBSession.remove()
     DBSession.configure(bind=engine)
     with transaction.manager:
+        #Setup login information
+        grp1 = Group(groupname = 'Editors')
+        usr1 = User(username = 'editor', pwd = 'editor', groups=[grp1])
+        DBSession.add(grp1)
+        DBSession.add(usr1)
+
+        #Setup test data
         dep1 = Department(department_name = 'A Minu Test')
         dep2 = Department(department_name = 'Z Minu Test')
         DBSession.add(dep1)
@@ -57,7 +60,7 @@ class ViewHomeTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .views import home
+        from .views.views import home
         return home(request)
 
     def test_it(self):
@@ -78,7 +81,7 @@ class ViewDepartmentTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .views import department_view
+        from .views.views import department_view
         return department_view(request)
 
     def test_it(self):
@@ -121,7 +124,7 @@ class ViewEmployeeTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .views import employee_view
+        from .views.views import employee_view
         return employee_view(request)
 
     def test_it(self):
@@ -170,6 +173,8 @@ class FunctionalTests(unittest.TestCase):
         from webtest import TestApp
         self.testapp = TestApp(app)
 
+        _initTestingDB()
+
         #Login for tests to work
         res = self.testapp.get('/login')
         form = res.form
@@ -178,11 +183,9 @@ class FunctionalTests(unittest.TestCase):
         form['came_from'] = '/'
         res = form.submit('submit')
 
-        _initTestingDB()
-
     def tearDown(self):
         del self.testapp
-        from arhea.models import DBSession
+        from .models import DBSession
         DBSession.remove()
 
     def test_homepage(self):
@@ -224,7 +227,7 @@ class FunctionalTests(unittest.TestCase):
 
     def test_department_form_edit_GET_unknown_id(self):
         # Get the form
-        res = self.testapp.get('/departments/100/edit', status=404)
+        res = self.testapp.get('/departments/1000/edit', status=404)
         self.assertIn(b'Department not found!', res.body)
 
     def test_department_form_edit_POST(self):
