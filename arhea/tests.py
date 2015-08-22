@@ -8,12 +8,13 @@ from pyramid import testing
 
 def _initTestingDB():
     from sqlalchemy import create_engine
+    from sqlalchemy.pool import NullPool
     from .models import (DBSession, Base, Department, Employee)
     from .sec.models_sec import (User, Group)
     import datetime
+
     engine = create_engine('sqlite://')
     Base.metadata.create_all(engine)
-    DBSession.remove()
     DBSession.configure(bind=engine)
     with transaction.manager:
         #Setup login information
@@ -57,7 +58,7 @@ class ViewHomeTests(unittest.TestCase):
         self.config = testing.setUp()
 
     def tearDown(self):
-        self.session.remove()
+        self.session.close()
         testing.tearDown()
 
     def _callFUT(self, request):
@@ -78,7 +79,7 @@ class ViewDepartmentTests(unittest.TestCase):
         self.config = testing.setUp()
 
     def tearDown(self):
-        self.session.remove()
+        self.session.close()
         testing.tearDown()
 
     def _callFUT(self, request):
@@ -121,7 +122,7 @@ class ViewEmployeeTests(unittest.TestCase):
         self.config = testing.setUp()
 
     def tearDown(self):
-        self.session.remove()
+        self.session.close()
         testing.tearDown()
 
     def _callFUT(self, request):
@@ -156,25 +157,23 @@ class ViewEmployeeTests(unittest.TestCase):
 
 
 
-
-
-
-
 class FunctionalTests(unittest.TestCase):
 
     def setUp(self):
         from arhea.arhea import main
         settings = { 'sqlalchemy.default.url': 'sqlite://',
                      'sqlalchemy.ea.url': 'sqlite://',
-                     'jinja2.directories' : 'arhea:templates',
+                     'jinja2.directories' : 'arhea:sec/templates',
                      'session.secret' : 'sess',
                      'auth.secret' : 'auth'
                      }
         app = main({}, **settings)
+
+
         from webtest import TestApp
         self.testapp = TestApp(app)
 
-        _initTestingDB()
+        self.session = _initTestingDB()
 
         #Login for tests to work
         res = self.testapp.get('/login')
@@ -186,8 +185,8 @@ class FunctionalTests(unittest.TestCase):
 
     def tearDown(self):
         del self.testapp
-        from .models import DBSession
-        DBSession.remove()
+        self.session.close()
+
 
     def test_homepage(self):
         res = self.testapp.get('/', status=200)
@@ -253,3 +252,6 @@ class FunctionalTests(unittest.TestCase):
         # Get the form
         res = self.testapp.get('/employees/100/edit', status=404)
         self.assertIn(b'Employee not found!', res.body)
+
+
+
