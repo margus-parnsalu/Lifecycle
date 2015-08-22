@@ -1,3 +1,7 @@
+"""
+Security module for login/logout and user/group management
+"""
+
 from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
@@ -9,6 +13,7 @@ from sqlalchemy.exc import DBAPIError
 from ..security import (userfinder)
 from ..forms import (LoginForm, GroupForm, UserForm)
 from ..models import (DBSession, User, Group, conn_err_msg)
+
 
 @view_config(route_name='login', renderer='login.jinja2',
              request_method=['GET', 'POST'], permission='view')
@@ -63,12 +68,12 @@ def user_view(request):
 def user_add(request):
     form = UserForm(request.POST, csrf_context=request.session)
     if request.method == 'POST' and form.validate():
-        usr = User()
-        form.populate_obj(usr)
-        #Employee(username=form.username.data, pwd=form.pwd.data)
+        usr = User(username=form.username.data,
+                   pwd=form.pwd.data,
+                   groups=form.groups.data)
         DBSession.add(usr)
         request.session.flash('User Added!')
-        return HTTPFound(location=request.route_url('home'))
+        return HTTPFound(location=request.route_url('user_view'))
     return {'form': form,
             'logged_in': authenticated_userid(request)}
 
@@ -82,10 +87,12 @@ def user_edit(request):
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     form = UserForm(request.POST, user, csrf_context=request.session)
     if request.method == 'POST' and form.validate():
-        form.populate_obj(user)
+        user.username = form.username.data
+        user.pwd = form.pwd.data
+        user.groups = form.groups.data
         DBSession.add(user)
         request.session.flash('User Updated!')
-        return HTTPFound(location=request.route_url('home'))
+        return HTTPFound(location=request.route_url('user_view'))
     return {'form': form,
             'logged_in': authenticated_userid(request)}
 
@@ -127,7 +134,7 @@ def group_edit(request):
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     form = GroupForm(request.POST, group, csrf_context=request.session)
     if request.method == 'POST' and form.validate():
-        form.populate_obj(group)
+        group.groupname = form.groupname.data
         DBSession.add(group)
         request.session.flash('Group Updated!')
         return HTTPFound(location=request.route_url('group_view'))

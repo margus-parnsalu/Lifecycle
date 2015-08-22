@@ -1,3 +1,7 @@
+"""
+General application views
+"""
+
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -25,6 +29,7 @@ from ..forms import (DepartmentForm, EmployeeForm, ApplicationForm)
 def home(request):
     """Homepage view"""
     project_name = 'Applications'
+    #Python debugger for troubleshooting
     #import pdb; pdb.set_trace()
     return {'project': project_name,
             'logged_in': authenticated_userid(request)}
@@ -47,9 +52,6 @@ def department_view(request):
 
     #SqlAlchemy query object for the report
     departments = DBSession.query(Department).order_by(text(sort_value))
-
-    #Debug break point example
-    #import pdb; pdb.set_trace()
 
     #Pagination logic with Sqlalchemy object
     current_page = int(request.matchdict.get('page', '1'))
@@ -98,7 +100,7 @@ def department_edit(request):
     form = DepartmentForm(request.POST, department, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        form.populate_obj(department)
+        department.department_name = form.department_name.data
         DBSession.add(department)
         request.session.flash('Department Updated!')
         return HTTPFound(location=request.route_url('department_view'))
