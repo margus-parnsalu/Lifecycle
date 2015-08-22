@@ -4,11 +4,12 @@ from pyramid.session import SignedCookieSessionFactory
 #Security
 from pyramid.authentication import AuthTktAuthenticationPolicy, RemoteUserAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from .security import groupfinder, RootFactory
+
 from pyramid_multiauth import MultiAuthenticationPolicy
 #DB connection
 from sqlalchemy import engine_from_config
 
+from .sec.security import groupfinder, RootFactory
 from .models import (DBSession, Base, DBSession_EA, Base_EA)
 
 
@@ -48,6 +49,8 @@ def main(global_config, **settings):
     #Jinja:
     #config.add_translation_dirs('locale/')
     config.include('pyramid_jinja2')
+    #Template location
+    config.add_jinja2_search_path('arhea:templates')
     #Supports updating objects in Jinja. Used in querysorter_m.jinja2
     config.add_jinja2_extension('jinja2.ext.do')
 
@@ -58,21 +61,9 @@ def main(global_config, **settings):
     #Routes
     config.add_route('home', '/')
 
-    #Security views
-    config.add_route('login', '/login')
-    config.add_route('logout', '/logout')
+    #Security module sec include
+    config.include('.sec.include')
 
-    #Security_user
-    config.add_route('user_view', '/sec/users')
-    config.add_route('user_view:page', '/sec/users/page/{page:\d+}')
-    config.add_route('user_add', '/sec/users/add')
-    config.add_route('user_edit', '/sec/users/{usr_id:\d+}/edit')
-
-    #Security_group
-    config.add_route('group_view', '/sec/groups')
-    config.add_route('group_view:page', '/sec/groups/page/{page:\d+}')
-    config.add_route('group_add', '/sec/groups/add')
-    config.add_route('group_edit', '/sec/groups/{gro_id:\d+}/edit')
 
     #Departments
     config.add_route('department_view', '/departments')

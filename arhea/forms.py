@@ -5,14 +5,7 @@ from wtforms.ext.csrf.session import SessionSecureForm
 from wtforms.validators import ValidationError
 from wtforms.widgets import PasswordInput
 
-from .models import DBSession, Department, Group
-
-#LOV ehk Query_factory Departments jaoks
-def Departments():
-    return DBSession.query(Department).all()
-
-def Groups():
-    return DBSession.query(Group).all()
+from .models import DBSession, Department
 
 #For CSRF security override with Pyramid session get_csrf_token
 class BaseForm(SessionSecureForm):
@@ -26,23 +19,9 @@ class BaseForm(SessionSecureForm):
             raise ValidationError('Invalid CSRF token; the form probably expired.  Try again.')
 
 
-class LoginForm(BaseForm):
-    came_from = HiddenField(u'Came_from')
-    login = StringField(u'Login')
-    password = PasswordField(u'Password')
-
-#Security module forms
-class GroupForm(BaseForm):
-    groupname = StringField(u'Group Name', [validators.Length(min=3, max=30),
-                                         validators.InputRequired(message=(u'Input required'))])
-
-class UserForm(BaseForm):
-    username = StringField(u'Username', [validators.Length(min=3, max=30),
-                                         validators.InputRequired(message=(u'Input First Name'))])
-    pwd = PasswordField(u'Password', [validators.InputRequired(message=(u'Password required'))],
-                        widget=PasswordInput(hide_value=False))
-    groups = QuerySelectMultipleField(u'Groups', query_factory=Groups, allow_blank=True)
-
+#LOV ehk Query_factory Departments jaoks
+def Departments():
+    return DBSession.query(Department).all()
 
 
 class DepartmentForm(BaseForm):

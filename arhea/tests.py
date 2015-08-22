@@ -8,7 +8,8 @@ from pyramid import testing
 
 def _initTestingDB():
     from sqlalchemy import create_engine
-    from .models import (DBSession, Base, Department, Employee, User, Group, user_groups)
+    from .models import (DBSession, Base, Department, Employee)
+    from .sec.models_sec import (User, Group)
     import datetime
     engine = create_engine('sqlite://')
     Base.metadata.create_all(engine)
@@ -162,7 +163,7 @@ class ViewEmployeeTests(unittest.TestCase):
 class FunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        from arhea import main
+        from arhea.arhea import main
         settings = { 'sqlalchemy.default.url': 'sqlite://',
                      'sqlalchemy.ea.url': 'sqlite://',
                      'jinja2.directories' : 'arhea:templates',
