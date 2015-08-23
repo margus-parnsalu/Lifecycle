@@ -20,7 +20,7 @@ requires = [
     'pyramid_jinja2==2.5',
     'WTForms==2.0.2',
     'paginate_sqlalchemy==0.2.0',
-    'paginate'
+    'paginate',
     'WebTest',
     'pyramid-multiauth==0.5.0',
     ]
