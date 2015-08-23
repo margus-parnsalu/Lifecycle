@@ -2,7 +2,7 @@
 Apps package views
 """
 from pyramid.view import view_config, forbidden_view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.response import Response
 from pyramid.security import remember, forget, authenticated_userid
 
@@ -10,11 +10,12 @@ from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql.functions import coalesce
 from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
-from .forms_apps import (ApplicationForm)
-from .models_apps import (TObject, TPackage)
+from .forms_apps import (ApplicationForm, TagUpdateForm)
+from .models_apps import (TObject, TPackage, TObjectproperty)
 
 @view_config(route_name='application_view', renderer='application_r.jinja2',
              request_method='GET', permission='view')
@@ -63,4 +64,30 @@ def application_view(request):
             'form': form,
             'query': query_input,
             'sortdir': sort_dir,
+            'logged_in': authenticated_userid(request)}
+
+
+@view_config(route_name='tag_edit', renderer='tag_f.jinja2',
+             request_method=['GET', 'POST'], permission='admin')
+def tag_edit(request):
+
+    try:
+        tag_property = (DBSession_EA.query(TObjectproperty).
+                        filter(TObjectproperty.propertyid == request.matchdict['tag_id']).one())
+    except DBAPIError:
+        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+    except NoResultFound:
+        return HTTPNotFound('Tag not found!')
+
+    form = TagUpdateForm(request.POST, tag_property, csrf_context=request.session)
+
+    if request.method == 'POST' and form.validate():
+        tag_property.value = form.value.data
+        #import pdb; pdb.set_trace()
+        DBSession_EA.add(tag_property)
+        request.session.flash('Tag Updated!', allow_duplicate=False)
+        return HTTPFound(location=request.route_url('application_view'))
+
+    return {'form': form,
+            'app_name': request.GET.get('app', ''),
             'logged_in': authenticated_userid(request)}

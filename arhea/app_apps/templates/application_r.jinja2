@@ -52,7 +52,9 @@
                     <td> {{ application.status  or '' }} </td>
                     <td style="word-break:break-all;">
                         {% for tag in application.properties %}
-                                {{ tag.property }} : {{ tag.value }}<br>
+                            <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
+                                                          _query=(('app', application.name), )) }}">
+                                {{ tag.property }}</a> : {{ tag.value }}<br>
                          {% endfor %}
                     </td>
                     <td style="word-break:break-all;" width="220"> {{ application.note or '' }} </td>

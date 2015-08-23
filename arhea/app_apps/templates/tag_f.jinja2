@@ -1,0 +1,28 @@
+{% extends "base.jinja2" %}
+{% block content %}
+
+    <h3>{{ app_name }}: Update Tag</h3>
+
+    <div class="well">
+
+        <form action="" method="post" name="TagUpdateForm">
+
+          {% include 'form_error.jinja2' %}
+
+          <div class="form-group">
+            {{ form.property.label }}
+            {{ form.property(readonly=true) }}
+          </div>
+
+          <div class="form-group">
+            {{ form.value.label }}
+            {{ form.value(size=100) }}
+          </div>
+
+          <div class="form-group">
+              <button type="submit" class="btn btn-default">Submit</button>
+         </div>
+        </form>
+
+    </div>
+{% endblock %}
