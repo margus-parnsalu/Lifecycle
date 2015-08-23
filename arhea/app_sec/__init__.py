@@ -2,7 +2,7 @@
 Security package providing:
     - pyramid ACL configuration groups/permissions
     - userfinder and groupfinder functions
-    - user and group management database backend with UI
+    - user and group management database backend with admin UI
 __author__ = 'margusp'
 """
 

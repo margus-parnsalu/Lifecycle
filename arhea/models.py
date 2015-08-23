@@ -1,3 +1,7 @@
+"""
+Application session handlers for every app_*
+General models and application scope constants
+"""
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import (scoped_session, sessionmaker)
 
@@ -16,6 +20,7 @@ Base_EA = declarative_base()
 
 #Pagination page row count
 ITEMS_PER_PAGE = 3
+
 
 #DBAPI error message
 conn_err_msg = """\

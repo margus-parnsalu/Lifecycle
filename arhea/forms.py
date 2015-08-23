@@ -1,3 +1,7 @@
+"""
+Application general form logic.
+Secure BaseForm for extention in every app_*
+"""
 from wtforms.ext.csrf.session import SessionSecureForm
 from wtforms.validators import ValidationError
 

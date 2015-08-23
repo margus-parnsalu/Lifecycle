@@ -8,9 +8,9 @@ from pyramid import testing
 
 def _initTestingDB():
     from sqlalchemy import create_engine
-    from .models import (DBSession, Base)
-    from .app_hr.models_hr import (Department, Employee)
-    from .app_sec.models_sec import (User, Group)
+    from ..models import (DBSession, Base)
+    from ..app_sec.models_sec import (User, Group)
+    from .models_hr import (Department, Employee)
     import datetime
     engine = create_engine('sqlite://')
     Base.metadata.create_all(engine)
@@ -62,7 +62,7 @@ class ViewHomeTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .views import home
+        from ..views import home
         return home(request)
 
     def test_it(self):
@@ -83,7 +83,7 @@ class ViewDepartmentTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .app_hr.views_hr import department_view
+        from .views_hr import department_view
         return department_view(request)
 
     def test_it(self):
@@ -126,7 +126,7 @@ class ViewEmployeeTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .app_hr.views_hr import employee_view
+        from .views_hr import employee_view
         return employee_view(request)
 
     def test_it(self):

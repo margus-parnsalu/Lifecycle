@@ -14,7 +14,7 @@ from sqlalchemy import text
 from paginate_sqlalchemy import SqlalchemyOrmPage
 
 #Sorting logic
-from ..app_util.sorts import SortValue
+from ..utils.sorts import SortValue
 from ..models import (DBSession, ITEMS_PER_PAGE, conn_err_msg)
 from .forms_hr import (DepartmentForm, EmployeeForm)
 from .models_hr import (Department, Employee)

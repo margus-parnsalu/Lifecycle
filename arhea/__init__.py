@@ -1,3 +1,7 @@
+"""
+Application for system lifecycle management
+Main package that includes app_* extensions
+"""
 from pyramid.config import Configurator
 #Session Cookie setup
 from pyramid.session import SignedCookieSessionFactory
