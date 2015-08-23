@@ -17,7 +17,10 @@ from ..models import (
     DBSession_EA,
     Base_EA
     )
+from ..app_hr.models_hr import (Employee, Department)
+from ..app_sec.models_sec import (User, Group, user_groups)
 
+from passlib.hash import sha256_crypt
 
 def usage(argv):
     cmd = os.path.basename(argv[0])
@@ -36,6 +39,20 @@ def main(argv=sys.argv):
     engine = engine_from_config(settings, 'sqlalchemy.default.')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
+
+    #Starter admin and editor account
+    with transaction.manager:
+        grp1 = Group(groupname = 'Admins')
+        grp2 = Group(groupname = 'Editors')
+        usr1 = User(username = 'admin', pwd = sha256_crypt.encrypt(settings['starter.admin']),
+                    groups=[grp1, grp2])
+        usr2 = User(username = 'editor', pwd = sha256_crypt.encrypt('editor'), groups=[grp2])
+        DBSession.add(grp1)
+        DBSession.add(grp2)
+        DBSession.add(usr1)
+        DBSession.add(usr2)
+
+
     #engine2 = engine_from_config(settings, 'sqlalchemy.ea.')
     #DBSession_EA.configure(bind=engine2)
     #Base_EA.metadata.create_all(engine2)

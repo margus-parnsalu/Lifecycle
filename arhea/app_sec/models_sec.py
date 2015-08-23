@@ -1,7 +1,7 @@
 """
 Security backend models
 """
-from sqlalchemy import (Column, Integer, String, ForeignKey, Index, Table)
+from sqlalchemy import (Column, Integer, String, ForeignKey, Index, Table, DateTime, text)
 from sqlalchemy.orm import (relationship)
 
 from ..models import Base

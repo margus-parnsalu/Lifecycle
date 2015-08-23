@@ -23,6 +23,7 @@ requires = [
     'paginate'
     'WebTest',
     'pyramid-multiauth==0.5.0',
+    'passlib==1.6.5'
     ]
 
 setup(name='arhea',

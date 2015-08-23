@@ -6,6 +6,8 @@ from pyramid.response import Response
 
 from sqlalchemy.exc import DBAPIError
 
+from passlib.hash import sha256_crypt
+
 from .models_sec import (User, Group)
 from ..models import (DBSession, conn_err_msg)
 
@@ -18,7 +20,7 @@ def userfinder(userid, password):
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
 
-    if usermatch and usermatch.pwd == password:
+    if usermatch and sha256_crypt.verify(password, usermatch.pwd):
         found = True
     return found
 
