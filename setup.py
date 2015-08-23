@@ -26,7 +26,7 @@ requires = [
     ]
 
 setup(name='arhea',
-      version='0.0',
+      version='0.0.1',
       description='arhea',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
