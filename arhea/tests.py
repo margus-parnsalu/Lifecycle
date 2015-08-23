@@ -166,7 +166,8 @@ class FunctionalTests(unittest.TestCase):
         from arhea.arhea import main
         settings = { 'sqlalchemy.default.url': 'sqlite://',
                      'sqlalchemy.ea.url': 'sqlite://',
-                     'jinja2.directories' : 'arhea:templates',
+                     'jinja2.directories' : ['arhea:arhea/sec/templates',
+                                             'arhea:arhea/templates'],
                      'session.secret' : 'sess',
                      'auth.secret' : 'auth'
                      }
@@ -174,7 +175,7 @@ class FunctionalTests(unittest.TestCase):
         from webtest import TestApp
         self.testapp = TestApp(app)
 
-        _initTestingDB()
+        self.session = _initTestingDB()
 
         #Login for tests to work
         res = self.testapp.get('/login')
@@ -186,8 +187,7 @@ class FunctionalTests(unittest.TestCase):
 
     def tearDown(self):
         del self.testapp
-        from .models import DBSession
-        DBSession.remove()
+        self.session.remove()
 
     def test_homepage(self):
         res = self.testapp.get('/', status=200)
