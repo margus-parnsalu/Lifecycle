@@ -9,7 +9,7 @@ from pyramid_multiauth import MultiAuthenticationPolicy
 #DB connection
 from sqlalchemy import engine_from_config
 
-from .sec.security import groupfinder, RootFactory
+from .app_sec.security import groupfinder, RootFactory
 from .models import (DBSession, Base, DBSession_EA, Base_EA)
 
 
@@ -62,10 +62,10 @@ def main(global_config, **settings):
     config.add_route('home', '/')
 
     #Security package sec include
-    config.include('.sec.include')
+    config.include('.app_sec.include')
 
     #Applications package apps include
-    config.include('._apps.include')
+    config.include('.app_apps.include')
 
 
     #Departments

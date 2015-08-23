@@ -9,7 +9,7 @@ __author__ = 'margusp'
 def include(config):
 
     #Sec module template location
-    config.add_jinja2_search_path('arhea:sec/templates')
+    config.add_jinja2_search_path('arhea:app_sec/templates')
 
     #Security login/logout
     config.add_route('login', '/login')

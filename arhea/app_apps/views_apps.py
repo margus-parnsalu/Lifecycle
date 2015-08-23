@@ -12,7 +12,7 @@ from sqlalchemy.sql.functions import coalesce
 from sqlalchemy.orm import subqueryload
 
 from ..models import (DBSession_EA, conn_err_msg)
-from ..util.sorts import SortValue
+from ..app_util.sorts import SortValue
 from .forms_apps import (ApplicationForm)
 from .models_apps import (TObject, TPackage)
 
