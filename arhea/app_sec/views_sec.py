@@ -34,7 +34,7 @@ def login(request):
             headers = remember(request, login_user)
             request.session.flash('User: '+ login_user + ' logged in!')
             return HTTPFound(location=came_from, headers=headers)
-        message = 'Failed login!'
+        request.session.flash('Failed login!', queue='fail', allow_duplicate=False)
 
     return {'form' : form,
             'message' : message,
@@ -72,7 +72,7 @@ def user_add(request):
                    pwd=form.pwd.data,
                    groups=form.groups.data)
         DBSession.add(usr)
-        request.session.flash('User Added!')
+        request.session.flash('User Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('user_view'))
     return {'form': form,
             'logged_in': authenticated_userid(request)}
@@ -91,7 +91,7 @@ def user_edit(request):
         user.pwd = form.pwd.data
         user.groups = form.groups.data
         DBSession.add(user)
-        request.session.flash('User Updated!')
+        request.session.flash('User Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('user_view'))
     return {'form': form,
             'logged_in': authenticated_userid(request)}
@@ -119,7 +119,7 @@ def group_add(request):
     if request.method == 'POST' and form.validate():
         gro = Group(groupname=form.groupname.data)
         DBSession.add(gro)
-        request.session.flash('Group Added!')
+        request.session.flash('Group Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('group_view'))
     return {'form': form,
             'logged_in': authenticated_userid(request)}
@@ -136,7 +136,7 @@ def group_edit(request):
     if request.method == 'POST' and form.validate():
         group.groupname = form.groupname.data
         DBSession.add(group)
-        request.session.flash('Group Updated!')
+        request.session.flash('Group Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('group_view'))
     return {'form': form,
             'logged_in': authenticated_userid(request)}

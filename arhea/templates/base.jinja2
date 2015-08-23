@@ -106,6 +106,13 @@ $(function() {
             {% endfor %}
           </div>
         {% endif %}
+        {% if request.session.peek_flash('fail') %}
+          <div class="alert alert-warning">
+            {% for msg in request.session.pop_flash('fail') %}
+                <li>{{ msg }}</li>
+            {% endfor %}
+          </div>
+        {% endif %}
       </div>
 </div>
 

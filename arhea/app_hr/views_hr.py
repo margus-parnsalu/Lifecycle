@@ -63,7 +63,7 @@ def department_add(request):
     if request.method == 'POST' and form.validate():
         dep = Department(department_name=form.department_name.data)
         DBSession.add(dep)
-        request.session.flash('Department Added!')
+        request.session.flash('Department Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
 
     return {'form': form,
@@ -87,7 +87,7 @@ def department_edit(request):
     if request.method == 'POST' and form.validate():
         department.department_name = form.department_name.data
         DBSession.add(department)
-        request.session.flash('Department Updated!')
+        request.session.flash('Department Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
 
     return {'form': form,
@@ -145,7 +145,7 @@ def employee_add(request):
                        end_date=form.end_date.data,
                        department=form.department.data)
         DBSession.add(emp)
-        request.session.flash('Employee Added!')
+        request.session.flash('Employee Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
 
     return {'form': form,
@@ -178,7 +178,7 @@ def employee_edit(request):
         employee.department = form.department.data
         employee.end_date = form.end_date.data
         DBSession.add(employee)
-        request.session.flash('Employee Updated!')
+        request.session.flash('Employee Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
 
     return {'form': form,
