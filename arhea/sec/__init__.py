@@ -1,8 +1,15 @@
 """
-Security module
+Security package providing:
+    - pyramid ACL configuration groups/permissions
+    - userfinder and groupfinder functions
+    - user and group management database backend with UI
+__author__ = 'margusp'
 """
 
 def include(config):
+
+    #Sec module template location
+    config.add_jinja2_search_path('arhea:sec/templates')
 
     #Security login/logout
     config.add_route('login', '/login')
@@ -19,6 +26,3 @@ def include(config):
     config.add_route('group_view:page', '/sec/groups/page/{page:\d+}')
     config.add_route('group_add', '/sec/groups/add')
     config.add_route('group_edit', '/sec/groups/{gro_id:\d+}/edit')
-
-    #Sec module template location
-    config.add_jinja2_search_path('arhea:sec/templates')

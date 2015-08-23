@@ -61,8 +61,11 @@ def main(global_config, **settings):
     #Routes
     config.add_route('home', '/')
 
-    #Security module sec include
+    #Security package sec include
     config.include('.sec.include')
+
+    #Applications package apps include
+    config.include('._apps.include')
 
 
     #Departments
@@ -78,8 +81,6 @@ def main(global_config, **settings):
     config.add_route('employee_add', '/employees/add')
     config.add_route('employee_edit', '/employees/{emp_id:\d+}/edit')
 
-    #Applications
-    config.add_route('application_view', '/apps')
 
 
     config.scan()

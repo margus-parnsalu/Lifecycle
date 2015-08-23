@@ -1,5 +1,5 @@
 """
-Security models
+Security backend models
 """
 from sqlalchemy import (Column, Integer, String, ForeignKey, Index, Table)
 from sqlalchemy.orm import (relationship)

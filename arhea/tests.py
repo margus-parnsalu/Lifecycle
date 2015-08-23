@@ -61,7 +61,7 @@ class ViewHomeTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .views.views import home
+        from .views import home
         return home(request)
 
     def test_it(self):
@@ -82,7 +82,7 @@ class ViewDepartmentTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .views.views import department_view
+        from .views import department_view
         return department_view(request)
 
     def test_it(self):
@@ -125,7 +125,7 @@ class ViewEmployeeTests(unittest.TestCase):
         testing.tearDown()
 
     def _callFUT(self, request):
-        from .views.views import employee_view
+        from .views import employee_view
         return employee_view(request)
 
     def test_it(self):
