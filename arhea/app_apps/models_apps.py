@@ -55,7 +55,7 @@ class TObject(Base_EA):
     styleex = Column(Text)
 
     packages = relationship("TPackage", backref="t_object", foreign_keys=[package_id])
-    properties = relationship('TObjectproperty', primaryjoin=object_id==TObjectproperty.object_id)
+    properties = relationship('TObjectproperty', primaryjoin=object_id == TObjectproperty.object_id)
     def __repr__(self):
         return '<EA_Object %r>' % (self.name)
     def __str__(self):

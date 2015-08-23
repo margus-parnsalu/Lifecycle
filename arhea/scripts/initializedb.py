@@ -41,17 +41,26 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
 
-    #Starter admin and editor account
+    #Starter admin and viewer, editor account
     with transaction.manager:
-        grp1 = Group(groupname = 'Admins')
-        grp2 = Group(groupname = 'Editors')
-        usr1 = User(username = 'admin', pwd = hashlib.sha256((settings['starter.admin']).encode()).hexdigest(),
+        grp1 = Group(groupname='Admins')
+        grp2 = Group(groupname='Editors')
+        grp3 = Group(groupname='Viewers')
+        usr1 = User(username='admin',
+                    pwd=hashlib.sha256((settings['starter.admin']).encode()).hexdigest(),
                     groups=[grp1, grp2])
-        usr2 = User(username = 'editor', pwd = hashlib.sha256(('editor').encode()).hexdigest(), groups=[grp2])
+        usr2 = User(username='editor',
+                    pwd=hashlib.sha256(('editor').encode()).hexdigest(),
+                    groups=[grp2])
+        usr3 = User(username='viewer',
+                    pwd=hashlib.sha256(('viewer').encode()).hexdigest(),
+                    groups=[grp3])
         DBSession.add(grp1)
         DBSession.add(grp2)
+        DBSession.add(grp3)
         DBSession.add(usr1)
         DBSession.add(usr2)
+        DBSession.add(usr3)
 
 
     #engine2 = engine_from_config(settings, 'sqlalchemy.ea.')

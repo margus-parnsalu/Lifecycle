@@ -19,20 +19,20 @@ def _initTestingDB():
     DBSession.configure(bind=engine)
     with transaction.manager:
         #Setup login information
-        grp1 = Group(groupname = 'Editors')
-        usr1 = User(username = 'editor', pwd = hashlib.sha256(('editor').encode()).hexdigest(), groups=[grp1])
+        grp1 = Group(groupname='Editors')
+        usr1 = User(username='editor', pwd=hashlib.sha256(('editor').encode()).hexdigest(), groups=[grp1])
         DBSession.add(grp1)
         DBSession.add(usr1)
 
         #Setup test data
-        dep1 = Department(department_name = 'A Minu Test')
-        dep2 = Department(department_name = 'Z Minu Test')
+        dep1 = Department(department_name='A Minu Test')
+        dep2 = Department(department_name='Z Minu Test')
         DBSession.add(dep1)
         DBSession.add(dep2)
-        emp1 = Employee(first_name = 'John', last_name= 'Dow', email= 'john.dow@mail.com',
-                        phone_number= '879593535', hire_date= datetime.date(2015, 3, 15), salary= 3000)
-        emp2 = Employee(first_name = 'Tom', last_name= 'Taylor', email= 'tom.taylor@mail.com',
-                        phone_number= '87959789', hire_date= datetime.date(2015, 6, 12), salary= 5000)
+        emp1 = Employee(first_name='John', last_name='Dow', email='john.dow@mail.com',
+                        phone_number='879593535', hire_date=datetime.date(2015, 3, 15), salary=3000)
+        emp2 = Employee(first_name ='Tom', last_name='Taylor', email='tom.taylor@mail.com',
+                        phone_number='87959789', hire_date=datetime.date(2015, 6, 12), salary=5000)
         DBSession.add(emp1)
         DBSession.add(emp2)
 
@@ -97,7 +97,7 @@ class ViewDepartmentTests(unittest.TestCase):
 
     def test_it_sort_asc(self):
         request = testing.DummyRequest()
-        request.GET['sort']='+department'
+        request.GET['sort'] = '+department'
         _registerRoutes(self.config)
         info = self._callFUT(request)
         self.assertEqual(info['departments'][0].department_name, 'A Minu Test')
@@ -107,7 +107,7 @@ class ViewDepartmentTests(unittest.TestCase):
 
     def test_it_sort_desc(self):
         request = testing.DummyRequest()
-        request.GET['sort']='-department'
+        request.GET['sort'] = '-department'
         _registerRoutes(self.config)
         info = self._callFUT(request)
         self.assertEqual(info['departments'][0].department_name, 'Z Minu Test')
@@ -139,7 +139,7 @@ class ViewEmployeeTests(unittest.TestCase):
 
     def test_it_sort_asc(self):
         request = testing.DummyRequest()
-        request.GET['sort']='+employee'
+        request.GET['sort'] = '+employee'
         _registerRoutes(self.config)
         info = self._callFUT(request)
         self.assertEqual(info['employees'][0].Employee.first_name, 'John')
@@ -149,7 +149,7 @@ class ViewEmployeeTests(unittest.TestCase):
 
     def test_it_sort_desc(self):
         request = testing.DummyRequest()
-        request.GET['sort']='-employee'
+        request.GET['sort'] = '-employee'
         _registerRoutes(self.config)
         info = self._callFUT(request)
         self.assertEqual(info['employees'][0].Employee.first_name, 'Tom')
