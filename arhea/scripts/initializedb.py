@@ -1,6 +1,7 @@
 import os
 import sys
 import transaction
+import hashlib
 
 from sqlalchemy import engine_from_config
 
@@ -20,7 +21,7 @@ from ..models import (
 from ..app_hr.models_hr import (Employee, Department)
 from ..app_sec.models_sec import (User, Group, user_groups)
 
-from passlib.hash import sha256_crypt
+
 
 def usage(argv):
     cmd = os.path.basename(argv[0])
@@ -44,9 +45,9 @@ def main(argv=sys.argv):
     with transaction.manager:
         grp1 = Group(groupname = 'Admins')
         grp2 = Group(groupname = 'Editors')
-        usr1 = User(username = 'admin', pwd = sha256_crypt.encrypt(settings['starter.admin']),
+        usr1 = User(username = 'admin', pwd = hashlib.sha256((settings['starter.admin']).encode()).hexdigest(),
                     groups=[grp1, grp2])
-        usr2 = User(username = 'editor', pwd = sha256_crypt.encrypt('editor'), groups=[grp2])
+        usr2 = User(username = 'editor', pwd = hashlib.sha256(('editor').encode()).hexdigest(), groups=[grp2])
         DBSession.add(grp1)
         DBSession.add(grp2)
         DBSession.add(usr1)

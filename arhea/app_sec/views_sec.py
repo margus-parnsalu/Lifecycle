@@ -9,7 +9,7 @@ from pyramid.security import remember, forget, authenticated_userid
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
-from passlib.hash import sha256_crypt
+import hashlib
 
 from ..models import (DBSession, conn_err_msg)
 from .security import (userfinder)
@@ -71,7 +71,7 @@ def user_add(request):
     form = UserForm(request.POST, csrf_context=request.session)
     if request.method == 'POST' and form.validate():
         usr = User(username=form.username.data,
-                   pwd=sha256_crypt.encrypt(form.pwd.data),
+                   pwd=hashlib.sha256((form.pwd.data).encode()).hexdigest(),
                    groups=form.groups.data)
         DBSession.add(usr)
         request.session.flash('User Added!', allow_duplicate=False)
@@ -90,7 +90,7 @@ def user_edit(request):
     form = UserForm(request.POST, user, csrf_context=request.session)
     if request.method == 'POST' and form.validate():
         user.username = form.username.data
-        user.pwd = sha256_crypt.encrypt(form.pwd.data)
+        user.pwd = hashlib.sha256((form.pwd.data).encode()).hexdigest()
         user.groups = form.groups.data
         DBSession.add(user)
         request.session.flash('User Updated!', allow_duplicate=False)

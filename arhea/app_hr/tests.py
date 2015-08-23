@@ -12,7 +12,7 @@ def _initTestingDB():
     from ..app_sec.models_sec import (User, Group)
     from .models_hr import (Department, Employee)
     import datetime
-    from passlib.hash import sha256_crypt
+    import hashlib
     engine = create_engine('sqlite://')
     Base.metadata.create_all(engine)
     DBSession.remove()
@@ -20,7 +20,7 @@ def _initTestingDB():
     with transaction.manager:
         #Setup login information
         grp1 = Group(groupname = 'Editors')
-        usr1 = User(username = 'editor', pwd = sha256_crypt.encrypt('editor'), groups=[grp1])
+        usr1 = User(username = 'editor', pwd = hashlib.sha256(('editor').encode()).hexdigest(), groups=[grp1])
         DBSession.add(grp1)
         DBSession.add(usr1)
 
