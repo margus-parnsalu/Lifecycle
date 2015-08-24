@@ -68,7 +68,7 @@ def application_view(request):
 
 
 @view_config(route_name='tag_edit', renderer='tag_f.jinja2',
-             request_method=['GET', 'POST'], permission='admin')
+             request_method=['GET', 'POST'], permission='edit')
 def tag_edit(request):
 
     try:
