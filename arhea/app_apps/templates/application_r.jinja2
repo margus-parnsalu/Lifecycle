@@ -46,18 +46,18 @@
                 {% for application in applications: %}
                 <tr>
                     <td> {{ loop.index }} </a></td>
-                    <td> {{ application.name or '' }} </a></td>
-                    <td> {{ application.alias or '' }} </td>
+                    <td style="word-wrap: break-word;min-width: 120px;max-width: 160px;"> {{ application.name or '' }} </a></td>
+                    <td style="word-wrap: break-word;min-width: 120px;max-width: 160px;"> {{ application.alias or '' }} </td>
                     <td> {{ application.stereotype  or ''  }} </td>
                     <td> {{ application.status  or '' }} </td>
-                    <td style="word-break:break-all;">
+                    <td style="word-wrap: break-word;min-width: 160px;max-width: 200px;">
                         {% for tag in application.properties %}
                             <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
                                                           _query=(('app', application.name), )) }}">
                                 {{ tag.property }}</a> : {{ tag.value }}<br>
                          {% endfor %}
                     </td>
-                    <td style="word-break:break-all;" width="220"> {{ application.note or '' }} </td>
+                    <td style="word-wrap: break-word;min-width: 120px;max-width: 180px;"> {{ application.note or '' }} </td>
                     <td style="word-break:break-all;" width="80"> {{ application.ea_guid }} </td>
                 </tr>
                 {% endfor %}
