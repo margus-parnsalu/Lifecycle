@@ -55,7 +55,7 @@ def department_view(request):
 
 
 @view_config(route_name='department_add', renderer='department_f.jinja2',
-             request_method=['GET', 'POST'], permission='edit')
+             request_method=['GET', 'POST'], permission='view')
 def department_add(request):
 
     form = DepartmentForm(request.POST, csrf_context=request.session)
@@ -71,7 +71,7 @@ def department_add(request):
 
 
 @view_config(route_name='department_edit', renderer='department_f.jinja2',
-             request_method=['GET', 'POST'], permission='edit')
+             request_method=['GET', 'POST'], permission='view')
 def department_edit(request):
 
     try:
@@ -130,7 +130,7 @@ def employee_view(request):
 
 
 @view_config(route_name='employee_add', renderer='employee_f.jinja2',
-             request_method=['GET', 'POST'], permission='edit')
+             request_method=['GET', 'POST'], permission='view')
 def employee_add(request):
 
     form = EmployeeForm(request.POST, csrf_context=request.session)
@@ -153,7 +153,7 @@ def employee_add(request):
 
 
 @view_config(route_name='employee_edit', renderer='employee_f.jinja2',
-             request_method=['GET', 'POST'], permission='edit')
+             request_method=['GET', 'POST'], permission='view')
 def employee_edit(request):
 
     try:
