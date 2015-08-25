@@ -10,11 +10,14 @@ from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
 import hashlib
+import logging
 
 from ..models import (DBSession, conn_err_msg)
 from .security import (userfinder)
 from .forms_sec import (LoginForm, GroupForm, UserForm)
 from .models_sec import (User, Group)
+
+log = logging.getLogger(__name__)
 
 
 @view_config(route_name='login', renderer='login.jinja2',
@@ -33,7 +36,10 @@ def login(request):
         login_user = request.params['login']
         password = request.params['password']
         if userfinder(login_user, password):
+            #Must remove user_groups when changing user
+            request.session.pop('user_groups', None)
             headers = remember(request, login_user)
+            log.info('USER "%s" LOGGED IN!', login_user)
             request.session.flash('User: '+ login_user + ' logged in!')
             return HTTPFound(location=came_from, headers=headers)
         request.session.flash('Failed login!', queue='fail', allow_duplicate=False)
@@ -46,8 +52,11 @@ def login(request):
 @view_config(route_name='logout',
              permission='view')
 def logout(request):
-    """Logout, forget user"""
+    """Logout, forget user, remove session user_groups"""
+    request.session.pop('user_groups', None)
+    logout_user = authenticated_userid(request)
     headers = forget(request)
+    log.info('USER "%s" LOGGED OUT!', logout_user)
     loc = request.route_url('home')
     return HTTPFound(location=loc, headers=headers)
 

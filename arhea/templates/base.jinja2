@@ -13,15 +13,14 @@
     <script src="/static/js/bootstrap-datepicker.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        $(function() {
+            $(".datepicker").datepicker({format:'dd-mm-yyyy', weekStart:1});
+        });
+    </script>
 </head>
 
-<script>
-
-$(function() {
-  $(".datepicker").datepicker({format:'dd-mm-yyyy', weekStart:1});
-});
-
-</script>
 
 <body>
 

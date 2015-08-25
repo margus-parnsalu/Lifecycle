@@ -27,7 +27,12 @@ def userfinder(userid, password):
 
 def groupfinder(userid, request):
     """Find groups where user belongs to"""
-    if userid:
+    session = request.session
+    session_groups = 'user_groups'
+
+    if session_groups in session:
+        return session[session_groups]
+    elif userid:
         try:
             user_groups = (DBSession.query(Group.groupname).
                            filter(Group.users.any(username=userid)).
@@ -36,6 +41,7 @@ def groupfinder(userid, request):
             return Response(conn_err_msg, content_type='text/plain', status_int=500)
 
         groups = [r for (r, ) in user_groups]
+        session[session_groups] = groups
         return groups
 
 

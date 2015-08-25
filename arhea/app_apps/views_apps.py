@@ -86,7 +86,8 @@ def tag_edit(request):
         #import pdb; pdb.set_trace()
         DBSession_EA.add(tag_property)
         request.session.flash('Tag Updated!', allow_duplicate=False)
-        return HTTPFound(location=request.route_url('application_view'))
+        return HTTPFound(location=request.route_url('application_view',
+                                                    _anchor=request.GET.get('app', '')))
 
     return {'form': form,
             'app_name': request.GET.get('app', ''),

@@ -45,9 +45,10 @@
             <tbody>
                 {% for application in applications: %}
                 <tr>
-                    <td> {{ loop.index }} </a></td>
-                    <td style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;">
-                        {{ application.name or '' }} </a></td>
+                    <td> {{ loop.index }} </td>
+                    <td id="{{ application.name or '' }}"
+                        style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;">
+                        {{ application.name or '' }} </td>
                     <td style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;">
                         {{ application.alias or '' }} </td>
                     <td> {{ application.stereotype  or ''  }} </td>
