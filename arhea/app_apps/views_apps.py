@@ -83,7 +83,6 @@ def tag_edit(request):
 
     if request.method == 'POST' and form.validate():
         tag_property.value = form.value.data
-        #import pdb; pdb.set_trace()
         DBSession_EA.add(tag_property)
         request.session.flash('Tag Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('application_view',

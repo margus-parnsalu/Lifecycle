@@ -4,6 +4,8 @@
     <h3>{{ app_name }}: edit Tag</h3>
 
 
+
+
     <div class="well">
 
         <form action="" method="post" name="TagUpdateForm">
@@ -17,13 +19,29 @@
 
           <div class="form-group">
             {{ form.value.label }}
-            {{ form.value(size=100) }}
+            {{ form.value(size=60) }}
           </div>
+
+            {% if "Development Domain" in form.property() %}
+              <div class="form-group">
+                {{ form.domain_list(class="form-control input-sm") }}
+              </div>
+            {% endif %}
 
           <div class="form-group">
               <button type="submit" class="btn btn-default">Submit</button>
          </div>
         </form>
+
+<script>
+$( "#domain_list" )
+  .change(function () {
+        var str = $("#value").val();
+        $( "select option:selected" ).each(function() {
+            str = $( this ).val();});
+    $( "#value" ).val( str );
+  })
+</script>
 
     </div>
 {% endblock %}
