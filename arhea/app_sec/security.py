@@ -6,11 +6,12 @@ from pyramid.response import Response
 
 from sqlalchemy.exc import DBAPIError
 
-import hashlib
+import hashlib, logging
 
 from .models_sec import (User, Group)
 from ..models import (DBSession, conn_err_msg)
 
+log = logging.getLogger(__name__)
 
 def userfinder(userid, password):
     """Validate user login in login view"""
@@ -42,6 +43,7 @@ def groupfinder(userid, request):
 
         groups = [r for (r, ) in user_groups]
         session[session_groups] = groups
+        log.info('USER "%s" LOGGED IN!', userid)
         return groups
 
 

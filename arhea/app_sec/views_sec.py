@@ -39,7 +39,7 @@ def login(request):
             headers = remember(request, login_user)
             #Must remove user_groups when changing user
             request.session.pop('user_groups', None)
-            log.info('USER "%s" LOGGED IN!', login_user)
+            #log.info('USER "%s" LOGGED IN!', login_user)
             request.session.flash('User: '+ login_user + ' logged in!')
             return HTTPFound(location=came_from, headers=headers)
         request.session.flash('Failed login!', queue='fail', allow_duplicate=False)
