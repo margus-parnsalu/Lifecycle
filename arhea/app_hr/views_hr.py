@@ -111,7 +111,7 @@ def employee_view(request):
     #SqlAlchemy query object
     employees = (DBSession.query(Employee, Department).
                  outerjoin(Department, Employee.department_id == Department.department_id).
-                 filter(Employee.end_date == None).
+                 #filter(Employee.end_date == None).
                  order_by(text(sort_value)))
 
 
