@@ -7,28 +7,38 @@
 
 
     <div class="well">
+        <div class="row">
+        <div class="col-md-8">
 
-        <form action="" method="get" name="ApplicationForm" class="form-inline">
+            <form action="" method="get" name="ApplicationForm" class="form-inline">
 
-          <div class="form-group">
-            {{ form.stereotype(class="form-control input-sm") }}
-          </div>
-          <div class="form-group">
-            {{ form.name(placeholder="Name", class="form-control input-sm") }}
-          </div>
-          <div class="form-group">
-            {{ form.alias(placeholder="Alias", class="form-control input-sm") }}
-          </div>
-          <div class="form-group">
-            {{ form.status(class="form-control input-sm") }}
-          </div>
+              <div class="form-group">
+                {{ form.stereotype(class="form-control input-sm") }}
+              </div>
+              <div class="form-group">
+                {{ form.name(placeholder="Name", class="form-control input-sm") }}
+              </div>
+              <div class="form-group">
+                {{ form.alias(placeholder="Alias", class="form-control input-sm") }}
+              </div>
+              <div class="form-group">
+                {{ form.status(class="form-control input-sm") }}
+              </div>
 
-          <div class="form-group">
-              <button type="submit" class="btn btn-default btn-sm">Search</button>
-          </div>
-        </form>
-
+              <div class="form-group">
+                  <button type="submit" class="btn btn-default btn-sm">Search</button>
+              </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+                <input id="searchInput"
+                    placeholder="Type for filtering page results. _ for multiple matches"
+                    class="form-control input-sm">
+        </div>
+        </div>
     </div>
+
+
 
 
     <table class="table table-hover">
@@ -43,7 +53,7 @@
                     <th>Note</th>
                     <th>GUID</th>
                 </tr>
-            <tbody>
+            <tbody id="fbody">
                 {% for application in applications: %}
                 <tr>
                     <td> {{ loop.index }} </td>
@@ -69,5 +79,16 @@
             </tbody>
     </table>
 
+    <script>
+    $("#searchInput").keyup(function () {
+        var rows = $("#fbody").find("tr").hide();
+        if (this.value.length) {
+            var data = this.value.split("_");
+            $.each(data, function (i, v) {
+                rows.filter(":contains('" + v + "')").show();
+            });
+        } else rows.show();
+    });
+    </script>
 
 {% endblock %}
