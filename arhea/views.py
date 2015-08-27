@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 @view_config(route_name='home', renderer='home.jinja2', request_method='GET', permission='view')
 def home(request):
     """Homepage view"""
-    project_name = 'Rakenduste elutsükli ja Python demo rakendus'
+    project_name = 'Telekom rakenduste ja vastutajate nimekiri ning python demo rakendus'
 
     #Logging example
     log.info('Returning project name: %s', project_name)
