@@ -19,7 +19,7 @@ Base_EA = declarative_base()
 
 
 #Pagination page row count
-ITEMS_PER_PAGE = 3
+ITEMS_PER_PAGE = 5
 
 
 #DBAPI error message
