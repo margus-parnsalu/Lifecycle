@@ -33,7 +33,6 @@ def department_view(request):
     sort_value = sort.sort_str()
     if sort_value == '':
         return HTTPFound(location=request.route_url('home'))
-    sort_dir = sort.reverse_direction()
 
     #SqlAlchemy query object for the report
     departments = DBSession.query(Department).order_by(text(sort_value))
@@ -49,7 +48,7 @@ def department_view(request):
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
 
     return {'departments': records,
-            'sortdir': sort_dir,
+            'sortdir': sort.reverse_direction(),
             'logged_in': authenticated_userid(request)}
 
 
@@ -106,14 +105,11 @@ def employee_view(request):
     sort_value = sort.sort_str()
     if sort_value == '':
         return HTTPFound(location=request.route_url('home'))
-    sort_dir = sort.reverse_direction()
 
     #SqlAlchemy query object
     employees = (DBSession.query(Employee, Department).
                  outerjoin(Department, Employee.department_id == Department.department_id).
-                 #filter(Employee.end_date == None).
                  order_by(text(sort_value)))
-
 
     #Pagination logic
     current_page = int(request.matchdict.get('page', '1'))
@@ -125,7 +121,7 @@ def employee_view(request):
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     return {'employees': records,
-            'sortdir': sort_dir,
+            'sortdir': sort.reverse_direction(),
             'logged_in': authenticated_userid(request)}
 
 

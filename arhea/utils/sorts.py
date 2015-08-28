@@ -1,3 +1,9 @@
+"""
+Custom sort utility:
+    - validate input SORT attribute value against whitelist SORT_DICT
+    - reverse sorting direction for template
+"""
+
 #Dictionary of allowed sorting values for SqlAlchemy order_by
 SORT_DICT = {'-department':'upper(hr_departments.department_name) desc',
              '+department':'upper(hr_departments.department_name) asc',
@@ -24,7 +30,7 @@ class SortValue:
     def __init__(self, sort_parameter):
         self.sort_parameter = sort_parameter
 
-    def validate(self):
+    def _validate(self):
         """URL Query sort attribute validation"""
         if self.sort_parameter in SORT_DICT:
             return True
@@ -32,7 +38,7 @@ class SortValue:
 
     def sort_str(self):
         """Return order_by string validated by key"""
-        if self.validate():
+        if self._validate():
             return SORT_DICT[self.sort_parameter]
         return ''
 
