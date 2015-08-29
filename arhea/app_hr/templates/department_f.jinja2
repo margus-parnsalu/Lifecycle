@@ -5,19 +5,25 @@
 
     <div class="well">
 
+        <div class="row">
+        <div class="col-md-4">
+
         <form action="" method="post" name="DepartmentForm">
 
           {% include 'form_error.jinja2' %}
 
           <div class="form-group">
             {{ form.department_name.label }}
-            {{ form.department_name(size=60) }}
+            {{ form.department_name(class="form-control input-sm") }}
           </div>
 
           <div class="form-group">
               <button type="submit" class="btn btn-default">Submit</button>
          </div>
         </form>
+
+        </div>
+        </div>
 
     </div>
 {% endblock %}

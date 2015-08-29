@@ -6,48 +6,56 @@
 
     <div class="well">
 
+        <div class="row">
+        <div class="col-md-4">
+
         <form action="" method="post" name="EmployeeForm">
 
          {% include 'form_error.jinja2' %}
 
+
           <div class="form-group">
             {{ form.first_name.label }}
-            {{ form.first_name() }}
+            {{ form.first_name(class="form-control input-sm") }}
           </div>
           <div class="form-group">
             {{ form.last_name.label }}
-            {{ form.last_name() }}
+            {{ form.last_name(class="form-control input-sm") }}
           </div>
           <div class="form-group">
             {{ form.email.label }}
-            {{ form.email() }}
+            {{ form.email(class="form-control input-sm") }}
           </div>
           <div class="form-group">
             {{ form.phone_number.label }}
-            {{ form.phone_number() }}
+            {{ form.phone_number(class="form-control input-sm") }}
           </div>
           <div class="form-group">
             {{ form.hire_date.label }}
-            {{ form.hire_date(class="datepicker", placeholder="Click me!") }}
             <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+            {{ form.hire_date(class="datepicker form-control input-sm", placeholder="Click me!") }}
           </div>
           <div class="form-group">
             {{ form.salary.label }}
-            {{ form.salary() }}
+            {{ form.salary(class="form-control input-sm") }}
           </div>
           <div class="form-group">
             {{ form.department.label }}
-            {{ form.department() }}
+            {{ form.department(class="form-control input-sm") }}
           </div>
           <div class="form-group">
             {{ form.end_date.label }}
-            {{ form.end_date(class="datepicker", placeholder="Click me!") }}
             <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+            {{ form.end_date(class="datepicker form-control input-sm", placeholder="Click me!") }}
+
           </div>
           <div class="form-group">
               <button type="submit" class="btn btn-default">Submit</button>
           </div>
         </form>
+
+        </div>
+        </div>
 
     </div>
 
