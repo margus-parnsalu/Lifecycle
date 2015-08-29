@@ -7,6 +7,9 @@
 
     <div class="well">
 
+        <div class="row">
+        <div class="col-md-4">
+
         <form action="" method="post" name="LoginForm">
 
          {% include 'form_error.jinja2' %}
@@ -16,16 +19,19 @@
           </div>
           <div class="form-group">
             {{ form.login.label }}
-            {{ form.login(size=10) }}
+            {{ form.login(class="form-control input-sm") }}
           </div>
           <div class="form-group">
             {{ form.password.label }}
-            {{ form.password() }}
+            {{ form.password(class="form-control input-sm") }}
           </div>
           <div class="form-group">
               <button type="submit" class="btn btn-default">Login</button>
           </div>
         </form>
+
+        </div>
+        </div>
 
     </div>
 
