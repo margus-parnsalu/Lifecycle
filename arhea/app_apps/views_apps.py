@@ -14,6 +14,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
+from ..utils.filters import sqla_dyn_filters
 from .forms_apps import (ApplicationForm, TagUpdateForm)
 from .models_apps import (TObject, TPackage, TObjectproperty)
 
@@ -46,14 +47,12 @@ def application_view(request):
              filter(TObject.object_type == 'Package').
              filter(TObject.stereotype.like('system%')).
              filter(TPackage.parent_id.in_([74, 9054])))
+
     #Dynamically add search filters to query object
-    for attr, value in request.GET.items():
-        if value == '':
-            value = '%'
-        try:
-            app_q = app_q.filter(coalesce(getattr(TObject, attr), '').like(value))
-        except:
-            pass#When model object does not have request.GET value do nothing
+    app_q = sqla_dyn_filters(filter_dict=request.GET.items(),
+                             query_object=app_q,
+                             validation_class=TObject)
+
     #Fetch records from database
     try:
         applications = app_q.order_by(text(sort_value)).limit(1000)
