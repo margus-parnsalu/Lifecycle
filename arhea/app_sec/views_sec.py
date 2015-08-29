@@ -9,8 +9,7 @@ from pyramid.security import remember, forget, authenticated_userid
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
-import hashlib
-import logging
+import hashlib, logging, datetime
 
 from ..models import (DBSession, conn_err_msg)
 from .security import (userfinder)
@@ -81,7 +80,8 @@ def user_add(request):
     if request.method == 'POST' and form.validate():
         usr = User(username=form.username.data,
                    pwd=hashlib.sha256((form.pwd.data).encode()).hexdigest(),
-                   groups=form.groups.data)
+                   groups=form.groups.data,
+                   start_date=datetime.datetime.now())
         DBSession.add(usr)
         request.session.flash('User Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('user_view'))
@@ -99,8 +99,10 @@ def user_edit(request):
     form = UserForm(request.POST, user, csrf_context=request.session)
     if request.method == 'POST' and form.validate():
         user.username = form.username.data
-        user.pwd = hashlib.sha256((form.pwd.data).encode()).hexdigest()
+        if user.pwd != form.pwd.data:
+            user.pwd = hashlib.sha256((form.pwd.data).encode()).hexdigest()
         user.groups = form.groups.data
+        user.end_date = form.end_date.data
         DBSession.add(user)
         request.session.flash('User Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('user_view'))

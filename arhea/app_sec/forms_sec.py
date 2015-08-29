@@ -1,7 +1,7 @@
 """
 Security forms
 """
-from wtforms import (validators, StringField, HiddenField, PasswordField)
+from wtforms import (validators, StringField, HiddenField, PasswordField, DateTimeField)
 from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
 from wtforms.widgets import PasswordInput
 
@@ -31,3 +31,4 @@ class UserForm(BaseForm):
     pwd = PasswordField(u'Password', [validators.InputRequired(message=(u'Password required'))],
                         widget=PasswordInput(hide_value=False))
     groups = QuerySelectMultipleField(u'Groups', query_factory=groups, allow_blank=True)
+    end_date = DateTimeField(u'End Date', [validators.Optional()], format='%Y-%m-%d %H:%M')

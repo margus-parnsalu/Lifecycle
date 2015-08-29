@@ -5,8 +5,9 @@ from pyramid.security import (Allow, Everyone)
 from pyramid.response import Response
 
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy import or_
 
-import hashlib, logging
+import hashlib, logging, datetime
 
 from .models_sec import (User, Group)
 from ..models import (DBSession, conn_err_msg)
@@ -17,7 +18,10 @@ def userfinder(userid, password):
     """Validate user login in login view"""
     found = False
     try:
-        usermatch = DBSession.query(User).filter(User.username == userid).first()
+        usermatch = (DBSession.query(User).
+                     filter(User.username == userid).
+                     filter(or_(User.end_date == None, User.end_date > datetime.datetime.now())).
+                     first())
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
 

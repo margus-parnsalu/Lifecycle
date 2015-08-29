@@ -13,6 +13,8 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(30))
     pwd = Column(String(100), nullable=False)
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=True)
     #Many-to-many
     groups = relationship('Group', secondary='sec_user_groups', backref='sec_user')
     def __repr__(self):

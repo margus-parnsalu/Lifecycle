@@ -15,7 +15,7 @@ from sqlalchemy import engine_from_config
 
 from .app_sec.security import groupfinder, RootFactory
 from .models import (DBSession, Base, DBSession_EA, Base_EA)
-
+from .utils.custom_jinja_filters import datetimeformat
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -57,6 +57,8 @@ def main(global_config, **settings):
     config.add_jinja2_search_path('arhea:templates')
     #Supports updating objects in Jinja. Used in querysorter_m.jinja2
     config.add_jinja2_extension('jinja2.ext.do')
+    config.commit()
+    config.get_jinja2_environment().filters['datetimeformat'] = datetimeformat
 
 
     #Static

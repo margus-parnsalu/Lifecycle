@@ -9,14 +9,17 @@
     <table class="table">
             <thead>
                 <tr>
-                  <th><a href="{{ request.route_url('user_view') + '?sort=sec_user_username' }}">Username</a></th>
+                  <th>Username</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
                 </tr>
             <tbody>
                 {% for user in users %}
                     <tr>
                         <td><a href="{{ request.route_url('user_edit', usr_id=user.id) }}">
                              {{ user.username }} </a></td>
-
+                        <td>{{ user.start_date|datetimeformat }}</td>
+                        <td>{{ user.end_date|datetimeformat }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
