@@ -57,6 +57,7 @@ def main(global_config, **settings):
     config.add_jinja2_search_path('arhea:templates')
     #Supports updating objects in Jinja. Used in querysorter_m.jinja2
     config.add_jinja2_extension('jinja2.ext.do')
+    #Register custom filter in Jinja
     config.commit()
     config.get_jinja2_environment().filters['datetimeformat'] = datetimeformat
 

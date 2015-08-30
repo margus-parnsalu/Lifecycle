@@ -20,7 +20,8 @@ def _initTestingDB():
     with transaction.manager:
         #Setup login information
         grp1 = Group(groupname='Editors')
-        usr1 = User(username='editor', pwd=hashlib.sha256(('editor').encode()).hexdigest(), groups=[grp1])
+        usr1 = User(username='editor', pwd=hashlib.sha256(('editor').encode()).hexdigest(),
+                    groups=[grp1], start_date=datetime.datetime.now())
         DBSession.add(grp1)
         DBSession.add(usr1)
 
