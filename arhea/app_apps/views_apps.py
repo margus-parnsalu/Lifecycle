@@ -9,7 +9,7 @@ from pyramid.security import remember, forget, authenticated_userid
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql.functions import coalesce
-from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm import subqueryload, load_only
 from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import (DBSession_EA, conn_err_msg)
@@ -41,7 +41,8 @@ def application_view(request):
 
     #SqlAlchemy query object
     app_q = (DBSession_EA.query(TObject).
-             options(subqueryload('properties')).
+             options(subqueryload('properties').load_only("property", "value")).
+             options(load_only("name", "alias", "stereotype", "status", "note", "ea_guid")).
              outerjoin(TObject.properties, aliased=True).
              outerjoin(TObject.packages, aliased=True).
              filter(TObject.object_type == 'Package').
