@@ -13,3 +13,12 @@ def sqla_dyn_filters(filter_dict, query_object, validation_class):
         except:
             pass#When model object does not have dictionary value do nothing
     return query_object
+
+
+def req_get_todict(request_get):
+    """Handling search Form get parameter passing to template sorting"""
+    if len(request_get) == 0:#No GET parameters
+        return {}
+    else:
+        #Need to pass GET parameters in dict for route_url
+        return {k:v for k, v in request_get.items()}

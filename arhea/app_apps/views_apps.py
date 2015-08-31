@@ -14,9 +14,10 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
-from ..utils.filters import sqla_dyn_filters
+from ..utils.filters import sqla_dyn_filters, req_get_todict
 from .forms_apps import (ApplicationForm, TagUpdateForm)
 from .models_apps import (TObject, TPackage, TObjectproperty)
+
 
 @view_config(route_name='application_view', renderer='application_r.jinja2',
              request_method='GET', permission='view')
@@ -25,19 +26,10 @@ def application_view(request):
     form = ApplicationForm(request.GET)
 
     sort_input = request.GET.get('sort', '+application')
-    #Sorting custom code from sorts.py
     sort = SortValue(sort_input)
     sort_value = sort.sort_str()
     if sort_value == '':
         return HTTPFound(location=request.route_url('home'))
-    sort_dir = sort.reverse_direction()
-
-    #Handling search Form get parameter passing to template
-    if len(request.GET) == 0:#No GET parameters
-        query_input = {}
-    else:
-        #Need to pass GET parameters in dict for route_url
-        query_input = {k:v for k, v in request.GET.items()}
 
     #SqlAlchemy query object
     app_q = (DBSession_EA.query(TObject).
@@ -62,8 +54,8 @@ def application_view(request):
 
     return {'applications': applications,
             'form': form,
-            'query': query_input,
-            'sortdir': sort_dir,
+            'query': req_get_todict(request.GET),
+            'sortdir': sort.reverse_direction(),
             'logged_in': authenticated_userid(request)}
 
 
