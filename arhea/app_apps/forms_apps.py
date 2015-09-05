@@ -17,7 +17,9 @@ class ApplicationForm(Form):
                                                  ('Target', 'Target'),
                                                  ('Acceptable', 'Acceptable'),
                                                  ('Freeze', 'Freeze'),
-                                                 ('Phase Out', 'Phase Out')]))
+                                                 ('Phase Out', 'Phase Out'),
+                                                 ('Proposed', 'Proposed'),
+                                                 ('Retired', 'Retired')]))
 
 class TagUpdateForm(BaseForm):
     """Form for updating Tag Values"""
