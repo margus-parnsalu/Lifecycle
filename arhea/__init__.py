@@ -29,7 +29,8 @@ def main(global_config, **settings):
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
 
-    engine2 = engine_from_config(settings, 'sqlalchemy.ea.', pool_recycle=900)
+    engine2 = engine_from_config(settings, 'sqlalchemy.ea.',
+                                 pool_size=5, max_overflow=20, pool_recycle=900)
     DBSession_EA.configure(bind=engine2)
     Base_EA.metadata.bind = engine2
 
