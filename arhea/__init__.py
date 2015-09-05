@@ -29,10 +29,14 @@ def main(global_config, **settings):
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
 
-    engine2 = engine_from_config(settings, 'sqlalchemy.ea.',
-                                 pool_size=settings.get('sqla_ea_pool_size', 5),
-                                 max_overflow=settings.get('sqla_ea_max_overflow', 20),
-                                 pool_recycle=settings.get('sqla_ea_pool_recycle', 3600))
+    try:
+        engine2 = engine_from_config(settings, 'sqlalchemy.ea.',
+                                     pool_size=settings.get('sqla_ea_pool_size', 5),
+                                     max_overflow=settings.get('sqla_ea_max_overflow', 20),
+                                     pool_recycle=settings.get('sqla_ea_pool_recycle', 3600))
+    #For testing with SqlLite we need to have different engine setup
+    except TypeError:
+        engine2 = engine_from_config(settings, 'sqlalchemy.ea.')
     DBSession_EA.configure(bind=engine2)
     Base_EA.metadata.bind = engine2
 
