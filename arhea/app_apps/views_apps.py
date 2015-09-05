@@ -8,7 +8,6 @@ from pyramid.security import remember, forget, authenticated_userid
 
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
-from sqlalchemy.sql.functions import coalesce
 from sqlalchemy.orm import subqueryload, load_only
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -17,6 +16,8 @@ from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict
 from .forms_apps import (ApplicationForm, TagUpdateForm)
 from .models_apps import (TObject, TPackage, TObjectproperty)
+import logging
+log = logging.getLogger(__name__)
 
 
 @view_config(route_name='application_view', renderer='application_r.jinja2',
@@ -77,6 +78,11 @@ def tag_edit(request):
         tag_property.value = form.value.data
         DBSession_EA.add(tag_property)
         request.session.flash('Tag Updated!', allow_duplicate=False)
+        log.info('TAG Update: %s, %s, %s BY %s',
+                 tag_property.ea_guid,
+                 tag_property.property,
+                 tag_property.value,
+                 authenticated_userid(request))
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
 

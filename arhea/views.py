@@ -15,7 +15,7 @@ def home(request):
     project_name = 'Telekom rakenduste ja vastutajate nimekiri ning python demo rakendus'
 
     #Logging example
-    log.info('Returning project name: %s', project_name)
+    #log.info('Returning project name: %s', project_name)
 
     #Python debugger for troubleshooting
     #import pdb; pdb.set_trace()
