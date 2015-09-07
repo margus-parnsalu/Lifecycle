@@ -80,12 +80,17 @@
     </table>
 
     <script>
+    jQuery.expr[":"].Contains = jQuery.expr.createPseudo(function(arg) {
+        return function( elem ) {
+            return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+            };
+        });
     $("#searchInput").keyup(function () {
         var rows = $("#fbody").find("tr").hide();
         if (this.value.length) {
             var data = this.value.split("_");
             $.each(data, function (i, v) {
-                rows.filter(":contains('" + v + "')").show();
+                rows.filter(":Contains('" + v + "')").show();
             });
         } else rows.show();
     });
