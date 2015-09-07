@@ -9,7 +9,8 @@ def sqla_dyn_filters(filter_dict, query_object, validation_class):
         if value == '':
             value = '%'
         try:
-            query_object = query_object.filter(coalesce(getattr(validation_class, attr), '').like(value))
+            query_object = (query_object.filter(coalesce(getattr(validation_class, attr), '').
+                                                ilike(value)))
         except:
             pass#When model object does not have dictionary value do nothing
     return query_object
