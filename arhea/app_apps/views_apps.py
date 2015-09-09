@@ -14,7 +14,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict
-from .forms_apps import (ApplicationForm, TagUpdateForm)
+from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm, TagMultiForm)
 from .models_apps import (TObject, TPackage, TObjectproperty)
 import logging
 log = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
              request_method='GET', permission='view')
 def application_view(request):
     #Search form
-    form = ApplicationForm(request.GET)
+    form = ApplicationForm(request.GET, csrf_context=request.session)
 
     sort_input = request.GET.get('sort', '+application')
     sort = SortValue(sort_input)
@@ -87,5 +87,57 @@ def tag_edit(request):
                                                     _anchor=request.GET.get('app', '')))
 
     return {'form': form,
+            'app_name': request.GET.get('app', ''),
+            'logged_in': authenticated_userid(request)}
+
+
+@view_config(route_name='app_tags_edit', renderer='app_tags_f.jinja2',
+             request_method=['GET', 'POST'], permission='admin')
+def app_tags_edit(request):
+
+    try:
+        #app = (DBSession_EA.query(TObject).
+        #            filter(TObject.object_id == request.matchdict['app_id']).one())
+        tags = (DBSession_EA.query(TObjectproperty).
+               filter(TObjectproperty.object_id == request.matchdict['app_id']).all())
+    except DBAPIError:
+        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+    except NoResultFound:
+        return HTTPNotFound('Application not found!')
+
+    #app_form = ApplicationForm(request.POST, app, csrf_context=request.session)
+
+    form = ApplicationTagForm(request.POST, tags, csrf_context=request.session)
+
+
+    if request.method == 'GET':
+        for tag in tags:
+            tagform = TagMultiForm()
+            tagform.propertyid = tag.propertyid
+            tagform.object_id = tag.object_id
+            tagform.property = tag.property
+            tagform.value = tag.value
+
+            form.tags.append_entry(tagform)
+
+    import re
+    if request.method == 'POST' and form.validate():
+        for field_set in form.tags.entries:
+            if field_set.value.data:
+                match = re.search(r'\d', field_set.property.name)
+                i = int(match.group())
+                #import pdb; pdb.set_trace()
+                tags[i].value = field_set.value.data
+                DBSession_EA.add(tags[i])
+        #log.info('TAG Update: %s, %s, %s BY %s',
+        #         tag_property.ea_guid,
+        #         tag_property.property,
+        #         tag_property.value,
+        #         authenticated_userid(request))
+        return HTTPFound(location=request.route_url('application_view',
+                                                    _anchor=request.GET.get('app', '')))
+
+    return {'form': form,
+            #'tag_form': tag_form,
             'app_name': request.GET.get('app', ''),
             'logged_in': authenticated_userid(request)}

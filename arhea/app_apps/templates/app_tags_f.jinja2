@@ -1,0 +1,52 @@
+{% extends "base.jinja2" %}
+{% block content %}
+
+    <h3>{{ app_name }}: edit Application & Tags</h3>
+
+
+
+
+    <div class="well">
+
+       <div class="row">
+       <div class="col-md-6">
+       </div>
+       <div class="col-md-4">
+        <form action="" method="post" name="ProductRelationshipForm">
+
+            {% include 'form_error.jinja2' %}
+
+              {% for tag in form.tags %}
+                  <div class="form-group">
+                    {{ tag.property.label }}
+                    {{ tag.property(class="form-control input-sm", readonly=true) }}
+                 </div>
+
+                  <div class="form-group">
+                    {{ tag.value.label }}
+                    {{ tag.value(class="form-control input-sm", size=40) }}
+                  </div>
+
+              {% endfor %}
+
+          <div class="form-group">
+              <button type="submit" class="btn btn-default">Submit</button>
+          </div>
+
+        </form>
+
+       </div>
+       </div>
+
+<script>
+$( "#domain_list" )
+  .change(function () {
+        var str = $("#value").val();
+        $( "select option:selected" ).each(function() {
+            str = $( this ).val();});
+    $( "#value" ).val( str );
+  })
+</script>
+
+    </div>
+{% endblock %}

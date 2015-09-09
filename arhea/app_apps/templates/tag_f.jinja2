@@ -17,12 +17,12 @@
 
           <div class="form-group">
             {{ form.property.label }}
-            {{ form.property(readonly=true) }}
+            {{ form.property(class="form-control input-sm", readonly=true) }}
           </div>
 
           <div class="form-group">
             {{ form.value.label }}
-            {{ form.value(size=40) }}
+            {{ form.value(class="form-control input-sm", size=40) }}
           </div>
 
             {% if "Development Domain" in form.property() %}

@@ -56,7 +56,9 @@
             <tbody id="fbody">
                 {% for application in applications: %}
                 <tr>
-                    <td> {{ loop.index }} </td>
+                    <td> <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
+                                                          _query=(('app', application.name), )) }}">
+                                {{ application.object_id }}</a> : {{ loop.index }} </td>
                     <td id="{{ application.name or '' }}"
                         style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;">
                         {{ application.name or '' }} </td>

@@ -19,7 +19,10 @@ class TObjectproperty(Base_EA):
     value = Column(String(255))
     notes = Column(Text)
     ea_guid = Column(String(40))
-
+    def __repr__(self):
+        return '<EA_Objectproperty %r>' % (self.property)
+    def __str__(self):
+        return self.property
 
 class TObject(Base_EA):
     __tablename__ = 't_object'
