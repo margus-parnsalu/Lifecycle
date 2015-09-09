@@ -16,7 +16,7 @@ from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict
 from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm, TagMultiForm)
 from .models_apps import (TObject, TPackage, TObjectproperty)
-import logging
+import logging, re
 log = logging.getLogger(__name__)
 
 
@@ -96,8 +96,8 @@ def tag_edit(request):
 def app_tags_edit(request):
 
     try:
-        #app = (DBSession_EA.query(TObject).
-        #            filter(TObject.object_id == request.matchdict['app_id']).one())
+        app = (DBSession_EA.query(TObject).
+                    filter(TObject.object_id == request.matchdict['app_id']).one())
         tags = (DBSession_EA.query(TObjectproperty).
                filter(TObjectproperty.object_id == request.matchdict['app_id']).all())
     except DBAPIError:
@@ -105,9 +105,8 @@ def app_tags_edit(request):
     except NoResultFound:
         return HTTPNotFound('Application not found!')
 
-    #app_form = ApplicationForm(request.POST, app, csrf_context=request.session)
-
-    form = ApplicationTagForm(request.POST, tags, csrf_context=request.session)
+    app_form = ApplicationForm(request.POST, app, csrf_context=request.session)
+    form = ApplicationTagForm(request.POST, csrf_context=request.session)
 
 
     if request.method == 'GET':
@@ -120,15 +119,26 @@ def app_tags_edit(request):
 
             form.tags.append_entry(tagform)
 
-    import re
-    if request.method == 'POST' and form.validate():
-        for field_set in form.tags.entries:
-            if field_set.value.data:
-                match = re.search(r'\d', field_set.property.name)
-                i = int(match.group())
-                #import pdb; pdb.set_trace()
-                tags[i].value = field_set.value.data
-                DBSession_EA.add(tags[i])
+    if request.method == 'POST':
+        #Sumbit button named tag_submit
+        if 'tag_submit' in request.POST and form.validate():
+            #Tags
+            for field_set in form.tags.entries:
+                if field_set.value.data:
+                    #Find fieldset number to match query object
+                    match = re.search(r'\d', field_set.property.name)
+                    i = int(match.group())
+                    #import pdb; pdb.set_trace()
+                    tags[i].value = field_set.value.data
+                    DBSession_EA.add(tags[i])
+                    request.session.flash('Tags Updated!', allow_duplicate=False)
+        #Submit button named app_submit
+        elif 'app_submit' in request.POST and app_form.validate():
+            #App
+            app.alias = app_form.alias.data
+            app.note = app_form.note.data
+            DBSession_EA.add(app)
+
         #log.info('TAG Update: %s, %s, %s BY %s',
         #         tag_property.ea_guid,
         #         tag_property.property,
@@ -138,6 +148,6 @@ def app_tags_edit(request):
                                                     _anchor=request.GET.get('app', '')))
 
     return {'form': form,
-            #'tag_form': tag_form,
+            'app_form': app_form,
             'app_name': request.GET.get('app', ''),
             'logged_in': authenticated_userid(request)}

@@ -10,7 +10,43 @@
 
        <div class="row">
        <div class="col-md-6">
+
+        <form action="" method="post" name="ApplicationForm">
+
+            {% include 'form_error.jinja2' %}
+
+              <div class="form-group">
+                {{ app_form.name.label }}
+                {{ app_form.name(class="form-control input-sm") }}
+              </div>
+              <div class="form-group">
+                {{ app_form.alias.label }}
+                {{ app_form.alias(class="form-control input-sm") }}
+              </div>
+               <div class="form-group">
+                {{ app_form.status.label }}
+                {{ app_form.status(class="form-control input-sm") }}
+              </div>
+              <div class="form-group">
+                {{ app_form.stereotype.label }}
+                {{ app_form.stereotype(class="form-control input-sm") }}
+              </div>
+              <div class="form-group">
+                {{ app_form.note.label }}
+                {{ app_form.note(rows=5, class="form-control input-sm") }}
+              </div>
+
+
+          <div class="form-group">
+              <button type="submit" name="app_submit" class="btn btn-default">Submit</button>
+         </div>
+        </form>
+
        </div>
+
+       <div class="col-md-1">
+       </div>
+
        <div class="col-md-4">
         <form action="" method="post" name="ProductRelationshipForm">
 
@@ -27,10 +63,16 @@
                     {{ tag.value(class="form-control input-sm", size=40) }}
                   </div>
 
+                  {% if "Development Domain" in tag.property() %}
+                    <div class="form-group">
+                        {{ tag.domain_list(class="form-control input-sm") }}
+                    </div>
+                  {% endif %}
+
               {% endfor %}
 
           <div class="form-group">
-              <button type="submit" class="btn btn-default">Submit</button>
+              <button type="submit" name="tag_submit" class="btn btn-default">Submit</button>
           </div>
 
         </form>
@@ -38,13 +80,17 @@
        </div>
        </div>
 
+       <div class="col-md-1">
+       </div>
+
+
 <script>
-$( "#domain_list" )
+$("input[name~='domain_list']")
   .change(function () {
-        var str = $("#value").val();
+        var str = $("input[name~='value']").val();
         $( "select option:selected" ).each(function() {
             str = $( this ).val();});
-    $( "#value" ).val( str );
+    $( "input[name~='value']" ).val( str );
   })
 </script>
 
