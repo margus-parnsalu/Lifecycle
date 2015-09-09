@@ -16,8 +16,8 @@
             {% include 'form_error.jinja2' %}
 
               <div class="form-group">
-                {{ form.app.app_name.label }}
-                {{ form.app.app_name(class="form-control input-sm") }}
+                {{ form.app['name'].label }}
+                {{ form.app['name'](class="form-control input-sm") }}
               </div>
               <div class="form-group">
                 {{ form.app.alias.label }}
@@ -33,7 +33,7 @@
               </div>
               <div class="form-group">
                 {{ form.app.note.label }}
-                {{ form.app.note(rows=5, class="form-control input-sm") }}
+                {{ form.app.note(rows=4, class="form-control input-sm") }}
               </div>
 
 

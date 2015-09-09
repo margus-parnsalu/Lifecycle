@@ -105,20 +105,7 @@ def app_tags_edit(request):
     except NoResultFound:
         return HTTPNotFound('Application not found!')
 
-    #app_form = ApplicationForm(request.POST, app, csrf_context=request.session)
-    form = ApplicationTagForm(request.POST, app=app, csrf_context=request.session)
-    form.app.app_name.data = app.name
-    #import pdb; pdb.set_trace()
-
-    if request.method == 'GET':
-        for tag in tags:
-            tagform = InlineTagForm()
-            tagform.propertyid = tag.propertyid
-            tagform.object_id = tag.object_id
-            tagform.property = tag.property
-            tagform.value = tag.value
-
-            form.tags.append_entry(tagform)
+    form = ApplicationTagForm(request.POST, app=app, tags=tags, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
         #Tags
@@ -129,21 +116,21 @@ def app_tags_edit(request):
                 i = int(match.group())
                 tags[i].value = field_set.value.data
                 DBSession_EA.add(tags[i])
-                request.session.flash('Tags Updated!', allow_duplicate=False)
         #App
+        app.name = form.app['name'].data
         app.alias = form.app.alias.data
+        app.status = form.app.status.data
+        app.stereotype = form.app.stereotype.data
         app.note = form.app.note.data
         DBSession_EA.add(app)
+        request.session.flash('Application information Updated!', allow_duplicate=False)
 
-        #log.info('TAG Update: %s, %s, %s BY %s',
-        #         tag_property.ea_guid,
-        #         tag_property.property,
-        #         tag_property.value,
-        #         authenticated_userid(request))
+        log.info('Application Update: {0}, {1}, {2}, {3}, {4} BY {5}'.
+                 format(app.name, app.alias, app.status, app.stereotype, app.note,
+                        authenticated_userid(request)))
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
 
     return {'form': form,
-            #'app_form': app_form,
             'app_name': request.GET.get('app', ''),
             'logged_in': authenticated_userid(request)}
