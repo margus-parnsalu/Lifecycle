@@ -11,36 +11,36 @@
        <div class="row">
        <div class="col-md-6">
 
-        <form action="" method="post" name="ApplicationForm">
+        <form action="" method="post" name="ApplicationTagForm">
 
             {% include 'form_error.jinja2' %}
 
               <div class="form-group">
-                {{ app_form.name.label }}
-                {{ app_form.name(class="form-control input-sm") }}
+                {{ form.app.app_name.label }}
+                {{ form.app.app_name(class="form-control input-sm") }}
               </div>
               <div class="form-group">
-                {{ app_form.alias.label }}
-                {{ app_form.alias(class="form-control input-sm") }}
+                {{ form.app.alias.label }}
+                {{ form.app.alias(class="form-control input-sm") }}
               </div>
                <div class="form-group">
-                {{ app_form.status.label }}
-                {{ app_form.status(class="form-control input-sm") }}
+                {{ form.app.status.label }}
+                {{ form.app.status(class="form-control input-sm") }}
               </div>
               <div class="form-group">
-                {{ app_form.stereotype.label }}
-                {{ app_form.stereotype(class="form-control input-sm") }}
+                {{ form.app.stereotype.label }}
+                {{ form.app.stereotype(class="form-control input-sm") }}
               </div>
               <div class="form-group">
-                {{ app_form.note.label }}
-                {{ app_form.note(rows=5, class="form-control input-sm") }}
+                {{ form.app.note.label }}
+                {{ form.app.note(rows=5, class="form-control input-sm") }}
               </div>
 
 
           <div class="form-group">
-              <button type="submit" name="app_submit" class="btn btn-default">Submit</button>
+              <button type="submit" name="app_tag_submit" class="btn btn-default">Submit</button>
          </div>
-        </form>
+
 
        </div>
 
@@ -48,9 +48,6 @@
        </div>
 
        <div class="col-md-4">
-        <form action="" method="post" name="ProductRelationshipForm">
-
-            {% include 'form_error.jinja2' %}
 
               {% for tag in form.tags %}
                   <div class="form-group">
@@ -71,9 +68,6 @@
 
               {% endfor %}
 
-          <div class="form-group">
-              <button type="submit" name="tag_submit" class="btn btn-default">Submit</button>
-          </div>
 
         </form>
 

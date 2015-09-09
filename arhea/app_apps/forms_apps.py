@@ -5,14 +5,14 @@ from wtforms import (validators, StringField, HiddenField, PasswordField, Select
                      TextAreaField, FormField, FieldList)
 from ..forms import BaseForm
 
-class ApplicationForm(BaseForm):
+class ApplicationForm(Form):
     object_id = HiddenField()
     stereotype = (SelectField(u'Brand', choices=[("", 'Brand'),
                                                  ("", '------'),
                                                  ('system', 'Telekom'),
                                                  ('system Elion', 'Elion'),
                                                  ('system EMT', 'EMT')]))
-    name = StringField(u'Name', [validators.Length(min=3, max=50)])
+    app_name = StringField(u'Name', [validators.Length(min=3, max=50)])
     alias = StringField(u'Alias', [validators.Length(min=3, max=50)])
     note = TextAreaField(u'Note', [validators.Length(min=0, max=200)])
     status = (SelectField(u'Lifecycle', choices=[("", 'Lifecycle'),
@@ -50,7 +50,7 @@ class TagUpdateForm(BaseForm):
                             ('Suhtlus ja Portaalid', 'Suhtlus ja Portaalid'),
                             ('Lisateenused ja uurimistöö', 'Lisateenused ja uurimistöö')]))
 
-class TagMultiForm(Form):
+class InlineTagForm(Form):
     """Unsecure Form for multiline edit Tag Values"""
     property = StringField(u'Tag Name', [validators.Length(min=3, max=250)])
     value = StringField(u'Tag Value', [validators.Length(min=3, max=250)])
@@ -75,4 +75,5 @@ class TagMultiForm(Form):
 
 class ApplicationTagForm(BaseForm):
     """Master-Detail form for updating application and related tag information"""
-    tags =  FieldList(FormField(TagMultiForm), max_entries=6)
+    app = FormField(ApplicationForm)
+    tags =  FieldList(FormField(InlineTagForm), max_entries=6)
