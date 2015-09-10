@@ -45,6 +45,9 @@
             <thead>
                 <tr>
                     <th>Nr</th>
+                    {% if 'Admins' in request.session.user_groups: %}
+                      <th>Edit</th>
+                    {% endif %}
                     <th>{{ qsorter('application_view', 'Name', '+application') }}</th>
                     <th>{{ qsorter('application_view', 'Alias', '+alias') }}</th>
                     <th>{{ qsorter('application_view', 'Brand', '+stereotype') }}</th>
@@ -56,9 +59,18 @@
             <tbody id="fbody">
                 {% for application in applications: %}
                 <tr>
-                    <td> <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
+
+                    <td> {{ loop.index }} </td>
+
+                    {% if 'Admins' in request.session.user_groups: %}
+                      <td> <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
                                                           _query=(('app', application.name), )) }}">
-                                {{ application.object_id }}</a> : {{ loop.index }} </td>
+                           {{ application.object_id }}</a>
+                      </td>
+                    {% endif %}
+
+
+
                     <td id="{{ application.name or '' }}"
                         style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;">
                         {{ application.name or '' }} </td>

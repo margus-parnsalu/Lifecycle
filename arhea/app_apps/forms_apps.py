@@ -13,7 +13,7 @@ class ApplicationForm(Form):
                                                  ('system Elion', 'Elion'),
                                                  ('system EMT', 'EMT')]))
     name = StringField(u'Name', [validators.Length(min=3, max=50)])
-    alias = StringField(u'Alias', [validators.Length(min=3, max=50)])
+    alias = StringField(u'Alias', [validators.Optional(), validators.Length(min=3, max=50)])
     note = TextAreaField(u'Note', [validators.Length(min=0, max=200)])
     status = (SelectField(u'Lifecycle', choices=[("", 'Lifecycle'),
                                                  ("", '------'),
