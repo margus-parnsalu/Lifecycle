@@ -57,15 +57,15 @@
 
                   <div class="form-group">
                     {{ tag.value.label }}
-                    {{ tag.value(class="form-control input-sm", size=40) }}
+
+                    {% if "Development Domain" in tag.property() %}
+                        {{ tag.value(class="form-control input-sm", size=40, data_tag="dev_domain") }}
+                        {{ tag.domain_list(class="form-control input-sm", data_tag="domain_select") }}
+                    {% else %}
+                        {{ tag.value(class="form-control input-sm", size=40) }}
+                    {% endif %}
+
                   </div>
-
-                  {% if "Development Domain" in tag.property() %}
-                    <div class="form-group">
-                        {{ tag.domain_list(class="form-control input-sm") }}
-                    </div>
-                  {% endif %}
-
               {% endfor %}
 
 
@@ -79,12 +79,12 @@
 
 
 <script>
-$("input[name~='domain_list']")
+$("select[data-tag='domain_select']")
   .change(function () {
-        var str = $("input[name~='value']").val();
+        var str = $("input[data-tag='dev_domain']").val();
         $( "select option:selected" ).each(function() {
             str = $( this ).val();});
-    $( "input[name~='value']" ).val( str );
+    $( "input[data-tag='dev_domain']" ).val( str );
   })
 </script>
 
