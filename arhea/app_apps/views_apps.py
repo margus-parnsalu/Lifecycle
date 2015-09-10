@@ -14,9 +14,9 @@ from sqlalchemy.orm.exc import NoResultFound
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict
-from .forms_apps import (ApplicationForm, TagUpdateForm)
+from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm, InlineTagForm)
 from .models_apps import (TObject, TPackage, TObjectproperty)
-import logging
+import logging, re
 log = logging.getLogger(__name__)
 
 
@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
              request_method='GET', permission='view')
 def application_view(request):
     #Search form
-    form = ApplicationForm(request.GET)
+    form = ApplicationForm(request.GET, csrf_context=request.session)
 
     sort_input = request.GET.get('sort', '+application')
     sort = SortValue(sort_input)
@@ -83,6 +83,51 @@ def tag_edit(request):
                  tag_property.property,
                  tag_property.value,
                  authenticated_userid(request))
+        return HTTPFound(location=request.route_url('application_view',
+                                                    _anchor=request.GET.get('app', '')))
+
+    return {'form': form,
+            'app_name': request.GET.get('app', ''),
+            'logged_in': authenticated_userid(request)}
+
+
+@view_config(route_name='app_tags_edit', renderer='app_tags_f.jinja2',
+             request_method=['GET', 'POST'], permission='admin')
+def app_tags_edit(request):
+
+    try:
+        app = (DBSession_EA.query(TObject).
+                    filter(TObject.object_id == request.matchdict['app_id']).one())
+        tags = (DBSession_EA.query(TObjectproperty).
+               filter(TObjectproperty.object_id == request.matchdict['app_id']).all())
+    except DBAPIError:
+        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+    except NoResultFound:
+        return HTTPNotFound('Application not found!')
+
+    form = ApplicationTagForm(request.POST, app=app, tags=tags, csrf_context=request.session)
+
+    if request.method == 'POST' and form.validate():
+        #Tags
+        for field_set in form.tags.entries:
+            if field_set.value.data:
+                #Find fieldset number to match query object
+                match = re.search(r'\d', field_set.property.name)
+                i = int(match.group())
+                tags[i].value = field_set.value.data
+                DBSession_EA.add(tags[i])
+        #App
+        app.name = form.app['name'].data
+        app.alias = form.app.alias.data
+        app.status = form.app.status.data
+        app.stereotype = form.app.stereotype.data
+        app.note = form.app.note.data
+        DBSession_EA.add(app)
+        request.session.flash('Application information Updated!', allow_duplicate=False)
+
+        log.info('Application Update: {0}, {1}, {2}, {3}, {4} BY {5}'.
+                 format(app.name, app.alias, app.status, app.stereotype, app.note,
+                        authenticated_userid(request)))
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
 
