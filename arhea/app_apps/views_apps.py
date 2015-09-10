@@ -14,7 +14,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict
-from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm, InlineTagForm)
+from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm)
 from .models_apps import (TObject, TPackage, TObjectproperty)
 import logging, re
 log = logging.getLogger(__name__)

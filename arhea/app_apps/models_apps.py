@@ -24,6 +24,7 @@ class TObjectproperty(Base_EA):
     def __str__(self):
         return self.property
 
+
 class TObject(Base_EA):
     __tablename__ = 't_object'
 
@@ -63,6 +64,7 @@ class TObject(Base_EA):
         return '<EA_Object %r>' % (self.name)
     def __str__(self):
         return self.name
+
 
 class TPackage(Base_EA):
     __tablename__ = 't_package'
