@@ -5,88 +5,85 @@
 
 <h3>Applications list</h3><h5>Telekom rakenduste ja vastutajate nimekiri Telekom EA andmebaasi alusel</h5>
 
-    <div class="well">
-        <div class="row">
+<div class="well">
+    <div class="row">
         <div class="col-md-8">
 
             <form action="" method="get" name="ApplicationForm" class="form-inline">
 
-              <div class="form-group">
-                {{ form.stereotype(class="form-control input-sm") }}
-              </div>
-              <div class="form-group">
-                {{ form.name(placeholder="Name. % for wildcards", class="form-control input-sm") }}
-              </div>
-              <div class="form-group">
-                {{ form.alias(placeholder="Alias. % for wildcards", class="form-control input-sm") }}
-              </div>
-              <div class="form-group">
-                {{ form.status(class="form-control input-sm") }}
-              </div>
+                <div class="form-group">
+                    {{ form.stereotype(class="form-control input-sm") }}
+                </div>
+                <div class="form-group">
+                    {{ form.name(placeholder="Name. % for wildcards", class="form-control input-sm") }}
+                </div>
+                <div class="form-group">
+                    {{ form.alias(placeholder="Alias. % for wildcards", class="form-control input-sm") }}
+                </div>
+                <div class="form-group">
+                    {{ form.status(class="form-control input-sm") }}
+                </div>
 
-              <div class="form-group">
-                  <button type="submit" class="btn btn-default btn-sm">Search</button>
-              </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default btn-sm">Search</button>
+                </div>
             </form>
         </div>
         <div class="col-md-4">
-                <input id="searchInput"
-                    placeholder="Type for filtering page results. _ for multiple matches"
-                    class="form-control input-sm">
-        </div>
+            <input id="searchInput"
+                   placeholder="Type for filtering page results. _ for multiple matches"
+                   class="form-control input-sm">
         </div>
     </div>
+</div>
 
 
-    <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Nr</th>
-                    {% if 'Admins' in request.session.user_groups: %}
-                      <th>Edit</th>
-                    {% endif %}
-                    <th>{{ qsorter('application_view', 'Name', '+application') }}</th>
-                    <th>{{ qsorter('application_view', 'Alias', '+alias') }}</th>
-                    <th>{{ qsorter('application_view', 'Brand', '+stereotype') }}</th>
-                    <th>{{ qsorter('application_view', 'Lifecycle', '+lifecycle') }}</th>
-                    <th>Tags</th>
-                    <th>Note</th>
-                    <th>GUID</th>
-                </tr>
-            <tbody id="fbody">
-                {% for application in applications: %}
-                <tr>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>Nr</th>
+        {% if 'Admins' in request.session.user_groups: %}
+        <th>Edit</th>
+        {% endif %}
+        <th>{{ qsorter('application_view', 'Name', '+application') }}</th>
+        <th>{{ qsorter('application_view', 'Alias', '+alias') }}</th>
+        <th>{{ qsorter('application_view', 'Brand', '+stereotype') }}</th>
+        <th>{{ qsorter('application_view', 'Lifecycle', '+lifecycle') }}</th>
+        <th>Tags</th>
+        <th>Note</th>
+        <th>GUID</th>
+    </tr>
+    <tbody id="fbody">
+    {% for application in applications: %}
+    <tr>
 
-                    <td> {{ loop.index }} </td>
-                    {% if 'Admins' in request.session.user_groups: %}
-                      <td> <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
+        <td> {{ loop.index }} </td>
+        {% if 'Admins' in request.session.user_groups: %}
+        <td> <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
                                                           _query=(('app', application.name), )) }}">
-                           {{ application.object_id }}</a>
-                      </td>
-                    {% endif %}
-                    <td id="{{ application.name or '' }}"
-                        style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;">
-                        {{ application.name or '' }} </td>
-                    <td style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;">
-                        {{ application.alias or '' }} </td>
-                    <td> {{ application.stereotype  or ''  }} </td>
-                    <td> {{ application.status  or '' }} </td>
-                    <td style="word-wrap: break-word;min-width: 160px;max-width: 200px;white-space:normal;">
-                        {% for tag in application.properties %}
-                            <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
+            {{ application.object_id }}</a>
+        </td>
+        {% endif %}
+        <td id="{{ application.name or '' }}" style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;"> {{ application.name or '' }} </td>
+        <td style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;"> {{ application.alias or '' }} </td>
+        <td> {{ application.stereotype  or ''  }} </td>
+        <td> {{ application.status  or '' }} </td>
+        <td style="word-wrap: break-word;min-width: 160px;max-width: 200px;white-space:normal;">
+            {% for tag in application.properties %}
+            <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
                                                           _query=(('app', application.name), )) }}">
-                                {{ tag.property }}</a> : {{ tag.value }}<br>
-                         {% endfor %}
-                    </td>
-                    <td style="word-wrap: break-word;min-width: 120px;max-width: 180px;white-space:normal;">
-                        {{ application.note or '' }} </td>
-                    <td style="word-break:break-all;" width="80"> {{ application.ea_guid }} </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-    </table>
+                {{ tag.property }}</a> : {{ tag.value }}<br>
+            {% endfor %}
+        </td>
+        <td style="word-wrap: break-word;min-width: 120px;max-width: 180px;white-space:normal;">
+            {{ application.note or '' }} </td>
+        <td style="word-break:break-all;" width="80"> {{ application.ea_guid }} </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-    <script>
+<script>
     jQuery.expr[":"].Contains = jQuery.expr.createPseudo(function(arg) {
         return function( elem ) {
             return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
@@ -101,6 +98,6 @@
             });
         } else rows.show();
     });
-    </script>
+</script>
 
 {% endblock %}

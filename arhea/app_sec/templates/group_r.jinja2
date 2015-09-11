@@ -1,25 +1,25 @@
 {% extends "base.jinja2" %}
 {% block content %}
 
-    <h3>Groups</h3>
+<h3>Groups</h3>
 
-    <a class="btn btn-default" href="{{ request.route_url('group_add') }}" role="button">Add Group</a>
-    <hr>
+<a class="btn btn-default" href="{{ request.route_url('group_add') }}" role="button">Add Group</a>
+<hr>
 
-    <table class="table table-hover">
-            <thead>
-                <tr>
-                  <th>Group Name</th>
-                </tr>
-            <tbody>
-                {% for group in groups %}
-                <tr>
-                    <td><a href="{{ request.route_url('group_edit', gro_id=group.id) }}">
-                            {{ group.groupname }} </a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-    </table>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>Group Name</th>
+    </tr>
+    <tbody>
+    {% for group in groups %}
+    <tr>
+        <td><a href="{{ request.route_url('group_edit', gro_id=group.id) }}">
+            {{ group.groupname }} </a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 
 

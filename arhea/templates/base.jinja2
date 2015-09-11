@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
+
     <title>ARHEA</title>
 
     <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -98,30 +98,30 @@
 </nav>
 
 <div class="row">
-      <div class="container">
+    <div class="container">
         {% if request.session.peek_flash() %}
-          <div class="alert alert-success">
+        <div class="alert alert-success">
             {% for msg in request.session.pop_flash() %}
-                <li>{{ msg }}</li>
+            <li>{{ msg }}</li>
             {% endfor %}
-          </div>
+        </div>
         {% endif %}
         {% if request.session.peek_flash('fail') %}
-          <div class="alert alert-warning">
+        <div class="alert alert-warning">
             {% for msg in request.session.pop_flash('fail') %}
-                <li>{{ msg }}</li>
+            <li>{{ msg }}</li>
             {% endfor %}
-          </div>
+        </div>
         {% endif %}
-      </div>
+    </div>
 </div>
 
 <div class="row">
-      <div class="container">
+    <div class="container">
 
-          {% block content %}{% endblock %}
+        {% block content %}{% endblock %}
 
-      </div>
+    </div>
 </div>
 
 </body>

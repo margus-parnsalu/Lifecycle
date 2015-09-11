@@ -3,34 +3,32 @@
 
 {% from 'sorter_m.jinja2' import sorter with context %}
 
-    <h3>Departments</h3>
+<h3>Departments</h3>
 
-    <a class="btn btn-default" href="{{ request.route_url('department_add') }}" role="button">Add Department</a>
-    <hr>
+<a class="btn btn-default" href="{{ request.route_url('department_add') }}" role="button">Add Department</a>
+<hr>
 
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>{{ sorter('department_view', 'Department Name', '+department') }}</th>
-            </tr>
-        <tbody>
-            {% for department in departments %}
-                <tr>
-                    <td><a href="{{ request.route_url('department_edit',
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>{{ sorter('department_view', 'Department Name', '+department') }}</th>
+    </tr>
+    <tbody>
+    {% for department in departments %}
+    <tr>
+        <td><a href="{{ request.route_url('department_edit',
                                                        dep_id=department.department_id) }}">
-                        {{ department.department_name }} </a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-    </table>
-    <div class="text-center">
-        <ul class="pagination">
-            <li>{{ departments.pager(format='$link_first$link_previous~2~$link_next$link_last',
-                    curpage_attr={ 'class':'active' },
-                    dotdot_attr={ 'class':'disabled' })|safe }}</li>
-        </ul>
-    </div/
-
-
+            {{ department.department_name }} </a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="text-center">
+    <ul class="pagination">
+        <li>{{ departments.pager(format='$link_first$link_previous~2~$link_next$link_last',
+            curpage_attr={ 'class':'active' },
+            dotdot_attr={ 'class':'disabled' })|safe }}</li>
+    </ul>
+</div>
 
 {% endblock %}
