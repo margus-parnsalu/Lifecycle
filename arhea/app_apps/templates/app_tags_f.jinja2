@@ -47,7 +47,7 @@
                 <div class="form-group">
                     {{ tag.value.label }}
                     {% if "Development Domain" in tag.property() %}
-                    {{ tag.value(class="form-control input-sm", size=40, data_tag="dev_domain") }}
+                    {{ tag.value(class="form-control input-sm", data_tag="dev_domain") }}
                     {{ tag.domain_list(class="form-control input-sm", data_tag="domain_select") }}
                     {% else %}
                     {{ tag.value(class="form-control input-sm", size=40) }}
