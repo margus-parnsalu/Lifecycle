@@ -12,24 +12,34 @@
             <form action="" method="get" name="ApplicationForm" class="form-inline">
 
                 <div class="form-group">
+                    {{ form.stereotype.label }}
+                    <br>
                     {{ form.stereotype(class="form-control input-sm") }}
                 </div>
                 <div class="form-group">
+                    {{ form.name.label }}
+                    <br>
                     {{ form.name(placeholder="Name. % for wildcards", class="form-control input-sm") }}
                 </div>
                 <div class="form-group">
+                    {{ form.alias.label }}
+                    <br>
                     {{ form.alias(placeholder="Alias. % for wildcards", class="form-control input-sm") }}
                 </div>
                 <div class="form-group">
+                    {{ form.status.label }}
+                    <br>
                     {{ form.status(class="form-control input-sm") }}
                 </div>
-
                 <div class="form-group">
+                    <br>
                     <button type="submit" class="btn btn-default btn-sm">Search</button>
                 </div>
             </form>
         </div>
         <div class="col-md-4">
+            <label for="searchInput">Filter</label>
+            <br>
             <input id="searchInput"
                    placeholder="Type for filtering page results. _ for multiple matches"
                    class="form-control input-sm">
