@@ -45,7 +45,7 @@ def login(request):
 
     return {'form' : form,
             'message' : message,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='logout',
@@ -53,7 +53,7 @@ def login(request):
 def logout(request):
     """Logout, forget user, remove session user_groups"""
     request.session.pop('user_groups', None)
-    logout_user = authenticated_userid(request)
+    logout_user = request.authenticated_userid
     headers = forget(request)
     log.info('USER "%s" LOGGED OUT!', logout_user)
     loc = request.route_url('home')
@@ -70,7 +70,7 @@ def user_view(request):
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
 
     return {'users': users,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='user_add', renderer='user_f.jinja2',
@@ -86,7 +86,7 @@ def user_add(request):
         request.session.flash('User Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('user_view'))
     return {'form': form,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='user_edit', renderer='user_f.jinja2',
@@ -107,7 +107,7 @@ def user_edit(request):
         request.session.flash('User Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('user_view'))
     return {'form': form,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='group_view', renderer='group_r.jinja2',
@@ -122,7 +122,7 @@ def group_view(request):
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
 
     return {'groups': groups,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='group_add', renderer='group_f.jinja2',
@@ -135,7 +135,7 @@ def group_add(request):
         request.session.flash('Group Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('group_view'))
     return {'form': form,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='group_edit', renderer='group_f.jinja2',
@@ -152,4 +152,4 @@ def group_edit(request):
         request.session.flash('Group Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('group_view'))
     return {'form': form,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}

@@ -5,11 +5,11 @@ from sqlalchemy import (Column, Integer, String, Date, ForeignKey,
                         DateTime, Text, text, Index, Table)
 from sqlalchemy.orm import (relationship)
 
-from ..models import Base
+from ..models import Base, LogMixin
 
 
 
-class Employee(Base):
+class Employee(Base, LogMixin):
     __tablename__ = 'hr_employees'
     employee_id = Column(Integer, primary_key=True)
     first_name = Column(String(20), nullable=False)
@@ -31,8 +31,7 @@ class Employee(Base):
         return self.first_name + ' ' + self.last_name
 
 
-
-class Department(Base):
+class Department(Base, LogMixin):
     __tablename__ = 'hr_departments'
     department_id = Column(Integer, primary_key=True)
     department_name = Column(String(60), nullable=False)
@@ -42,3 +41,4 @@ class Department(Base):
         return '<Department %r>' % (self.department_name)
     def __str__(self):
         return self.department_name
+

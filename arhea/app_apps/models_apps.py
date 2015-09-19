@@ -5,10 +5,10 @@ Apps package models
 from sqlalchemy import (Column, Integer, String, ForeignKey, Index, Table, text, Text, DateTime)
 from sqlalchemy.orm import (relationship)
 
-from ..models import Base_EA
+from ..models import Base_EA, LogMixin
 
 
-class TObjectproperty(Base_EA):
+class TObjectproperty(Base_EA, LogMixin):
     __tablename__ = 't_objectproperties'
 
     propertyid = Column(Integer, primary_key=True,
@@ -25,7 +25,7 @@ class TObjectproperty(Base_EA):
         return self.property
 
 
-class TObject(Base_EA):
+class TObject(Base_EA, LogMixin):
     __tablename__ = 't_object'
 
     object_id = Column(Integer, primary_key=True, unique=True,

@@ -21,7 +21,7 @@ def home(request):
     #import pdb; pdb.set_trace()
 
     return {'project': project_name,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 

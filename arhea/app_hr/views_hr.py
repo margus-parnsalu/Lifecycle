@@ -49,7 +49,7 @@ def department_view(request):
 
     return {'departments': records,
             'sortdir': sort.reverse_direction(),
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 
@@ -66,7 +66,7 @@ def department_add(request):
         return HTTPFound(location=request.route_url('department_view'))
 
     return {'form': form,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='department_edit', renderer='department_f.jinja2',
@@ -90,7 +90,7 @@ def department_edit(request):
         return HTTPFound(location=request.route_url('department_view'))
 
     return {'form': form,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='employee_view', renderer='employee_r.jinja2',
@@ -122,7 +122,7 @@ def employee_view(request):
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     return {'employees': records,
             'sortdir': sort.reverse_direction(),
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='employee_add', renderer='employee_f.jinja2',
@@ -145,7 +145,7 @@ def employee_add(request):
         return HTTPFound(location=request.route_url('employee_view'))
 
     return {'form': form,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='employee_edit', renderer='employee_f.jinja2',
@@ -178,4 +178,4 @@ def employee_edit(request):
         return HTTPFound(location=request.route_url('employee_view'))
 
     return {'form': form,
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}

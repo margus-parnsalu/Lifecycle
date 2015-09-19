@@ -57,7 +57,7 @@ def application_view(request):
             'form': form,
             'query': req_get_todict(request.GET),
             'sortdir': sort.reverse_direction(),
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='tag_edit', renderer='tag_f.jinja2',
@@ -82,13 +82,13 @@ def tag_edit(request):
                  tag_property.ea_guid,
                  tag_property.property,
                  tag_property.value,
-                 authenticated_userid(request))
+                 request.authenticated_userid)
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
 
     return {'form': form,
             'app_name': request.GET.get('app', ''),
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='app_tags_edit', renderer='app_tags_f.jinja2',
@@ -127,10 +127,10 @@ def app_tags_edit(request):
 
         log.info('Application Update: {0}, {1}, {2}, {3}, {4} BY {5}'.
                  format(app.name, app.alias, app.status, app.stereotype, app.note,
-                        authenticated_userid(request)))
+                        request.authenticated_userid))
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
 
     return {'form': form,
             'app_name': request.GET.get('app', ''),
-            'logged_in': authenticated_userid(request)}
+            'logged_in': request.authenticated_userid}
