@@ -10,6 +10,7 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import subqueryload, load_only
 from sqlalchemy.orm.exc import NoResultFound
 
+import re
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict
@@ -37,8 +38,8 @@ def application_view(request):
              outerjoin(TObject.packages, aliased=True).
              filter(TObject.object_type == 'Package').
              filter(TObject.stereotype.like('system%')).
-             filter(TPackage.parent_id.in_([74, 9054])))
-
+             filter(TPackage.parent_id.in_([74, 9054, 9055])))
+            #9054 - Systems, 9055 - Service PLatforms
     #Dynamically add search filters to query object
     app_q = sqla_dyn_filters(filter_dict=request.GET.items(),
                              query_object=app_q,
