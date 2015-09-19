@@ -36,9 +36,12 @@ class LogMixin(object):
             hist = get_history(target, field)
             #import pdb; pdb.set_trace()
             if hist.has_changes():
-                log.info('Application Update: {0}, PK: {1}, OLD: {2}, NEW: {3}, USER: {4}'.
-                         format(mapper.class_, inspect(target).identity, hist.deleted,
-                                hist.added, DBSession.registry.scopefunc().authenticated_userid))
+                log.info('UPDATE: {0}, PK:{1}, OLD:{2}, NEW:{3} BY {4}'.
+                         format(mapper.class_.__tablename__+'.'+field,
+                                inspect(target).identity,
+                                hist.deleted,
+                                hist.added,
+                                DBSession.registry.scopefunc().authenticated_userid))
 
     def after_delete(mapper, connection, target):
         #do some stuff
