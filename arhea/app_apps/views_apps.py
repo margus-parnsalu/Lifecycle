@@ -4,7 +4,6 @@ Apps package views
 from pyramid.view import view_config, forbidden_view_config
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.response import Response
-from pyramid.security import remember, forget, authenticated_userid
 
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
@@ -16,8 +15,6 @@ from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict
 from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm)
 from .models_apps import (TObject, TPackage, TObjectproperty)
-import logging, re
-log = logging.getLogger(__name__)
 
 
 @view_config(route_name='application_view', renderer='application_r.jinja2',
@@ -78,11 +75,6 @@ def tag_edit(request):
         tag_property.value = form.value.data
         DBSession_EA.add(tag_property)
         request.session.flash('Tag Updated!', allow_duplicate=False)
-        log.info('TAG Update: %s, %s, %s BY %s',
-                 tag_property.ea_guid,
-                 tag_property.property,
-                 tag_property.value,
-                 request.authenticated_userid)
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
 
@@ -124,10 +116,6 @@ def app_tags_edit(request):
         app.note = form.app.note.data
         DBSession_EA.add(app)
         request.session.flash('Application information Updated!', allow_duplicate=False)
-
-        log.info('Application Update: {0}, {1}, {2}, {3}, {4} BY {5}'.
-                 format(app.name, app.alias, app.status, app.stereotype, app.note,
-                        request.authenticated_userid))
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
 

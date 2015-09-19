@@ -30,5 +30,5 @@ class UserForm(BaseForm):
                                          validators.InputRequired(message=(u'Input First Name'))])
     pwd = PasswordField(u'Password', [validators.InputRequired(message=(u'Password required'))],
                         widget=PasswordInput(hide_value=False))
-    groups = QuerySelectMultipleField(u'Groups', query_factory=groups, allow_blank=True)
+    groups = QuerySelectMultipleField(u'Groups', query_factory=groups)
     end_date = DateTimeField(u'End Date', [validators.Optional()], format='%Y-%m-%d %H:%M')

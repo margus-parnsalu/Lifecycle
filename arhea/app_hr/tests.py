@@ -72,7 +72,7 @@ class ViewHomeTests(unittest.TestCase):
         _registerRoutes(self.config)
         info = self._callFUT(request)
         self.assertEqual(info['project'],
-                         """Telekom rakenduste ja vastutajate nimekiri ning python demo rakendus""")
+                         """Telekom rakenduste ja vastutajate nimekiri.""")
 
 
 

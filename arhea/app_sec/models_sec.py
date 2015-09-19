@@ -4,11 +4,11 @@ Security backend models
 from sqlalchemy import (Column, Integer, String, ForeignKey, Index, Table, DateTime, text)
 from sqlalchemy.orm import (relationship)
 
-from ..models import Base
+from ..models import Base, LogMixin
 
 
 #Security models
-class User(Base):
+class User(Base, LogMixin):
     __tablename__ = 'sec_user'
     id = Column(Integer, primary_key=True)
     username = Column(String(30))
@@ -25,7 +25,7 @@ class User(Base):
 Index('sec_user_idx', User.username, unique=True)
 
 
-class Group(Base):
+class Group(Base, LogMixin):
     __tablename__ = 'sec_group'
     id = Column(Integer, primary_key=True)
     groupname = Column(String(60))
