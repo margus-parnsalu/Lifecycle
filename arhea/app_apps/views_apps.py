@@ -33,7 +33,7 @@ def application_view(request):
     #SqlAlchemy query object
     app_q = (DBSession_EA.query(TObject).
              options(subqueryload('properties').load_only("property", "value")).
-             options(load_only("name", "alias", "stereotype", "status", "note", "ea_guid")).
+             options(load_only("name", "alias", "stereotype", "status", "note", "ea_guid", "gentype")).
              outerjoin(TObject.properties, aliased=True).
              outerjoin(TObject.packages, aliased=True).
              filter(TObject.object_type == 'Package').

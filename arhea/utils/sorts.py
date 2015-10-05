@@ -22,7 +22,9 @@ SORT_DICT = {'-department':'upper(hr_departments.department_name) desc',
              '+stereotype':'upper(t_object.stereotype) asc',
              '-stereotype':'upper(t_object.stereotype) desc',
              '+lifecycle':'upper(t_object.status) asc',
-             '-lifecycle':'upper(t_object.status) desc',}
+             '-lifecycle':'upper(t_object.status) desc',
+             '+lang':'upper(t_object.gentype) asc',
+             '-lang':'upper(t_object.gentype) desc',}
 
 class SortValue:
     """Sort input validation and Sql Order By string mapping"""
@@ -49,4 +51,4 @@ class SortValue:
             direction = self.sort_parameter.replace('+', '-', 1)
         if self.sort_parameter[0] == '-':
             direction = self.sort_parameter.replace('-', '+', 1)
-        return direction
+        return direction[0]

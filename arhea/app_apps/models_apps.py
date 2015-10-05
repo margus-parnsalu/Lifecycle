@@ -57,6 +57,7 @@ class TObject(Base_EA, LogMixin):
     packageflags = Column(String(255))
     multiplicity = Column(String(50))
     styleex = Column(Text)
+    gentype = Column(String(50))
 
     packages = relationship("TPackage", backref="t_object", foreign_keys=[package_id])
     properties = relationship('TObjectproperty', primaryjoin=object_id == TObjectproperty.object_id)

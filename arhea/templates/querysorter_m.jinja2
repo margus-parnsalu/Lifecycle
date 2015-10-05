@@ -1,10 +1,8 @@
 {% macro qsorter(view, name, sort) -%}
 
 
-    {% do query.update({'sort': sort}) %}
-    <a href="{{ request.route_url( view, _query=( query )) }}">{{ name }}</a>
-    {% do query.update({'sort': sortdir}) %}
-    <a href="{{ request.route_url( view, _query=( query )) }}">
+    {% do query.update({'sort': sortdir+sort}) %}
+    <a href="{{ request.route_url( view, _query=( query )) }}">{{ name }}
             <span class="glyphicon glyphicon-sort"></span></a>
 
 {%- endmacro %}
