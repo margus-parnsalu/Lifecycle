@@ -15,7 +15,7 @@ from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict
 from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm)
-from .models_apps import (TObject, TPackage, TObjectproperty)
+from .models_apps import (TObject, TPackage, TObjectproperty, languages_lov)
 
 
 @view_config(route_name='application_view', renderer='application_r.jinja2',
@@ -99,6 +99,7 @@ def app_tags_edit(request):
         return HTTPNotFound('Application not found!')
 
     form = ApplicationTagForm(request.POST, app=app, tags=tags, csrf_context=request.session)
+    form.app.gentype.choices = languages_lov()
 
     if request.method == 'POST' and form.validate():
         #Tags
@@ -114,6 +115,7 @@ def app_tags_edit(request):
         app.alias = form.app.alias.data
         app.status = form.app.status.data
         app.stereotype = form.app.stereotype.data
+        app.gentype = form.app.gentype.data
         app.note = form.app.note.data
         DBSession_EA.add(app)
         request.session.flash('Application information Updated!', allow_duplicate=False)

@@ -5,6 +5,7 @@ from wtforms import (validators, StringField, HiddenField, PasswordField, Select
                      TextAreaField, FormField, FieldList)
 from ..forms import BaseForm
 
+
 class ApplicationForm(Form):
     object_id = HiddenField()
     stereotype = (SelectField(u'Brand', choices=[("", 'Brand'),
@@ -15,6 +16,7 @@ class ApplicationForm(Form):
     name = StringField(u'Name', [validators.Length(min=3, max=50)])
     alias = StringField(u'Alias', [validators.Optional(), validators.Length(min=3, max=50)])
     note = TextAreaField(u'Note', [validators.Length(min=0, max=200)])
+    gentype = SelectField(u'Language')
     status = (SelectField(u'Lifecycle', choices=[("", 'Lifecycle'),
                                                  ("", '------'),
                                                  ('Target', 'Target'),
@@ -23,6 +25,7 @@ class ApplicationForm(Form):
                                                  ('Phase Out', 'Phase Out'),
                                                  ('Proposed', 'Proposed'),
                                                  ('Retired', 'Retired')]))
+
 
 class TagUpdateForm(BaseForm):
     """Form for updating Tag Values"""
@@ -49,6 +52,7 @@ class TagUpdateForm(BaseForm):
                             ('IT teenused', 'IT teenused'),
                             ('Suhtlus ja Portaalid', 'Suhtlus ja Portaalid'),
                             ('Lisateenused ja uurimistöö', 'Lisateenused ja uurimistöö')]))
+
 
 class InlineTagForm(Form):
     """Unsecure Form for multiline edit Tag Values"""

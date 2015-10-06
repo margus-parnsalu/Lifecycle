@@ -5,7 +5,7 @@ Apps package models
 from sqlalchemy import (Column, Integer, String, ForeignKey, Index, Table, text, Text, DateTime)
 from sqlalchemy.orm import (relationship)
 
-from ..models import Base_EA, LogMixin
+from ..models import Base_EA, LogMixin, DBSession_EA
 
 
 class TObjectproperty(Base_EA, LogMixin):
@@ -95,3 +95,21 @@ class TPackage(Base_EA):
     batchsave = Column(Integer)
     batchload = Column(Integer)
 
+
+class TDatatype(Base_EA):
+    __tablename__ = 't_datatypes'
+
+    type = Column(String(50))
+    productname = Column(String(50))
+    datatype = Column(String(50))
+    haslength = Column(String(50))
+    generictype = Column(String(255))
+    datatypeid = Column(Integer, primary_key=True,
+                        server_default=text("nextval(('datatypeid_seq'::text)::regclass)"))
+
+
+def languages_lov():
+    languages = (DBSession_EA.query(TDatatype.productname.distinct(), TDatatype.productname).
+                 filter(TDatatype.type == 'Code').
+                 order_by(TDatatype.productname.asc()))
+    return [('<none>', '<none>')] + [(k, v) for (k, v) in languages]
