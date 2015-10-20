@@ -23,6 +23,7 @@ from .models_apps import (TObject, TPackage, TObjectproperty, languages_lov)
 def application_view(request):
     #Search form
     form = ApplicationForm(request.GET, csrf_context=request.session)
+    form.gentype.choices = [("", 'Language')] + languages_lov()
 
     sort_input = request.GET.get('sort', '+application')
     sort = SortValue(sort_input)
