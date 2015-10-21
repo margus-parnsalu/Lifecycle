@@ -81,18 +81,18 @@
         </td>
         {% endif %}
         <td id="{{ application.name or '' }}" style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;"> {{ application.name or '' }} </td>
-        <td style="word-wrap: break-word;min-width: 120px;max-width: 160px;white-space:normal;"> {{ application.alias or '' }} </td>
+        <td style="word-wrap:break-word;min-width: 120px;max-width: 160px;white-space:normal;"> {{ application.alias or '' }} </td>
         <td> {{ application.stereotype  or ''  }} </td>
         <td> {{ application.status  or '' }} </td>
         <td> {{ application.gentype or ''}} </td>
-        <td style="word-wrap: break-word;min-width: 160px;max-width: 200px;white-space:normal;">
+        <td style="word-wrap:break-word;min-width: 160px;max-width: 200px;white-space:normal;">
             {% for tag in application.properties %}
             <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
                                                           _query=(('app', application.name), )) }}">
                 {{ tag.property }}</a> : {{ tag.value or '' }}<br>
             {% endfor %}
         </td>
-        <td style="word-wrap: break-word;min-width: 120px;max-width: 180px;white-space:normal;">
+        <td style="word-wrap:break-word;min-width: 120px;max-width: 180px;white-space:normal;">
             {{ application.note or '' }} </td>
         <td style="word-break:break-all; min-width:40px; max-width:80px;">
             <a href="{{ request.route_url('ea_models') + '?guid='+application.ea_guid }}" target="_blank">
