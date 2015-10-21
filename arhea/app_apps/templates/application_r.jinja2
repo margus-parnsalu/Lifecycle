@@ -53,7 +53,7 @@
 </div>
 
 
-<table class="table table-hover" width="100%">
+<table class="table table-hover" style="table-layout: fixed;">
     <thead>
     <tr>
         <th>Nr</th>
@@ -72,29 +72,29 @@
     <tbody id="fbody">
     {% for application in applications: %}
     <tr>
-        <td style="word-wrap: break-word;min-width: 10px;max-width: 20px;white-space:normal;">
+        <td width="10px">
             {{ loop.index }}
         </td>
         {% if 'Admins' in request.session.user_groups: %}
-        <td style="word-wrap: break-word;min-width: 40px;max-width: 80px;white-space:normal;">
+        <td>
             <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
                                                           _query=(('app', application.name), )) }}">
             {{ application.object_id }}</a>
         </td>
         {% endif %}
-        <td id="{{ application.name or '' }}"  style="word-wrap: break-word;min-width: 40px;max-width: 60px;white-space:normal;">
+        <td id="{{ application.name or '' }}">
             {{ application.name or '' }}
         </td>
-        <td style="word-wrap: break-word;min-width: 40px;max-width: 80px;white-space:normal;">
+        <td>
             {{ application.alias or '' }}
         </td>
-        <td  style="word-wrap: break-word;min-width: 20px;max-width: 20px;white-space:normal;">
+        <td>
             {{ application.stereotype  or ''  }}
         </td>
-        <td style="word-wrap: break-word;min-width: 20px;max-width: 20px;white-space:normal;">
+        <td>
             {{ application.status  or '' }}
         </td>
-        <td style="word-wrap: break-word;min-width: 20px;max-width: 20px;white-space:normal;">
+        <td>
             {{ application.gentype or ''}}
         </td>
         <td style="word-wrap: break-word;min-width: 40px;max-width: 90px;white-space:normal;">
