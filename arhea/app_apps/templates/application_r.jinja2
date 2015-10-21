@@ -53,30 +53,30 @@
 </div>
 
 
-<table class="table table-hover" style="table-layout: fixed;">
+<table class="table table-hover" style="table-layout: fixed; word-wrap: break-word;">
     <thead>
     <tr>
-        <th>Nr</th>
+        <th style="width:4%">Nr</th>
         {% if 'Admins' in request.session.user_groups: %}
-        <th>Edit</th>
+        <th style="width:6%">Edit</th>
         {% endif %}
-        <th>{{ qsorter('application_view', 'Name', 'application') }}</th>
-        <th>{{ qsorter('application_view', 'Alias', 'alias') }}</th>
-        <th>{{ qsorter('application_view', 'Brand', 'stereotype') }}</th>
-        <th>{{ qsorter('application_view', 'Lifecycle', 'lifecycle') }}</th>
-        <th>{{ qsorter('application_view', 'Lang.', 'lang') }}</th>
-        <th>Tags</th>
-        <th>Note</th>
-        <th>GUID</th>
+        <th style="width:11%">{{ qsorter('application_view', 'Name', 'application') }}</th>
+        <th style="width:11%">{{ qsorter('application_view', 'Alias', 'alias') }}</th>
+        <th style="width:9%">{{ qsorter('application_view', 'Brand', 'stereotype') }}</th>
+        <th style="width:9%">{{ qsorter('application_view', 'Lifecycle', 'lifecycle') }}</th>
+        <th style="width:7%">{{ qsorter('application_view', 'Lang.', 'lang') }}</th>
+        <th style="width:18%">Tags</th>
+        <th style="width:18%">Note</th>
+        <th style="width:7%">GUID</th>
     </tr>
     <tbody id="fbody">
     {% for application in applications: %}
     <tr>
-        <td width="10px">
+        <td>
             {{ loop.index }}
         </td>
         {% if 'Admins' in request.session.user_groups: %}
-        <td>
+        <td ">
             <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
                                                           _query=(('app', application.name), )) }}">
             {{ application.object_id }}</a>
@@ -97,17 +97,17 @@
         <td>
             {{ application.gentype or ''}}
         </td>
-        <td style="word-wrap: break-word;min-width: 40px;max-width: 90px;white-space:normal;">
+        <td>
             {% for tag in application.properties %}
             <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
                                                           _query=(('app', application.name), )) }}">
                 {{ tag.property }}</a> : {{ tag.value or '' }}<br>
             {% endfor %}
         </td>
-        <td style="word-wrap: break-word;min-width: 40px;max-width: 120px;white-space:normal;">
+        <td>
             {{ application.note or '' }}
         </td>
-        <td style="word-wrap: break-word;min-width: 20px;max-width: 40px;white-space:normal;">
+        <td>
             <a href="{{ request.route_url('ea_models') + '?guid='+application.ea_guid }}" target="_blank">
             {{ application.ea_guid }} </a>
         </td>
