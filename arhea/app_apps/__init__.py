@@ -12,3 +12,6 @@ def include(config):
     config.add_route('application_view', '/apps')
     config.add_route('tag_edit', '/apps/tag/{tag_id:\d+}/edit')
     config.add_route('app_tags_edit', '/apps/{app_id:\d+}/edit')
+
+    # Link to models
+    config.add_route('ea_models', 'http://ea.telekom.ee/Telekom/index.html')

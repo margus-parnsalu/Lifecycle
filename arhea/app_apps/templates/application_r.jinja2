@@ -94,7 +94,10 @@
         </td>
         <td style="word-wrap: break-word;min-width: 120px;max-width: 180px;white-space:normal;">
             {{ application.note or '' }} </td>
-        <td style="word-break:break-all;" width="80"> {{ application.ea_guid }} </td>
+        <td style="word-break:break-all;" width="80">
+            <a href="{{ request.route_url('ea_models') + '?guid='+application.ea_guid }}" target="_blank">
+            {{ application.ea_guid }} </a>
+        </td>
     </tr>
     {% endfor %}
     </tbody>
