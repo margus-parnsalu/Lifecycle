@@ -72,40 +72,42 @@
     <tbody id="fbody">
     {% for application in applications: %}
     <tr>
-        <td> {{ loop.index }} </td>
+        <td style="word-wrap: break-word;min-width: 10px;max-width: 20px;white-space:normal;">
+            {{ loop.index }}
+        </td>
         {% if 'Admins' in request.session.user_groups: %}
-        <td style="word-wrap: break-word;min-width: 100px;max-width: 160px;white-space:normal;">
+        <td style="word-wrap: break-word;min-width: 40px;max-width: 80px;white-space:normal;">
             <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
                                                           _query=(('app', application.name), )) }}">
             {{ application.object_id }}</a>
         </td>
         {% endif %}
-        <td id="{{ application.name or '' }}"  style="word-wrap: break-word;min-width: 100px;max-width: 160px;white-space:normal;">
+        <td id="{{ application.name or '' }}"  style="word-wrap: break-word;min-width: 40px;max-width: 60px;white-space:normal;">
             {{ application.name or '' }}
         </td>
-        <td style="word-wrap: break-word;min-width: 100px;max-width: 160px;white-space:normal;">
+        <td style="word-wrap: break-word;min-width: 40px;max-width: 80px;white-space:normal;">
             {{ application.alias or '' }}
         </td>
-        <td  style="word-wrap: break-word;min-width: 100px;max-width: 160px;white-space:normal;">
+        <td  style="word-wrap: break-word;min-width: 20px;max-width: 20px;white-space:normal;">
             {{ application.stereotype  or ''  }}
         </td>
-        <td style="word-wrap: break-word;min-width: 100px;max-width: 160px;white-space:normal;">
+        <td style="word-wrap: break-word;min-width: 20px;max-width: 20px;white-space:normal;">
             {{ application.status  or '' }}
         </td>
-        <td style="word-wrap: break-word;min-width: 100px;max-width: 160px;white-space:normal;">
+        <td style="word-wrap: break-word;min-width: 20px;max-width: 20px;white-space:normal;">
             {{ application.gentype or ''}}
         </td>
-        <td style="word-wrap: break-word;min-width: 100px;max-width: 160px;white-space:normal;">
+        <td style="word-wrap: break-word;min-width: 40px;max-width: 90px;white-space:normal;">
             {% for tag in application.properties %}
             <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
                                                           _query=(('app', application.name), )) }}">
                 {{ tag.property }}</a> : {{ tag.value or '' }}<br>
             {% endfor %}
         </td>
-        <td style="word-wrap: break-word;min-width: 100px;max-width: 160px;white-space:normal;">
+        <td style="word-wrap: break-word;min-width: 40px;max-width: 120px;white-space:normal;">
             {{ application.note or '' }}
         </td>
-        <td style="word-wrap: break-word;min-width: 40px;max-width: 80px;white-space:normal;">
+        <td style="word-wrap: break-word;min-width: 20px;max-width: 40px;white-space:normal;">
             <a href="{{ request.route_url('ea_models') + '?guid='+application.ea_guid }}" target="_blank">
             {{ application.ea_guid }} </a>
         </td>
