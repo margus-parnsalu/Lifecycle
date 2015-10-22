@@ -57,7 +57,7 @@ class TagUpdateForm(BaseForm):
 class InlineTagForm(Form):
     """Unsecure Form for multiline edit Tag Values"""
     property = StringField(u'Tag Name', [validators.Length(min=3, max=250)])
-    value = StringField(u'Tag Value', [validators.Length(min=3, max=250)])
+    value = StringField(u'Tag Value', [validators.Length(min=1, max=250)])
     domain_list = (SelectField(u'Domain list', [validators.Optional()],
                    choices=[("", 'Vali väärtus listist!'),
                             ("", '------'),
