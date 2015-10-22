@@ -15,7 +15,7 @@ class ApplicationForm(Form):
                                                  ('system EMT', 'EMT')]))
     name = StringField(u'Name', [validators.Length(min=2, max=50)])
     alias = StringField(u'Alias', [validators.Optional(), validators.Length(min=2, max=50)])
-    note = TextAreaField(u'Note', [validators.Length(min=0, max=200)])
+    note = TextAreaField(u'Note', [validators.Length(min=0, max=500)])
     gentype = SelectField(u'Language')
     status = (SelectField(u'Lifecycle', choices=[("", 'Lifecycle'),
                                                  ("", '------'),
@@ -32,7 +32,7 @@ class TagUpdateForm(BaseForm):
     propertyid = HiddenField()
     object_id = HiddenField()
     property = StringField(u'Tag Name', [validators.Length(min=3, max=250)])
-    value = StringField(u'Tag Value', [validators.Length(min=3, max=250)])
+    value = StringField(u'Tag Value', [validators.Length(min=1, max=250)])
     notes = HiddenField()
     ea_guid = HiddenField()
     domain_list = (SelectField(u'Domain list', [validators.Optional()],
