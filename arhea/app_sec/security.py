@@ -1,5 +1,6 @@
 """
 Security core logic
+LDAP with pyramid_ldap
 """
 from pyramid.security import (Allow, Everyone)
 from pyramid.response import Response
