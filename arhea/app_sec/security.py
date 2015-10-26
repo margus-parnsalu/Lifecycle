@@ -55,7 +55,7 @@ class RootFactory(object):
     """Pyramid ACL mapping of groups and view permissions"""
     __acl__ = [(Allow, Everyone, 'view'),
                (Allow, 'Viewers', 'view'),
-               (Allow, 'Editors', 'edit'),
+               (Allow, 'Editors', ('edit_tag', 'edit_app')),
                (Allow, 'Admins', ('admin', 'edit'))]
     def __init__(self, request):
         pass

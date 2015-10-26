@@ -60,7 +60,7 @@ def application_view(request):
 
 
 @view_config(route_name='tag_edit', renderer='tag_f.jinja2',
-             request_method=['GET', 'POST'], permission='edit')
+             request_method=['GET', 'POST'], permission='edit_tag')
 def tag_edit(request):
 
     try:
@@ -86,7 +86,7 @@ def tag_edit(request):
 
 
 @view_config(route_name='app_tags_edit', renderer='app_tags_f.jinja2',
-             request_method=['GET', 'POST'], permission='admin')
+             request_method=['GET', 'POST'], permission='edit_app')
 def app_tags_edit(request):
 
     try:
