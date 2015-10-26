@@ -6,6 +6,14 @@ Security package providing:
 __author__ = 'margusp'
 """
 
+#LDAP config
+ldap_server = 'ldap.elion.ee'
+ldap_connection_account = 'CN=Margus Pärnsalu,OU=Telekom,OU=Inimesed,OU=ET,DC=et,DC=ee'
+ldap_connection_pwd = 'Delly999'
+ldap_user_base = 'OU=Inimesed,OU=ET,DC=et,DC=ee'
+ldap_group_base = 'OU=Arhea,OU=Roll,OU=RBAC,OU=ET,DC=et,DC=ee'
+
+
 def include(config):
 
     #Sec module template location
