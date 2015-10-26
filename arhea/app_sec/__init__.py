@@ -26,3 +26,4 @@ def include(config):
     config.add_route('group_view:page', '/sec/groups/page/{page:\d+}')
     config.add_route('group_add', '/sec/groups/add')
     config.add_route('group_edit', '/sec/groups/{gro_id:\d+}/edit')
+

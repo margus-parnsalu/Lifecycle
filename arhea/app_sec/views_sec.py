@@ -47,13 +47,12 @@ def login(request):
             'logged_in': request.authenticated_userid}
 
 
-@view_config(route_name='logout',
-             permission='view')
+@view_config(route_name='logout')
 def logout(request):
     """Logout, forget user, remove session user_groups"""
-    request.session.pop('user_groups', None)
     logout_user = request.authenticated_userid
     headers = forget(request)
+    request.session.pop('user_groups', None)
     log.info('USER "%s" LOGGED OUT!', logout_user)
     loc = request.route_url('home')
     return HTTPFound(location=loc, headers=headers)
