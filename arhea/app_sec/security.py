@@ -59,14 +59,13 @@ def ldap_groups(userid, request):
     settings = request.registry.settings
     ldap_user_base = settings['ldap.user_base']  # from ini config
     ldap_group_base = settings['ldap.group_base']  # from ini config
-
     user = userid.split('@')  # Admin Gateway returns user with domain @ET
+
     if conn.search(ldap_user_base, '(sAMAccountName={0})'.format(user[0])):
         user_dn = conn.entries[0].entry_get_dn()
         if conn.search(ldap_group_base, '(member={0})'.format(user_dn), attributes=['cn']):
             for raw_role in conn.entries:
                 groups.append(raw_role.cn.value)   # value of the role in list
-
     return groups
 
 

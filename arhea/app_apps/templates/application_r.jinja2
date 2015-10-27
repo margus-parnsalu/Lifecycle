@@ -57,7 +57,7 @@
     <thead>
     <tr>
         <th style="width:4%">Nr</th>
-        {% if 'Editors' in request.session.user_groups: %}
+        {% if 'Arhea_Editors' or 'Editors' in request.session.user_groups: %}
         <th style="width:6%">Edit</th>
         {% endif %}
         <th style="width:11%">{{ qsorter('application_view', 'Name', 'application') }}</th>
@@ -75,7 +75,7 @@
         <td>
             {{ loop.index }}
         </td>
-        {% if 'Editors' in request.session.user_groups: %}
+        {% if 'Arhea_Editors' or 'Editors' in request.session.user_groups: %}
         <td>
             <a href="{{ request.route_url('app_tags_edit', app_id=application.object_id,
                                                           _query=(('app', application.name), )) }}">

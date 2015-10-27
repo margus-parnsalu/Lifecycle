@@ -16,8 +16,8 @@ def include(config):
     settings = config.registry.settings
     conn.user = settings['ldap.user']
     conn.password = settings['ldap.pwd']
-    #conn.use_ssl = True
-    #conn.get_info = ALL
+    conn.authentication = 'SIMPLE'
+    conn.bind()
 
 
     #Sec module template location
