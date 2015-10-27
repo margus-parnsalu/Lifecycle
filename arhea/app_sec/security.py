@@ -5,22 +5,19 @@ import hashlib
 import logging
 import datetime
 
-from pyramid.security import (Allow, Everyone)
+from pyramid.security import Allow, Everyone
 from pyramid.response import Response
 
 from sqlalchemy.exc import DBAPIError
-from sqlalchemy import or_
+from sqlalchemy.sql import or_
 
-# LDAP server connection from __init__. To be used in queries
-from . import (conn)
+# LDAP server connection from app_sec.__init__. To be used in queries
+from . import conn
 
 from .models_sec import (User, Group)
 from ..models import (DBSession, conn_err_msg)
 
 log = logging.getLogger(__name__)
-# Creating ldap server connection
-#server = Server(ldap_server, use_ssl=True, get_info=ALL)
-#conn = Connection(server, ldap_connection_account, ldap_connection_pwd, auto_bind=True)
 
 
 def userfinder(userid, password):
@@ -47,9 +44,10 @@ def groupfinder(userid, request):
     if session_groups in session:
         return session[session_groups]
     elif userid:
-        groups = ldap_groups(userid, request)
         if userid == 'admin':  # admin is special user based on local groups
             groups = db_groups(userid)
+        else:
+            groups = ldap_groups(userid, request)
         session[session_groups] = groups
         log.info('USER "%s" LOGGED IN!', userid)
         return groups
