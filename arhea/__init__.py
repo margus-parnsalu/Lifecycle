@@ -17,7 +17,6 @@ from .app_sec.security import groupfinder, RootFactory
 from .models import (DBSession, Base, DBSession_EA, Base_EA)
 from .utils.custom_jinja_filters import dateformat, datetimeformat
 
-
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """

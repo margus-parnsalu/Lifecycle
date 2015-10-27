@@ -23,11 +23,10 @@ requires = [
     'paginate',
     'WebTest',
     'pyramid-multiauth==0.5.0',
-    'ldap3==0.9.9.1'
     ]
 
 setup(name='arhea',
-      version='1.0.0',
+      version='0.0.1',
       description='arhea',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
