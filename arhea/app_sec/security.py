@@ -8,13 +8,11 @@ import datetime
 from pyramid.security import (Allow, Everyone)
 from pyramid.response import Response
 
-from ldap3 import Server, Connection, ALL
-# LDAP config in app_sec.__init__
-from . import (ldap_server, ldap_connection_account, ldap_connection_pwd,
-               ldap_user_base, ldap_group_base, conn)
-
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy import or_
+
+# LDAP server connection from __init__. To be used in queries
+from . import (conn)
 
 from .models_sec import (User, Group)
 from ..models import (DBSession, conn_err_msg)
@@ -49,7 +47,7 @@ def groupfinder(userid, request):
     if session_groups in session:
         return session[session_groups]
     elif userid:
-        groups = ldap_groups(userid)
+        groups = ldap_groups(userid, request)
         if userid == 'admin':  # admin is special user based on local groups
             groups = db_groups(userid)
         session[session_groups] = groups
@@ -57,15 +55,20 @@ def groupfinder(userid, request):
         return groups
 
 
-def ldap_groups(userid):
+def ldap_groups(userid, request):
     """Supporting function for groupfinder(). Groups based on ldap query"""
     groups = []
+    settings = request.registry.settings
+    ldap_user_base = settings['ldap.user_base']  # from ini config
+    ldap_group_base = settings['ldap.group_base']  # from ini config
+
     user = userid.split('@')  # Admin Gateway returns user with domain @ET
     if conn.search(ldap_user_base, '(sAMAccountName={0})'.format(user[0])):
         user_dn = conn.entries[0].entry_get_dn()
         if conn.search(ldap_group_base, '(member={0})'.format(user_dn), attributes=['cn']):
             for raw_role in conn.entries:
                 groups.append(raw_role.cn.value)   # value of the role in list
+
     return groups
 
 

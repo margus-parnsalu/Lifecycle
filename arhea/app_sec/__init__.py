@@ -7,21 +7,20 @@ __author__ = 'margusp'
 """
 from ldap3 import Server, Connection, ALL
 #LDAP config
-ldap_server = 'ldap.elion.ee'
-ldap_connection_account = 'CN=Margus Pärnsalu,OU=Telekom,OU=Inimesed,OU=ET,DC=et,DC=ee'
-ldap_connection_pwd = 'Delly999'
-ldap_user_base = 'OU=Inimesed,OU=ET,DC=et,DC=ee'
-ldap_group_base = 'OU=Arhea,OU=Roll,OU=RBAC,OU=ET,DC=et,DC=ee'
 
-
-conn = Connection(server='ldap.elion.ee', auto_bind=True)
+#ldap_connection_account = 'CN=Margus Pärnsalu,OU=Telekom,OU=Inimesed,OU=ET,DC=et,DC=ee'
+#ldap_connection_pwd = 'Delly999'
+server = Server('ldap.elion.ee', use_ssl=True, get_info=ALL)
+conn = Connection(server=server, auto_bind=True)
 
 def include(config):
 
-    conn.user = ldap_connection_account
-    conn.password = ldap_connection_pwd
-    conn.use_ssl = True
-    conn.get_info = ALL
+    # Reconfigure ldap3 connection with account from config
+    settings = config.registry.settings
+    conn.user = settings['ldap.user']
+    conn.password = settings['ldap.pwd']
+    #conn.use_ssl = True
+    #conn.get_info = ALL
 
 
     #Sec module template location
