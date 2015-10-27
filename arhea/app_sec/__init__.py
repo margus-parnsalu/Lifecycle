@@ -15,6 +15,8 @@ def include(config):
 
     # Reconfigure ldap3 connection with account from config
     settings = config.registry.settings
+    conn.pool_size = 5
+    conn.pool_lifetime = 1500
     conn.user = settings['ldap.user']
     conn.password = settings['ldap.pwd']
     conn.authentication = 'SIMPLE'
