@@ -5,7 +5,7 @@ Security package providing:
     - user and group management database backend with admin UI
 __author__ = 'margusp'
 """
-
+from ldap3 import Server, Connection, ALL
 #LDAP config
 ldap_server = 'ldap.elion.ee'
 ldap_connection_account = 'CN=Margus Pärnsalu,OU=Telekom,OU=Inimesed,OU=ET,DC=et,DC=ee'
@@ -14,7 +14,15 @@ ldap_user_base = 'OU=Inimesed,OU=ET,DC=et,DC=ee'
 ldap_group_base = 'OU=Arhea,OU=Roll,OU=RBAC,OU=ET,DC=et,DC=ee'
 
 
+conn = Connection(server='ldap.elion.ee', auto_bind=True)
+
 def include(config):
+
+    conn.user = ldap_connection_account
+    conn.password = ldap_connection_pwd
+    conn.use_ssl = True
+    conn.get_info = ALL
+
 
     #Sec module template location
     config.add_jinja2_search_path('arhea:app_sec/templates')

@@ -11,7 +11,7 @@ from pyramid.response import Response
 from ldap3 import Server, Connection, ALL
 # LDAP config in app_sec.__init__
 from . import (ldap_server, ldap_connection_account, ldap_connection_pwd,
-               ldap_user_base, ldap_group_base)
+               ldap_user_base, ldap_group_base, conn)
 
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy import or_
@@ -21,8 +21,8 @@ from ..models import (DBSession, conn_err_msg)
 
 log = logging.getLogger(__name__)
 # Creating ldap server connection
-server = Server(ldap_server, use_ssl=True, get_info=ALL)
-conn = Connection(server, ldap_connection_account, ldap_connection_pwd, auto_bind=True)
+#server = Server(ldap_server, use_ssl=True, get_info=ALL)
+#conn = Connection(server, ldap_connection_account, ldap_connection_pwd, auto_bind=True)
 
 
 def userfinder(userid, password):
