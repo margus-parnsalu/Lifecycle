@@ -7,9 +7,6 @@ __author__ = 'margusp'
 """
 from ldap3 import Server, Connection, ALL
 #LDAP config
-
-#ldap_connection_account = 'CN=Margus Pärnsalu,OU=Telekom,OU=Inimesed,OU=ET,DC=et,DC=ee'
-#ldap_connection_pwd = 'Delly999'
 server = Server('ldap.elion.ee', use_ssl=True, get_info=ALL)
 conn = Connection(server=server, auto_bind=True)
 
