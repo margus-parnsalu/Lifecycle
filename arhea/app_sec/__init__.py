@@ -5,21 +5,25 @@ Security package providing:
     - user and group management database backend with admin UI
 __author__ = 'margusp'
 """
-from ldap3 import Server, Connection, ALL
+from ldap3 import Server, ServerPool, Connection, ALL
 # LDAP config
-server = Server('ldap.elion.ee', use_ssl=True, get_info=ALL)
-conn = Connection(server=server, auto_bind=True)
+server = Server('ldap.elion.ee', use_ssl=True)
+server_pool = ServerPool(server, active=True)
+conn = Connection(server=server_pool, auto_bind=True)
 
 
 def include(config):
 
     # Reconfigure ldap3 connection with account from config
     settings = config.registry.settings
+    conn.read_only = True
+    conn.pool_name = 'arhea_ldap3'
     conn.pool_size = 5
-    conn.pool_lifetime = 1500
+    #conn.pool_lifetime = 1500
     conn.user = settings['ldap.user']
     conn.password = settings['ldap.pwd']
     conn.authentication = 'SIMPLE'
+    #import pdb; pdb.set_trace()
     conn.bind()
 
     # Sec module template location
