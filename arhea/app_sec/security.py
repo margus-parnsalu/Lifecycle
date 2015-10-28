@@ -47,7 +47,7 @@ def groupfinder(userid, request):
         if userid == 'admin':  # admin is special user based on local groups
             groups = db_groups(userid)
         else:
-            groups = db_groups(userid)
+            groups = ldap_groups(userid, request)
         session[session_groups] = groups
         log.info('USER "%s" LOGGED IN!', userid)
         return groups
