@@ -1,6 +1,12 @@
 {% extends "base.jinja2" %}
 {% block content %}
 
+<style type="text/css">
+.popover{
+    max-width: 100%; /* Max Width of the popover*/
+}
+</style>
+
 {% from 'querysorter_m.jinja2' import qsorter with context %}
 
 <h3>Application list</h3><h5>Telekom rakenduste ja vastutajate nimekiri Telekom EA andmebaasi alusel</h5>
@@ -65,9 +71,8 @@
         <th style="width:9%">{{ qsorter('application_view', 'Brand', 'stereotype') }}</th>
         <th style="width:9%">{{ qsorter('application_view', 'Lifecycle', 'lifecycle') }}</th>
         <th style="width:7%">{{ qsorter('application_view', 'Lang.', 'lang') }}</th>
-        <th style="width:18%">Tags</th>
-        <th style="width:18%">Note</th>
-        <th style="width:7%">GUID</th>
+        <th style="width:23%">Note</th>
+        <th style="width:20%">Tags</th>
     </tr>
     <tbody id="fbody">
     {% for application in applications: %}
@@ -82,9 +87,15 @@
             {{ application.object_id }}</a>
         </td>
         {% endif %}
+
         <td id="{{ application.name or '' }}">
-            {{ application.name or '' }}
+
+            <a tabindex="0" data-toggle="popover" data-trigger="focus" data-html="true" title="Lisainfo"
+               data-content="EA: <a href={{ request.route_url('ea_models') + '?guid='+application.ea_guid }} target=_blank>
+            {{ application.ea_guid }}</a>">{{ application.name or '' }}</a>
+
         </td>
+
         <td>
             {{ application.alias or '' }}
         </td>
@@ -98,25 +109,32 @@
             {{ application.gentype or ''}}
         </td>
         <td>
+            {{ application.note or '' }}
+        </td>
+        <td>
             {% for tag in application.properties %}
             <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
                                                           _query=(('app', application.name), )) }}">
                 {{ tag.property }}</a> : {{ tag.value or '' }}<br>
             {% endfor %}
         </td>
-        <td>
-            {{ application.note or '' }}
-        </td>
-        <td>
-            <a href="{{ request.route_url('ea_models') + '?guid='+application.ea_guid }}" target="_blank">
-            {{ application.ea_guid }} </a>
-        </td>
+
+
     </tr>
+
+
     {% endfor %}
     </tbody>
 </table>
 
+
+
 <script>
+    // Init Bootstyrap PopOver
+    $(function () { $('[data-toggle="popover"]').popover() });
+
+
+    // Filter result rows
     jQuery.expr[":"].Contains = jQuery.expr.createPseudo(function(arg) {
         return function( elem ) {
             return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
