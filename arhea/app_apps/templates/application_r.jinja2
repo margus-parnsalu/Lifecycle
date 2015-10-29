@@ -90,7 +90,7 @@
 
         <td id="{{ application.name or '' }}">
 
-            <a tabindex="0" data-toggle="popover" data-trigger="focus" data-html="true" title="Lisainfo"
+            <a tabindex="0" data-toggle="popover" data-trigger="click" data-html="true" title="Lisainfo"
                data-content="EA: <a href={{ request.route_url('ea_models') + '?guid='+application.ea_guid }} target=_blank>
             {{ application.ea_guid }}</a>">{{ application.name or '' }}</a>
 
