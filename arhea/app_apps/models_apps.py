@@ -60,7 +60,8 @@ class TObject(Base_EA, LogMixin):
     gentype = Column(String(50))
 
     packages = relationship("TPackage", backref="t_object", foreign_keys=[package_id])
-    properties = relationship('TObjectproperty', primaryjoin=object_id == TObjectproperty.object_id)
+    properties = relationship('TObjectproperty', primaryjoin=object_id == TObjectproperty.object_id,
+                              order_by="TObjectproperty.property")
     def __repr__(self):
         return '<EA_Object %r>' % (self.name)
     def __str__(self):
