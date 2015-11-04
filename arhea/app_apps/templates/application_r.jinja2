@@ -77,8 +77,8 @@
         <th style="width:9%">{{ qsorter('application_view', 'Brand', 'stereotype') }}</th>
         <th style="width:9%">{{ qsorter('application_view', 'Lifecycle', 'lifecycle') }}</th>
         <th style="width:7%">{{ qsorter('application_view', 'Lang.', 'lang') }}</th>
-        <th style="width:23%">Note</th>
-        <th style="width:20%">Tags</th>
+        <th style="width:20%">Note</th>
+        <th style="width:23%">Tags</th>
     </tr>
     <tbody id="fbody">
     {% for application in applications: %}
@@ -121,7 +121,13 @@
             {% for tag in application.properties %}
             <a href="{{ request.route_url('tag_edit', tag_id=tag.propertyid,
                                                           _query=(('app', application.name), )) }}">
-                {{ tag.property }}</a> : {{ tag.value or '' }}<br>
+                {{ tag.property }}</a>:
+                {% if tag.property == 'Documentation' and tag.property != '' %}
+                    <a href="{{ tag.value or '' }}" target=_blank>link</a>
+                {% else %}
+                    {{ tag.value or '' }}
+                {% endif %}
+            <br>
             {% endfor %}
         </td>
 
