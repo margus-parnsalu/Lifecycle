@@ -73,6 +73,9 @@ def main(global_config, **settings):
 
     #Static
     config.add_static_view(name='static', path='static', cache_max_age=3600)
+    #Admin Gateway url
+    config.add_route('admin_gtwy', settings['admin_gtwy'])
+
 
     #Routes
     config.add_route('home', '/')
