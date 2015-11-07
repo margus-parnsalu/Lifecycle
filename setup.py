@@ -23,7 +23,8 @@ requires = [
     'paginate',
     'WebTest',
     'pyramid-multiauth==0.5.0',
-    'ldap3==0.9.9.1'
+    'ldap3==0.9.9.1',
+    'uwsgi==2.0.11'
     ]
 
 setup(name='arhea',
