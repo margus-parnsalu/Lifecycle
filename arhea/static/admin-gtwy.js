@@ -4,7 +4,7 @@ Admin Gateway javascript
 
 // Admin Gateway menu loading
 $(document).ready(function() {
-    $('#AdminGtwyMenu').load('https://admin-dev.telekom.ee/static/admin-gtwy-nav.html');
+    $('#AdminGtwyMenu').load('/static/admin-gtwy-nav.html');
     $('#AdminGtwyMenu').hide();
 
     $("#AdminGtwyNavButton").click(function(){
