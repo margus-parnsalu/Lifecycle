@@ -1,0 +1,45 @@
+<!-- Admin Gateway Menu -->
+<div>
+    <button id="AdminGtwyNavButton" type="button" class="btn btn-default btn-xs">
+        <span id="NavButtonGlyph" class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+    </button>
+</div>
+
+<div id="AdminGtwyMenu">
+
+    <nav class="navbar navbar-default" role="navigation" data-toggle="collapse"
+         data-target=".nav-collapse" style="margin-bottom: 0px;">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href=""><span class="glyphicon glyphicon-wrench"></span></a>
+
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="https://admin-dev.telekom.ee/arhea" id="arhea">Arhea</a></li>
+                <li><a href="https://admin-dev.telekom.ee/bill" id="bill">Bill</a></li>
+                <li><a href="https://admin-dev.telekom.ee/catalog" id="cat">Catalog</a></li>
+
+            </ul>
+        </div>
+    </nav>
+
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#AdminGtwyMenu').hide();
+
+    $("#AdminGtwyNavButton").click(function(){
+        $("#AdminGtwyMenu").toggle();
+        $("#NavButtonGlyph").toggleClass('glyphicon glyphicon-menu-down').toggleClass('glyphicon glyphicon-menu-up');
+    });
+});
+</script>

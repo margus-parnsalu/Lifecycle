@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-
     <title>ARHEA</title>
 
     <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -11,7 +10,6 @@
 
     <script src="/static/js/jquery-1.11.3.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/admin-gtwy.js"></script>
     <script src="/static/js/bootstrap-datepicker.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,74 +20,77 @@
                                          autoclose: true, todayHighlight: true});
         });
     </script>
-</head>
 
+</head>
 
 <body>
 
-<!-- Include Admin Gateway menu header -->
-<div>
-    <button id="AdminGtwyNavButton" type="button" class="btn btn-default btn-xs">
-        <span id="NavButtonGlyph" class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-    </button>
-</div>
-<div id="AdminGtwyMenu"></div>
+<!-- Admin Gateway header menu -->
+<script>
+$(document).ready(function() {
+    $('#AdminMenu').load('/static/admin-gtwy-header.html');
+});
+</script>
+<div id="AdminMenu"></div>
 
-
-
-
+<!-- Arhea menu -->
 <nav class="navbar navbar-default" role="navigation">
-  <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <a class="navbar-brand" href="{{ request.route_url('home') }}">ARHEA</a>
-  </div>
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ request.route_url('home') }}">ARHEA</a>
+    </div>
 
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav">
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
 
-    <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          <li><a href="{{ request.route_url('application_view') }}">Application list</a></li>
-          <li class="divider"></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Applications <b
+                        class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ request.route_url('application_view') }}">Application list</a>
+                    </li>
+                    <li class="divider"></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b
+                        class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ request.route_url('user_view') }}">Users</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{ request.route_url('group_view') }}">Groups</a></li>
+                </ul>
+            </li>
+
         </ul>
-      </li>
 
-
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="{{ request.route_url('user_view') }}">Users</a></li>
-              <li class="divider"></li>
-              <li><a href="{{ request.route_url('group_view') }}">Groups</a></li>
-            </ul>
-          </li>
-
-
-    </ul>
-
-    {% if logged_in: %}
+        {% if logged_in: %}
         <div class="container">
-            <a class="btn btn-default btn-xs navbar-btn navbar-right" href="{{ request.route_url('logout') }}">x</a>
+            <a class="btn btn-default btn-xs navbar-btn navbar-right"
+               href="{{ request.route_url('logout') }}">x</a>
+
             <p class="navbar-text navbar-right">User: {{ logged_in }}&nbsp;&nbsp;</p>
         </div>
-    {% endif %}
+        {% endif %}
 
-    {% if logged_in==None or logged_in=='': %}
+        {% if logged_in==None or logged_in=='': %}
         <div class="container">
-            <a class="btn btn-default btn-xs navbar-btn navbar-right" href="{{ request.route_url('login') }}">Login</a>
+            <a class="btn btn-default btn-xs navbar-btn navbar-right"
+               href="{{ request.route_url('login') }}">Login</a>
         </div>
-    {% endif %}
+        {% endif %}
 
-
-  </div><!-- /.navbar-collapse -->
+    </div>
+    <!-- /.navbar-collapse -->
 </nav>
 
 <div class="row">
@@ -121,6 +122,3 @@
 
 </body>
 </html>
-
-
-
