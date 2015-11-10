@@ -2,11 +2,3 @@
  * Admin Gateway styles
  */
 
-/* Admin Gateway header menu show/hide button style */
-#AdminGtwyNavButton {
-	position:fixed;
-	top: 0%;
-	right:50%;
-    opacity:0.5;
-	z-index:100000000;
-}
