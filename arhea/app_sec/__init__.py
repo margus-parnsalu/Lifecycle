@@ -21,7 +21,7 @@ def include(config):
     conn.password = settings['ldap.pwd']
     conn.authentication = 'SIMPLE'
     conn.bind()
-    
+
     # Sec module template location
     config.add_jinja2_search_path('arhea:app_sec/templates')
 
