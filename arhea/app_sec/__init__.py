@@ -9,6 +9,7 @@ from ldap3 import Server, Connection
 # LDAP config
 server = Server('ldap.elion.ee', use_ssl=True)
 conn = Connection(server=server, client_strategy='RESTARTABLE', auto_bind=True)
+RESTARTABLE_SLEEPTIME = 0  # Override default ldap3 module sleeptime
 
 
 def include(config):
@@ -20,8 +21,7 @@ def include(config):
     conn.password = settings['ldap.pwd']
     conn.authentication = 'SIMPLE'
     conn.bind()
-    #import pdb; pdb.set_trace()
-
+    
     # Sec module template location
     config.add_jinja2_search_path('arhea:app_sec/templates')
 
