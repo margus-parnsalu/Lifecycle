@@ -5,10 +5,11 @@ Security package providing:
     - user and group management database backend with admin UI
 __author__ = 'margusp'
 """
+import ldap3
 from ldap3 import Server, Connection, RESTARTABLE_SLEEPTIME
 # LDAP config
+ldap3.RESTARTABLE_SLEEPTIME = 0  # Override default ldap3 package sleeptime
 server = Server('ldap.elion.ee', use_ssl=True)
-RESTARTABLE_SLEEPTIME = 0  # Override default ldap3 module sleeptime
 conn = Connection(server=server, client_strategy='RESTARTABLE', auto_bind=True)
 
 
