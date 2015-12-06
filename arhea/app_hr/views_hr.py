@@ -19,6 +19,72 @@ from ..models import (DBSession, ITEMS_PER_PAGE, conn_err_msg)
 from .forms_hr import (DepartmentForm, EmployeeForm)
 from .models_hr import (Department, Employee)
 
+from cornice.resource import resource
+
+from marshmallow import Schema, fields, ValidationError, pre_load
+
+class DepartmentSchema(Schema):
+    department_id = fields.Int(dump_only=True)
+    department_name = fields.Str()
+    formatted_name = fields.Method("format_name", dump_only=True)
+
+    def format_name(self, dep):
+        return "{}-{}".format(dep.department_id, dep.department_name)
+
+department_schema = DepartmentSchema()
+departments_schema = DepartmentSchema(many=True)
+
+
+#departments = Service(name='Departments', path='/api/departments/{dep}', description="Cornice Demo")
+
+@resource(collection_path='/api/departments', path='/api/departments/{id:\d+}')
+class DepartmentResource(object):
+
+    def __init__(self, request):
+        self.request = request
+
+    def collection_get(self):
+        departments = DBSession.query(Department).all()
+        #import pdb; pdb.set_trace()
+        result = departments_schema.dump(departments)
+        return {'departments': result.data}
+
+    def get(self):
+        department = DBSession.query(Department).get(self.request.matchdict['id'])
+        #import pdb; pdb.set_trace()
+        result = department_schema.dump(department)
+        return {'departments': result.data}
+
+    def collection_post(self):
+        # curl -H "Content-Type: application/json" -X POST -d '{"department_name":"cornice"}' http://localhost:6544/api/departments
+        #departments = DBSession.query(Department).all()
+
+        data, errors = department_schema.load(self.request.json)
+        if errors:
+            return errors
+        #import pdb; pdb.set_trace()
+        dep = Department(department_name=data['department_name'])
+        DBSession.add(dep)
+        return {'department': self.request.json}
+
+    def put(self):
+        # curl -H "Content-Type: application/json" -X PUT -d '{"department_name":"PUT"}' http://localhost:6544/api/departments/1
+        #departments = DBSession.query(Department).all()
+
+        data, errors = department_schema.load(self.request.json)
+        if errors:
+            return errors
+        #import pdb; pdb.set_trace()
+        try:
+            department = (DBSession.query(Department).get(self.request.matchdict['id']))
+        except DBAPIError:
+            return Response(conn_err_msg, content_type='text/plain', status_int=500)
+        if not department:
+            raise Exception('Department not found!')
+        #import pdb; pdb.set_trace()
+        department.department_name=data['department_name']
+        DBSession.add(department)
+        return {'department': self.request.json}
 
 
 @view_config(route_name='department_view', renderer='department_r.jinja2',
