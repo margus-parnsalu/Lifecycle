@@ -45,7 +45,6 @@ class DepartmentResource(object):
 
     def collection_get(self):
         departments = DBSession.query(Department).all()
-        #import pdb; pdb.set_trace()
         result = departments_schema.dump(departments)
         return {'departments': result.data}
 
@@ -57,31 +56,26 @@ class DepartmentResource(object):
 
     def collection_post(self):
         # curl -H "Content-Type: application/json" -X POST -d '{"department_name":"cornice"}' http://localhost:6544/api/departments
-        #departments = DBSession.query(Department).all()
 
         data, errors = department_schema.load(self.request.json)
         if errors:
             return errors
-        #import pdb; pdb.set_trace()
         dep = Department(department_name=data['department_name'])
         DBSession.add(dep)
         return {'department': self.request.json}
 
     def put(self):
         # curl -H "Content-Type: application/json" -X PUT -d '{"department_name":"PUT"}' http://localhost:6544/api/departments/1
-        #departments = DBSession.query(Department).all()
 
         data, errors = department_schema.load(self.request.json)
         if errors:
             return errors
-        #import pdb; pdb.set_trace()
         try:
             department = (DBSession.query(Department).get(self.request.matchdict['id']))
         except DBAPIError:
             return Response(conn_err_msg, content_type='text/plain', status_int=500)
         if not department:
             raise Exception('Department not found!')
-        #import pdb; pdb.set_trace()
         department.department_name=data['department_name']
         DBSession.add(department)
         return {'department': self.request.json}
