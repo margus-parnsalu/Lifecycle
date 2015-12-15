@@ -1,7 +1,7 @@
 {% extends "base.jinja2" %}
 {% block content %}
 
-{% from 'sorter_m.jinja2' import sorter with context %}
+{% from 'querysorter_m.jinja2' import qsorter with context %}
 
 <h3>Departments</h3>
 
@@ -11,10 +11,10 @@
 <table class="table table-hover">
     <thead>
     <tr>
-        <th>{{ sorter('department_view', 'Department Name', '+department') }}</th>
+        <th>{{ qsorter('department_view', 'Department Name', 'department') }}</th>
     </tr>
     <tbody>
-    {% for department in departments %}
+    {% for department in records %}
     <tr>
         <td><a href="{{ request.route_url('department_edit',
                                                        dep_id=department.department_id) }}">
@@ -23,12 +23,7 @@
     {% endfor %}
     </tbody>
 </table>
-<div class="text-center">
-    <ul class="pagination">
-        <li>{{ departments.pager(format='$link_first$link_previous~2~$link_next$link_last',
-            curpage_attr={ 'class':'active' },
-            dotdot_attr={ 'class':'disabled' })|safe }}</li>
-    </ul>
-</div>
+
+{% include 'pager.jinja2' %}
 
 {% endblock %}

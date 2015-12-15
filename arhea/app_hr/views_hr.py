@@ -15,9 +15,11 @@ from paginate_sqlalchemy import SqlalchemyOrmPage
 
 #Sorting logic
 from ..utils.sorts import SortValue
+from ..utils.filters import sqla_dyn_filters, req_get_todict, req_paging_dict
 from ..models import (DBSession, ITEMS_PER_PAGE, conn_err_msg)
 from .forms_hr import (DepartmentForm, EmployeeForm)
 from .models_hr import (Department, Employee)
+from .actions import DepartmentAction, EmployeeAction, SortError, DBError, NoResultError
 
 from cornice.resource import resource
 
@@ -88,27 +90,21 @@ class DepartmentResource(object):
 def department_view(request):
 
     sort_input = request.GET.get('sort', '+department')
-    #Sorting custom code from sorts.py
-    sort = SortValue(sort_input)
-    sort_value = sort.sort_str()
-    if sort_value == '':
-        return HTTPFound(location=request.route_url('home'))
+    paging_input = req_paging_dict(request, sort_input, ITEMS_PER_PAGE)
 
-    #SqlAlchemy query object for the report
-    departments = DBSession.query(Department).order_by(text(sort_value))
-
-    #Pagination logic with Sqlalchemy object
-    current_page = int(request.matchdict.get('page', '1'))
-    url_for_page = lambda p: request.route_url('department_view:page', page=p,
-                                               _query=(('sort', sort_input), ))
     try:
-        records = SqlalchemyOrmPage(departments, current_page,
-                                    url_maker=url_for_page, items_per_page=ITEMS_PER_PAGE)
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+        departments, reverse_sort = DepartmentAction(filter=request.GET.items(),
+                                                     sort=sort_input,
+                                                     page=paging_input).get_departments()
+    except SortError:
+        return HTTPFound(location=request.route_url('home'))
+    except NoResultError:
+        return HTTPNotFound('Resource not found!')
 
-    return {'departments': records,
-            'sortdir': sort.reverse_direction(),
+
+    return {'records': departments,
+            'sortdir': reverse_sort,
+            'query': req_get_todict(request.GET),
             'logged_in': request.authenticated_userid}
 
 
@@ -133,12 +129,12 @@ def department_add(request):
              request_method=['GET', 'POST'], permission='view')
 def department_edit(request):
 
+    #dep = DepartmentAction()
     try:
-        department = (DBSession.query(Department).
-                      filter(Department.department_id == request.matchdict['dep_id']).one())
-    except DBAPIError:
+        department = DepartmentAction().get_department(request.matchdict['dep_id'])
+    except DBError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    except NoResultFound:
+    except NoResultError:
         return HTTPNotFound('Department not found!')
 
     form = DepartmentForm(request.POST, department, csrf_context=request.session)
@@ -160,28 +156,21 @@ def department_edit(request):
 def employee_view(request):
 
     sort_input = request.GET.get('sort', '+employee')
-    #Sorting custom code from sorts.py
-    sort = SortValue(sort_input)
-    sort_value = sort.sort_str()
-    if sort_value == '':
+
+    paging = {'current_page': int(request.matchdict.get('page', '1')),
+              'url_for_page': lambda p: request.route_url('employee_view:page', page=p,
+                                                          _query=(('sort', sort_input), )),
+              'items_per_page': 2
+              }
+
+    try:
+        employees, reverse_sort = EmployeeAction(sort=sort_input, page=paging).get_employees()
+    except SortError:
         return HTTPFound(location=request.route_url('home'))
 
-    #SqlAlchemy query object
-    employees = (DBSession.query(Employee, Department).
-                 outerjoin(Department, Employee.department_id == Department.department_id).
-                 order_by(text(sort_value)))
-
-    #Pagination logic
-    current_page = int(request.matchdict.get('page', '1'))
-    url_for_page = lambda p: request.route_url('employee_view:page', page=p,
-                                               _query=(('sort', sort_input), ))
-    try:
-        records = (SqlalchemyOrmPage(employees, current_page, url_maker=url_for_page,
-                                     items_per_page=ITEMS_PER_PAGE))
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'employees': records,
-            'sortdir': sort.reverse_direction(),
+    return {'records': employees,
+            'sortdir': reverse_sort,
+            'query': req_get_todict(request.GET),
             'logged_in': request.authenticated_userid}
 
 
@@ -213,8 +202,7 @@ def employee_add(request):
 def employee_edit(request):
 
     try:
-        employee = (DBSession.query(Employee).
-                    filter(Employee.employee_id == request.matchdict['emp_id']).one())
+        employee = EmployeeAction().get_employee(request.matchdict['emp_id'])
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     except NoResultFound:
