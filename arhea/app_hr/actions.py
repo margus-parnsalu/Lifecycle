@@ -63,6 +63,7 @@ class BaseAction(object):
 
         return query, reverse_sort
 
+
     def sorting(self):
         #Sorting custom code from sorts.py
         sort = SortValue(self.sort)
@@ -90,6 +91,16 @@ class BaseAction(object):
     def base_query(self):
         return DBSession.query(self.__model__)
 
+    def create(self, modelobj):
+        return DBSession.add(modelobj)
+
+    def form_kv_map(self, form):
+        """Maps form object fields and data against Model class. Returns Model instance"""
+        kvmap = {}
+        for field, value in form.data.items():
+            if hasattr(self.__model__, field):  # validate
+                kvmap[field] = value
+        return self.__model__(**kvmap)
 
 
 class DepartmentAction(BaseAction):
@@ -100,6 +111,10 @@ class DepartmentAction(BaseAction):
 
     def get_department(self, pk):
         return self.get_by_pk(pk)
+
+    def add_department(self, form):
+        dep = self.form_kv_map(form)
+        return self.create(dep)
 
 
 class EmployeeAction(BaseAction):
@@ -112,4 +127,8 @@ class EmployeeAction(BaseAction):
 
     def get_employee(self, pk):
         return self.get_by_pk(pk)
+
+    def add_employee(self, form):
+        emp = self.form_kv_map(form)
+        return self.create(emp)
 

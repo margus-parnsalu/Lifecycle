@@ -116,8 +116,10 @@ def department_add(request):
     form = DepartmentForm(request.POST, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        dep = Department(department_name=form.department_name.data)
-        DBSession.add(dep)
+        #dep = Department(department_name=form.department_name.data)
+        #DBSession.add(dep)
+        DepartmentAction().add_department(form=form)
+        #import pdb; pdb.set_trace()
         request.session.flash('Department Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
 
@@ -129,13 +131,12 @@ def department_add(request):
              request_method=['GET', 'POST'], permission='view')
 def department_edit(request):
 
-    #dep = DepartmentAction()
     try:
         department = DepartmentAction().get_department(request.matchdict['dep_id'])
-    except DBError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+    except SortError:
+        return HTTPFound(location=request.route_url('home'))
     except NoResultError:
-        return HTTPNotFound('Department not found!')
+        return HTTPNotFound('Resource not found!')
 
     form = DepartmentForm(request.POST, department, csrf_context=request.session)
 
@@ -181,15 +182,7 @@ def employee_add(request):
     form = EmployeeForm(request.POST, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        emp = Employee(first_name=form.first_name.data,
-                       last_name=form.last_name.data,
-                       email=form.email.data,
-                       phone_number=form.phone_number.data,
-                       salary=form.salary.data,
-                       hire_date=form.hire_date.data,
-                       end_date=form.end_date.data,
-                       department=form.department.data)
-        DBSession.add(emp)
+        EmployeeAction().add_employee(form=form)
         request.session.flash('Employee Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
 
