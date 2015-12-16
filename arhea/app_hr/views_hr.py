@@ -19,7 +19,8 @@ from ..utils.filters import sqla_dyn_filters, req_get_todict, req_paging_dict
 from ..models import (DBSession, ITEMS_PER_PAGE, conn_err_msg)
 from .forms_hr import (DepartmentForm, EmployeeForm)
 from .models_hr import (Department, Employee)
-from .actions import DepartmentAction, EmployeeAction, SortError, DBError, NoResultError
+from .actions import DepartmentAction, EmployeeAction
+from ..core import SortError, DBError, NoResultError
 
 from cornice.resource import resource
 
@@ -93,12 +94,12 @@ def department_view(request):
     paging_input = req_paging_dict(request, sort_input, ITEMS_PER_PAGE)
 
     try:
-        departments, reverse_sort = DepartmentAction(filter=request.GET.items(),
+        departments, reverse_sort = DepartmentAction(filters=request.GET.items(),
                                                      sort=sort_input,
                                                      page=paging_input).get_departments()
     except SortError:
         return HTTPFound(location=request.route_url('home'))
-    except NoResultError:
+    except NoResultError or DBError:
         return HTTPNotFound('Resource not found!')
 
 
@@ -200,7 +201,7 @@ def employee_edit(request):
 
     if request.method == 'POST' and form.validate():
         #Update Employee
-        DepartmentAction().edit_department(employee, form)
+        DepartmentAction().edit_department(model=employee, form=form)
         request.session.flash('Employee Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
 
