@@ -11,9 +11,11 @@ from sqlalchemy.orm import subqueryload, load_only
 from sqlalchemy.orm.exc import NoResultFound
 
 import re
+from ..core import SortError, NoResultError, DBError
+from .actions import AppsAction
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
-from ..utils.filters import sqla_dyn_filters, req_get_todict
+from ..utils.filters import sqla_dyn_filters, req_get_todict, req_paging_dict
 from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm)
 from .models_apps import (TObject, TPackage, TObjectproperty, languages_lov)
 
@@ -26,36 +28,22 @@ def application_view(request):
     form.gentype.choices = [("", 'Language'), ("", '------')] + languages_lov()
 
     sort_input = request.GET.get('sort', '+application')
-    sort = SortValue(sort_input)
-    sort_value = sort.sort_str()
-    if sort_value == '':
-        return HTTPFound(location=request.route_url('home'))
 
-    #SqlAlchemy query object
-    app_q = (DBSession_EA.query(TObject).
-             options(subqueryload('properties').load_only("property", "value")).
-             options(load_only("name", "alias", "stereotype", "status", "note", "ea_guid", "gentype")).
-             outerjoin(TObject.properties, aliased=True).
-             outerjoin(TObject.packages, aliased=True).
-             filter(TObject.object_type == 'Package').
-             filter(TObject.stereotype.like('system%')).
-             filter(TPackage.parent_id.in_([74, 9054, 9055])))
-            #9054 - Systems, 9055 - Service PLatforms
-    #Dynamically add search filters to query object
-    app_q = sqla_dyn_filters(filter_dict=request.GET.items(),
-                             query_object=app_q,
-                             validation_class=TObject)
-
-    #Fetch records from database
     try:
-        applications = app_q.order_by(text(sort_value)).limit(1000)
-    except DBAPIError:
+        applications, reverse_sort = AppsAction(filters=request.GET.items(),
+                                                sort=sort_input,
+                                                limit=1000).get_applications()
+    except SortError:
+        return HTTPFound(location=request.route_url('home'))
+    except NoResultError:
+        return HTTPNotFound('Resource not found!')
+    except DBError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
 
     return {'applications': applications,
             'form': form,
             'query': req_get_todict(request.GET),
-            'sortdir': sort.reverse_direction(),
+            'sortdir': reverse_sort,
             'logged_in': request.authenticated_userid}
 
 
