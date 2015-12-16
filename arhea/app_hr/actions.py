@@ -94,13 +94,22 @@ class BaseAction(object):
     def create(self, modelobj):
         return DBSession.add(modelobj)
 
-    def form_kv_map(self, form):
+    def add_form_model(self, form):
         """Maps form object fields and data against Model class. Returns Model instance"""
         kvmap = {}
         for field, value in form.data.items():
             if hasattr(self.__model__, field):  # validate
                 kvmap[field] = value
-        return self.__model__(**kvmap)
+        return self.__model__(**kvmap)  # new model
+
+    def edit_form_model(self, model, form):
+        for field, value in form.data.items():
+            if hasattr(model, field):  # validate
+                setattr(model, field, value)
+
+        #import pdb; pdb.set_trace()
+        return model
+
 
 
 class DepartmentAction(BaseAction):
@@ -113,7 +122,11 @@ class DepartmentAction(BaseAction):
         return self.get_by_pk(pk)
 
     def add_department(self, form):
-        dep = self.form_kv_map(form)
+        dep = self.add_form_model(form)
+        return self.create(dep)
+
+    def edit_department(self, model, form):
+        dep = self.edit_form_model(model, form)
         return self.create(dep)
 
 
@@ -129,6 +142,9 @@ class EmployeeAction(BaseAction):
         return self.get_by_pk(pk)
 
     def add_employee(self, form):
-        emp = self.form_kv_map(form)
+        emp = self.add_form_model(form)
         return self.create(emp)
 
+    def edit_employee(self, model, form):
+        emp = self.edit_form_model(model, form)
+        return self.create(emp)

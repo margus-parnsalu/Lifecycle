@@ -141,8 +141,7 @@ def department_edit(request):
     form = DepartmentForm(request.POST, department, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        department.department_name = form.department_name.data
-        DBSession.add(department)
+        DepartmentAction().edit_department(department, form)
         request.session.flash('Department Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
 
@@ -157,15 +156,10 @@ def department_edit(request):
 def employee_view(request):
 
     sort_input = request.GET.get('sort', '+employee')
-
-    paging = {'current_page': int(request.matchdict.get('page', '1')),
-              'url_for_page': lambda p: request.route_url('employee_view:page', page=p,
-                                                          _query=(('sort', sort_input), )),
-              'items_per_page': 2
-              }
+    paging_input = req_paging_dict(request, sort_input, 3)
 
     try:
-        employees, reverse_sort = EmployeeAction(sort=sort_input, page=paging).get_employees()
+        employees, reverse_sort = EmployeeAction(sort=sort_input, page=paging_input).get_employees()
     except SortError:
         return HTTPFound(location=request.route_url('home'))
 
@@ -206,15 +200,7 @@ def employee_edit(request):
 
     if request.method == 'POST' and form.validate():
         #Update Employee
-        employee.first_name = form.first_name.data
-        employee.last_name = form.last_name.data
-        employee.email = form.email.data
-        employee.phone_number = form.phone_number.data
-        employee.salary = form.salary.data
-        employee.hire_date = form.hire_date.data
-        employee.department = form.department.data
-        employee.end_date = form.end_date.data
-        DBSession.add(employee)
+        DepartmentAction().edit_department(employee, form)
         request.session.flash('Employee Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
 
