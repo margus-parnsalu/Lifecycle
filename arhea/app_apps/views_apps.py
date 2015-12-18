@@ -20,6 +20,9 @@ from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm)
 from .models_apps import (TObject, TPackage, TObjectproperty, languages_lov)
 
 
+
+
+
 @view_config(route_name='application_view', renderer='application_r.jinja2',
              request_method='GET', permission='view')
 def application_view(request):
@@ -29,18 +32,11 @@ def application_view(request):
 
     sort_input = request.GET.get('sort', '+application')
 
-    try:
-        applications, reverse_sort = AppsAction(filters=request.GET.items(),
-                                                sort=sort_input,
-                                                limit=1000).get_applications()
-    except SortError:
-        return HTTPFound(location=request.route_url('home'))
-    except NoResultError:
-        return HTTPNotFound('Resource not found!')
-    except DBError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+    applications, reverse_sort = AppsAction(filters=request.GET.items(),
+                                            sort=sort_input,
+                                            limit=1000).get_applications()
 
-    return {'applications': applications,
+    return {'records': applications,
             'form': form,
             'query': req_get_todict(request.GET),
             'sortdir': reverse_sort,

@@ -93,15 +93,9 @@ def department_view(request):
     sort_input = request.GET.get('sort', '+department')
     paging_input = req_paging_dict(request, sort_input, ITEMS_PER_PAGE)
 
-    try:
-        departments, reverse_sort = DepartmentAction(filters=request.GET.items(),
-                                                     sort=sort_input,
-                                                     page=paging_input).get_departments()
-    except SortError:
-        return HTTPFound(location=request.route_url('home'))
-    except NoResultError or DBError:
-        return HTTPNotFound('Resource not found!')
-
+    departments, reverse_sort = DepartmentAction(filters=request.GET.items(),
+                                                 sort=sort_input,
+                                                 page=paging_input).get_departments()
 
     return {'records': departments,
             'sortdir': reverse_sort,
@@ -117,10 +111,8 @@ def department_add(request):
     form = DepartmentForm(request.POST, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        #dep = Department(department_name=form.department_name.data)
-        #DBSession.add(dep)
         DepartmentAction().add_department(form=form)
-        #import pdb; pdb.set_trace()
+
         request.session.flash('Department Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
 
@@ -132,17 +124,13 @@ def department_add(request):
              request_method=['GET', 'POST'], permission='view')
 def department_edit(request):
 
-    try:
-        department = DepartmentAction().get_department(request.matchdict['dep_id'])
-    except SortError:
-        return HTTPFound(location=request.route_url('home'))
-    except NoResultError:
-        return HTTPNotFound('Resource not found!')
+    department = DepartmentAction().get_department(request.matchdict['dep_id'])
 
     form = DepartmentForm(request.POST, department, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
         DepartmentAction().edit_department(department, form)
+
         request.session.flash('Department Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
 
@@ -159,10 +147,7 @@ def employee_view(request):
     sort_input = request.GET.get('sort', '+employee')
     paging_input = req_paging_dict(request, sort_input, 3)
 
-    try:
-        employees, reverse_sort = EmployeeAction(sort=sort_input, page=paging_input).get_employees()
-    except SortError:
-        return HTTPFound(location=request.route_url('home'))
+    employees, reverse_sort = EmployeeAction(sort=sort_input, page=paging_input).get_employees()
 
     return {'records': employees,
             'sortdir': reverse_sort,
@@ -178,6 +163,7 @@ def employee_add(request):
 
     if request.method == 'POST' and form.validate():
         EmployeeAction().add_employee(form=form)
+
         request.session.flash('Employee Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
 
@@ -189,19 +175,13 @@ def employee_add(request):
              request_method=['GET', 'POST'], permission='view')
 def employee_edit(request):
 
-    try:
-        employee = EmployeeAction().get_employee(request.matchdict['emp_id'])
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    except NoResultFound:
-        return HTTPNotFound('Employee not found!')
-
+    employee = EmployeeAction().get_employee(request.matchdict['emp_id'])
 
     form = EmployeeForm(request.POST, employee, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        #Update Employee
         DepartmentAction().edit_department(model=employee, form=form)
+
         request.session.flash('Employee Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
 
