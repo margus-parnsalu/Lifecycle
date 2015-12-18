@@ -2,12 +2,13 @@
 Apps package forms
 """
 from wtforms import (validators, StringField, HiddenField, PasswordField, SelectField, Form,
-                     TextAreaField, FormField, FieldList)
+                     TextAreaField, FormField, FieldList, IntegerField)
+from wtforms.widgets import HiddenInput
 from ..forms import BaseForm
 
 
 class ApplicationForm(Form):
-    object_id = HiddenField()
+    object_id = IntegerField(widget=HiddenInput())
     stereotype = (SelectField(u'Brand', choices=[("", 'Brand'),
                                                  ("", '------'),
                                                  ('system', 'Telekom'),
@@ -29,8 +30,8 @@ class ApplicationForm(Form):
 
 class TagUpdateForm(BaseForm):
     """Form for updating Tag Values"""
-    propertyid = HiddenField()
-    object_id = HiddenField()
+    propertyid = IntegerField(widget=HiddenInput())
+    object_id = IntegerField(widget=HiddenInput())
     property = StringField(u'Tag Name', [validators.Length(min=3, max=250)])
     value = StringField(u'Tag Value', [validators.Length(min=1, max=250)])
     notes = HiddenField()
@@ -56,8 +57,8 @@ class TagUpdateForm(BaseForm):
 
 class InlineTagForm(Form):
     """Unsecure Form for multiline edit Tag Values"""
-    propertyid = HiddenField()
-    object_id = HiddenField()
+    propertyid = IntegerField(widget=HiddenInput())
+    object_id = IntegerField(widget=HiddenInput())
     property = StringField(u'Tag Name', [validators.Length(min=3, max=250)])
     value = StringField(u'Tag Value', [validators.Length(min=1, max=250)])
     notes = HiddenField()

@@ -29,6 +29,10 @@ class AppsAction(BaseAction):
     def get_app(self, pk):
         return self.get_by_pk(pk)
 
+    def edit_app(self, model, form):
+        app = self.edit_form_model(model, form)
+        return self.db_load(app)
+
 
 
 class TagsAction(BaseAction):

@@ -179,9 +179,9 @@ def employee_edit(request):
     employee = EmployeeAction().get_employee(request.matchdict['emp_id'])
 
     form = EmployeeForm(request.POST, employee, csrf_context=request.session)
-
+    #import pdb; pdb.set_trace()
     if request.method == 'POST' and form.validate():
-        DepartmentAction().edit_department(model=employee, form=form)
+        EmployeeAction().edit_employee(model=employee, form=form)
 
         request.session.flash('Employee Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))

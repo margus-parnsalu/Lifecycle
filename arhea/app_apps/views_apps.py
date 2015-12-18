@@ -69,9 +69,8 @@ def app_tags_edit(request):
     app = AppsAction().get_app(app_id)
     tags = TagsAction().get_app_tags(app_id)
 
-    form = ApplicationTagForm(request.POST, app=app, tags=tags[0], csrf_context=request.session)
+    form = ApplicationTagForm(request.POST, app=app, tags=tags, csrf_context=request.session)
     form.app.gentype.choices = languages_lov()
-    import pdb; pdb.set_trace()
 
     if request.method == 'POST' and form.validate():
         #Tags
@@ -80,20 +79,14 @@ def app_tags_edit(request):
                 #Find fieldset number to match query object
                 match = re.search(r'\d', field_set.property.name)
                 i = int(match.group())
-                tags[i].value = field_set.value.data
-                DBSession_EA.add(tags[i])
+
+                TagsAction().edit_tag(model=tags[i], form=field_set)
         #App
-        app.name = form.app['name'].data
-        app.alias = form.app.alias.data
-        app.status = form.app.status.data
-        app.stereotype = form.app.stereotype.data
-        app.gentype = form.app.gentype.data
-        app.note = form.app.note.data
-        DBSession_EA.add(app)
+        AppsAction().edit_app(model=app, form=form.app)
+
         request.session.flash('Application information Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
-
     return {'form': form,
             'app_name': request.GET.get('app', ''),
             'logged_in': request.authenticated_userid}
