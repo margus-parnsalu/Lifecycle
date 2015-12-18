@@ -93,12 +93,12 @@ def department_view(request):
     sort_input = request.GET.get('sort', '+department')
     paging_input = req_paging_dict(request, sort_input, ITEMS_PER_PAGE)
 
-    departments, reverse_sort = DepartmentAction(filters=request.GET.items(),
+    dep_act = DepartmentAction(filters=request.GET.items(),
                                                  sort=sort_input,
-                                                 page=paging_input).get_departments()
-
+                                                 page=paging_input)
+    departments = dep_act.get_departments()
     return {'records': departments,
-            'sortdir': reverse_sort,
+            'sortdir': dep_act.reverse_sort,
             'query': req_get_todict(request.GET),
             'logged_in': request.authenticated_userid}
 
@@ -147,10 +147,11 @@ def employee_view(request):
     sort_input = request.GET.get('sort', '+employee')
     paging_input = req_paging_dict(request, sort_input, 3)
 
-    employees, reverse_sort = EmployeeAction(sort=sort_input, page=paging_input).get_employees()
+    emp_act = EmployeeAction(sort=sort_input, page=paging_input)
+    employees = emp_act.get_employees()
 
     return {'records': employees,
-            'sortdir': reverse_sort,
+            'sortdir': emp_act.reverse_sort,
             'query': req_get_todict(request.GET),
             'logged_in': request.authenticated_userid}
 

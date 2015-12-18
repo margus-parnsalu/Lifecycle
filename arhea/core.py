@@ -56,17 +56,20 @@ class BaseAction(object):
         if self.sort:
             sort, reverse_sort = self.sorting()
             self.query = self.query.order_by(text(sort))
+            self.reverse_sort = reverse_sort
         # Limit
         if self.limit:
             self.query = self.query.limit(self.limit)
         # Paging
-        if self.page:
+        if self.page: # SqlAlchemyORMPaging object is created
             self.query = self.paging(self.query)
+            query = self.query
+        else: # If no paging then query all.
+            query = self.query.all()
 
-        query = self.query
         if not query:
             raise NoResultError()
-        return query, reverse_sort
+        return query
 
     def sorting(self):
         # Sorting custom code from sorts.py
@@ -106,7 +109,8 @@ class BaseAction(object):
             if hasattr(self.__model__, field):  # validate
                 kvmap[field] = value
             else:
-                raise CoreError('Missing attribute in model.')
+                pass
+                #raise CoreError('Missing attribute in model.')
         return self.__model__(**kvmap)  # new model
 
     def edit_form_model(self, model, form):
@@ -115,5 +119,6 @@ class BaseAction(object):
             if hasattr(model, field):  # validate
                 setattr(model, field, value)
             else:
-                raise CoreError('Missing attribute in model.')
+                #raise CoreError('Missing attribute in model.')
+                pass
         return model

@@ -12,7 +12,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 import re
 from ..core import SortError, NoResultError, DBError
-from .actions import AppsAction
+from .actions import AppsAction, TagsAction
 from ..models import (DBSession_EA, conn_err_msg)
 from ..utils.sorts import SortValue
 from ..utils.filters import sqla_dyn_filters, req_get_todict, req_paging_dict
@@ -26,20 +26,18 @@ from .models_apps import (TObject, TPackage, TObjectproperty, languages_lov)
 @view_config(route_name='application_view', renderer='application_r.jinja2',
              request_method='GET', permission='view')
 def application_view(request):
+    sort_input = request.GET.get('sort', '+application')
     #Search form
     form = ApplicationForm(request.GET, csrf_context=request.session)
     form.gentype.choices = [("", 'Language'), ("", '------')] + languages_lov()
 
-    sort_input = request.GET.get('sort', '+application')
-
-    applications, reverse_sort = AppsAction(filters=request.GET.items(),
-                                            sort=sort_input,
-                                            limit=1000).get_applications()
+    app_act = AppsAction(filters=request.GET.items(), sort=sort_input, limit=1000)
+    applications = app_act.get_applications()
 
     return {'records': applications,
             'form': form,
             'query': req_get_todict(request.GET),
-            'sortdir': reverse_sort,
+            'sortdir': app_act.reverse_sort,
             'logged_in': request.authenticated_userid}
 
 
@@ -47,19 +45,13 @@ def application_view(request):
              request_method=['GET', 'POST'], permission='edit_tag')
 def tag_edit(request):
 
-    try:
-        tag_property = (DBSession_EA.query(TObjectproperty).
-                        filter(TObjectproperty.propertyid == request.matchdict['tag_id']).one())
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    except NoResultFound:
-        return HTTPNotFound('Tag not found!')
+    tag_property = TagsAction().get_tag(request.matchdict['tag_id'])
 
     form = TagUpdateForm(request.POST, tag_property, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        tag_property.value = form.value.data
-        DBSession_EA.add(tag_property)
+        TagsAction().edit_tag(model=tag_property, form=form)
+
         request.session.flash('Tag Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))
@@ -73,18 +65,13 @@ def tag_edit(request):
              request_method=['GET', 'POST'], permission='edit_app')
 def app_tags_edit(request):
 
-    try:
-        app = (DBSession_EA.query(TObject).
-                    filter(TObject.object_id == request.matchdict['app_id']).one())
-        tags = (DBSession_EA.query(TObjectproperty).
-               filter(TObjectproperty.object_id == request.matchdict['app_id']).all())
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    except NoResultFound:
-        return HTTPNotFound('Application not found!')
+    app_id= request.matchdict['app_id']
+    app = AppsAction().get_app(app_id)
+    tags = TagsAction().get_app_tags(app_id)
 
-    form = ApplicationTagForm(request.POST, app=app, tags=tags, csrf_context=request.session)
+    form = ApplicationTagForm(request.POST, app=app, tags=tags[0], csrf_context=request.session)
     form.app.gentype.choices = languages_lov()
+    import pdb; pdb.set_trace()
 
     if request.method == 'POST' and form.validate():
         #Tags

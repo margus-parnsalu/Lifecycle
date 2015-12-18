@@ -11,6 +11,20 @@
                 {% include 'form_error.jinja2' %}
 
                 <div class="form-group">
+                    {{ form.propertyid() }}
+                </div>
+                <div class="form-group">
+                    {{ form.object_id() }}
+                </div>
+                <div class="form-group">
+                    {{ form.notes() }}
+                </div>
+                <div class="form-group">
+                    {{ form.ea_guid() }}
+                </div>
+
+
+                <div class="form-group">
                     {{ form.property.label }}
                     {{ form.property(class="form-control input-sm", readonly=true) }}
                 </div>
