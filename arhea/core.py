@@ -47,6 +47,10 @@ class BaseAction(object):
         self.filter = filters
         self.query = self.base_query()
 
+    def base_query(self):
+        """Simple model base query for building extensions"""
+        return self.__DBSession__.query(self.__model__)
+
     def run_query(self):
         # Filter
         if self.filter:
@@ -88,32 +92,31 @@ class BaseAction(object):
     def filtering(self):
         return sqla_dyn_filters(self.filter, self.query, self.__model__)
 
-    def get_by_pk(self, pk):
-        query = self.__DBSession__.query(self.__model__).get(pk)
+    @classmethod
+    def get_by_pk(cls, pk):
+        query = cls.__DBSession__.query(cls.__model__).get(pk)
         if not query:
             raise NoResultError()
         return query
 
-    def base_query(self):
-        """Simple model base query for building extensions"""
-        return self.__DBSession__.query(self.__model__)
-
-    def db_load(self, modelobj):
+    @classmethod
+    def db_load(cls, modelobj):
         """Supports insert, update into DB"""
-        return self.__DBSession__.add(modelobj)
+        return cls.__DBSession__.add(modelobj)
 
-    def add_form_model(self, form):
+    @classmethod
+    def add_form_model(cls, form):
         """Maps form object fields and data against Model class. Returns Model instance"""
         kvmap = {}
         for field, value in form.data.items():
-            if hasattr(self.__model__, field):  # validate
+            if hasattr(cls.__model__, field):  # validate
                 kvmap[field] = value
             else:
                 pass
-                #raise CoreError('Missing attribute in model.')
-        return self.__model__(**kvmap)  # new model
+        return cls.__model__(**kvmap)  # new model
 
-    def edit_form_model(self, model, form):
+    @staticmethod
+    def edit_form_model(model, form):
         """Updates model instace attribute values from form"""
         for field, value in form.data.items():
             if hasattr(model, field):  # validate

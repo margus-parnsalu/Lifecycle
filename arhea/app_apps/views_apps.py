@@ -20,9 +20,6 @@ from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm)
 from .models_apps import (TObject, TPackage, TObjectproperty, languages_lov)
 
 
-
-
-
 @view_config(route_name='application_view', renderer='application_r.jinja2',
              request_method='GET', permission='view')
 def application_view(request):
@@ -45,12 +42,12 @@ def application_view(request):
              request_method=['GET', 'POST'], permission='edit_tag')
 def tag_edit(request):
 
-    tag_property = TagsAction().get_tag(request.matchdict['tag_id'])
+    tag_property = TagsAction.get_tag(request.matchdict['tag_id'])
 
     form = TagUpdateForm(request.POST, tag_property, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        TagsAction().edit_tag(model=tag_property, form=form)
+        TagsAction.edit_tag(model=tag_property, form=form)
 
         request.session.flash('Tag Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('application_view',
@@ -66,8 +63,8 @@ def tag_edit(request):
 def app_tags_edit(request):
 
     app_id= request.matchdict['app_id']
-    app = AppsAction().get_app(app_id)
-    tags = TagsAction().get_app_tags(app_id)
+    app = AppsAction.get_app(app_id)
+    tags = TagsAction.get_app_tags(app_id)
 
     form = ApplicationTagForm(request.POST, app=app, tags=tags, csrf_context=request.session)
     form.app.gentype.choices = languages_lov()
@@ -80,9 +77,9 @@ def app_tags_edit(request):
                 match = re.search(r'\d', field_set.property.name)
                 i = int(match.group())
 
-                TagsAction().edit_tag(model=tags[i], form=field_set)
+                TagsAction.edit_tag(model=tags[i], form=field_set)
         #App
-        AppsAction().edit_app(model=app, form=form.app)
+        AppsAction.edit_app(model=app, form=form.app)
 
         request.session.flash('Application information Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('application_view',

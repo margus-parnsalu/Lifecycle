@@ -111,7 +111,7 @@ def department_add(request):
     form = DepartmentForm(request.POST, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        DepartmentAction().add_department(form=form)
+        DepartmentAction.add_department(form=form)
 
         request.session.flash('Department Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
@@ -124,7 +124,7 @@ def department_add(request):
              request_method=['GET', 'POST'], permission='view')
 def department_edit(request):
 
-    department = DepartmentAction().get_department(request.matchdict['dep_id'])
+    department = DepartmentAction.get_department(request.matchdict['dep_id'])
 
     form = DepartmentForm(request.POST, department, csrf_context=request.session)
 
@@ -176,7 +176,7 @@ def employee_add(request):
              request_method=['GET', 'POST'], permission='view')
 def employee_edit(request):
 
-    employee = EmployeeAction().get_employee(request.matchdict['emp_id'])
+    employee = EmployeeAction.get_employee(request.matchdict['emp_id'])
 
     form = EmployeeForm(request.POST, employee, csrf_context=request.session)
     #import pdb; pdb.set_trace()

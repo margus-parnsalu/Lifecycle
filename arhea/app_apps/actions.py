@@ -26,12 +26,14 @@ class AppsAction(BaseAction):
 
         return self.run_query()
 
-    def get_app(self, pk):
-        return self.get_by_pk(pk)
+    @classmethod
+    def get_app(cls, pk):
+        return cls.get_by_pk(pk)
 
-    def edit_app(self, model, form):
-        app = self.edit_form_model(model, form)
-        return self.db_load(app)
+    @classmethod
+    def edit_app(cls, model, form):
+        app = cls.edit_form_model(model, form)
+        return cls.db_load(app)
 
 
 
@@ -39,16 +41,19 @@ class TagsAction(BaseAction):
     __model__ = TObjectproperty
     __DBSession__ = DBSession_EA
 
-    def get_tag(self, pk):
-        return self.get_by_pk(pk)
+    @classmethod
+    def get_tag(cls, pk):
+        return cls.get_by_pk(pk)
 
-    def edit_tag(self, model, form):
-        tag = self.edit_form_model(model, form)
-        return self.db_load(tag)
+    @classmethod
+    def edit_tag(cls, model, form):
+        tag = cls.edit_form_model(model, form)
+        return cls.db_load(tag)
 
-    def get_app_tags(self, app_id):
-        self.query = (self.query.filter(self.__model__.object_id == app_id))
-        return self.run_query()
+    @classmethod
+    def get_app_tags(cls, app_id):
+        cls.query = (cls.__DBSession__.query(cls.__model__).filter(cls.__model__.object_id == app_id))
+        return cls.query.all()
 
 
 

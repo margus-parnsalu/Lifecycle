@@ -8,19 +8,23 @@ from .models_hr import Department, Employee
 class DepartmentAction(BaseAction):
     __model__ = Department
 
+
     def get_departments(self):
         return self.run_query()
 
-    def get_department(self, pk):
-        return self.get_by_pk(pk)
+    @classmethod
+    def get_department(cls, pk):
+        return cls.get_by_pk(pk)
 
-    def add_department(self, form):
-        dep = self.add_form_model(form)
-        return self.db_load(dep)
+    @classmethod
+    def add_department(cls, form):
+        dep = cls.add_form_model(form)
+        return cls.db_load(dep)
 
-    def edit_department(self, model, form):
-        dep = self.edit_form_model(model, form)
-        return self.db_load(dep)
+    @classmethod
+    def edit_department(cls, model, form):
+        dep = cls.edit_form_model(model, form)
+        return cls.db_load(dep)
 
 
 class EmployeeAction(BaseAction):
@@ -32,13 +36,16 @@ class EmployeeAction(BaseAction):
                                 self.__model__.department_id == Department.department_id))
         return self.run_query()
 
-    def get_employee(self, pk):
-        return self.get_by_pk(pk)
+    @classmethod
+    def get_employee(cls, pk):
+        return cls.get_by_pk(pk)
 
-    def add_employee(self, form):
-        emp = self.add_form_model(form)
-        return self.db_load(emp)
+    @classmethod
+    def add_employee(cls, form):
+        emp = cls.add_form_model(form)
+        return cls.db_load(emp)
 
-    def edit_employee(self, model, form):
-        emp = self.edit_form_model(model, form)
-        return self.db_load(emp)
+    @classmethod
+    def edit_employee(cls, model, form):
+        emp = cls.edit_form_model(model, form)
+        return cls.db_load(emp)
