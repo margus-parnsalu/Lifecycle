@@ -6,6 +6,7 @@ import transaction
 from pyramid import testing
 
 
+
 def _initTestingDB():
     from sqlalchemy import create_engine
     from ..models import (DBSession, Base)
@@ -54,6 +55,12 @@ def _registerRoutes(config):
     config.add_route('employee_edit', '/employees/{emp_id:\d+}/edit')
 
 
+class DummyRoute(object):
+    """Trick for supporting request.matched_route in case of DummyRequest()"""
+    def __init__(self, name):
+        self.name = name
+
+
 class ViewHomeTests(unittest.TestCase):
     def setUp(self):
         self.session = _initTestingDB()
@@ -68,8 +75,8 @@ class ViewHomeTests(unittest.TestCase):
         return home(request)
 
     def test_it(self):
-        request = testing.DummyRequest()
         _registerRoutes(self.config)
+        request = testing.DummyRequest()
         info = self._callFUT(request)
         self.assertEqual(info['project'],
                          """Telekom rakenduste ja vastutajate nimekiri.""")
@@ -77,9 +84,13 @@ class ViewHomeTests(unittest.TestCase):
 
 
 class ViewDepartmentTests(unittest.TestCase):
+    __route__ = 'department_view'
+
     def setUp(self):
         self.session = _initTestingDB()
         self.config = testing.setUp()
+        self.config.testing_securitypolicy(userid='admin',
+                                           permissive=True)
 
     def tearDown(self):
         self.session.remove()
@@ -92,37 +103,45 @@ class ViewDepartmentTests(unittest.TestCase):
     def test_it(self):
         #from .models import Department
         request = testing.DummyRequest()
+        request.matched_route = DummyRoute(self.__route__)
+
         _registerRoutes(self.config)
         info = self._callFUT(request)
-        self.assertEqual(info['departments'][0].department_name, 'A Minu Test')
-        self.assertEqual(len(info['departments']), 2)
+        self.assertEqual(info['records'][0].department_name, 'A Minu Test')
+        self.assertEqual(len(info['records']), 2)
 
     def test_it_sort_asc(self):
         request = testing.DummyRequest()
+        request.matched_route = DummyRoute(self.__route__)
         request.GET['sort'] = '+department'
         _registerRoutes(self.config)
         info = self._callFUT(request)
-        self.assertEqual(info['departments'][0].department_name, 'A Minu Test')
-        self.assertEqual(info['departments'][1].department_name, 'Z Minu Test')
-        self.assertEqual(info['sortdir'], '-department')
+        self.assertEqual(info['records'][0].department_name, 'A Minu Test')
+        self.assertEqual(info['records'][1].department_name, 'Z Minu Test')
+        self.assertEqual(info['sortdir'], '-')
 
 
     def test_it_sort_desc(self):
         request = testing.DummyRequest()
+        request.matched_route = DummyRoute(self.__route__)
         request.GET['sort'] = '-department'
         _registerRoutes(self.config)
         info = self._callFUT(request)
-        self.assertEqual(info['departments'][0].department_name, 'Z Minu Test')
-        self.assertEqual(info['departments'][1].department_name, 'A Minu Test')
-        self.assertEqual(info['sortdir'], '+department')
+        self.assertEqual(info['records'][0].department_name, 'Z Minu Test')
+        self.assertEqual(info['records'][1].department_name, 'A Minu Test')
+        self.assertEqual(info['sortdir'], '+')
 
 
 
 
 class ViewEmployeeTests(unittest.TestCase):
+    __route__ = 'employee_view'
+
     def setUp(self):
         self.session = _initTestingDB()
         self.config = testing.setUp()
+        self.config.testing_securitypolicy(userid='admin',
+                                           permissive=True)
 
     def tearDown(self):
         self.session.remove()
@@ -134,29 +153,32 @@ class ViewEmployeeTests(unittest.TestCase):
 
     def test_it(self):
         request = testing.DummyRequest()
+        request.matched_route = DummyRoute(self.__route__)
         _registerRoutes(self.config)
         info = self._callFUT(request)
-        self.assertEqual(info['employees'][0].Employee.first_name, 'John')
-        self.assertEqual(len(info['employees']), 2)
+        self.assertEqual(info['records'][0].Employee.first_name, 'John')
+        self.assertEqual(len(info['records']), 2)
 
     def test_it_sort_asc(self):
         request = testing.DummyRequest()
+        request.matched_route = DummyRoute(self.__route__)
         request.GET['sort'] = '+employee'
         _registerRoutes(self.config)
         info = self._callFUT(request)
-        self.assertEqual(info['employees'][0].Employee.first_name, 'John')
-        self.assertEqual(info['employees'][1].Employee.first_name, 'Tom')
-        self.assertEqual(info['sortdir'], '-employee')
+        self.assertEqual(info['records'][0].Employee.first_name, 'John')
+        self.assertEqual(info['records'][1].Employee.first_name, 'Tom')
+        self.assertEqual(info['sortdir'], '-')
 
 
     def test_it_sort_desc(self):
         request = testing.DummyRequest()
+        request.matched_route = DummyRoute(self.__route__)
         request.GET['sort'] = '-employee'
         _registerRoutes(self.config)
         info = self._callFUT(request)
-        self.assertEqual(info['employees'][0].Employee.first_name, 'Tom')
-        self.assertEqual(info['employees'][1].Employee.first_name, 'John')
-        self.assertEqual(info['sortdir'], '+employee')
+        self.assertEqual(info['records'][0].Employee.first_name, 'Tom')
+        self.assertEqual(info['records'][1].Employee.first_name, 'John')
+        self.assertEqual(info['sortdir'], '+')
 
 
 
@@ -175,7 +197,13 @@ class FunctionalTests(unittest.TestCase):
                                              'arhea:arhea/app_hr/templates',
                                              'arhea:arhea/app_apps/templates'],
                      'session.secret' : 'sess',
-                     'auth.secret' : 'auth'
+                     'auth.secret' : 'auth',
+                     'admin_gtwy': 'https://admin-dev.telekom.ee',
+                     'ldap.user': 'CN=Arhea,OU=Tehniline,OU=ET,DC=et,DC=ee',
+                     'ldap.pwd': 'Pawer5ty9',
+                     'ldap.user_base': 'OU=Inimesed,OU=ET,DC=et,DC=ee',
+                     'ldap.group_base': 'OU=Arhea,OU=Roll,OU=RBAC,OU=ET,DC=et,DC=ee',
+
                      }
         app = main({}, **settings)
         from webtest import TestApp
@@ -186,8 +214,8 @@ class FunctionalTests(unittest.TestCase):
         #Login for tests to work
         res = self.testapp.get('/login')
         form = res.form
-        form['login'] = 'editor'
-        form['password'] = 'editor'
+        form['login'] = 'admin'
+        form['password'] = 'changeme'
         form['came_from'] = '/'
         res = form.submit('submit')
 
@@ -235,7 +263,7 @@ class FunctionalTests(unittest.TestCase):
     def test_department_form_edit_GET_unknown_id(self):
         # Get the form
         res = self.testapp.get('/departments/1000/edit', status=404)
-        self.assertIn(b'Department not found!', res.body)
+        self.assertIn(b'Resource not found!', res.body)
 
     def test_department_form_edit_POST(self):
         # Get the form
@@ -258,4 +286,4 @@ class FunctionalTests(unittest.TestCase):
     def test_employee_form_edit_GET_unknown_id(self):
         # Get the form
         res = self.testapp.get('/employees/100/edit', status=404)
-        self.assertIn(b'Employee not found!', res.body)
+        self.assertIn(b'Resource not found!', res.body)

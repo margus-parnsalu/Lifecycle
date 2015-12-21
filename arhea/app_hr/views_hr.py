@@ -93,10 +93,9 @@ def department_view(request):
     sort_input = request.GET.get('sort', '+department')
     paging_input = req_paging_dict(request, sort_input, ITEMS_PER_PAGE)
 
-    dep_act = DepartmentAction(filters=request.GET.items(),
-                                                 sort=sort_input,
-                                                 page=paging_input)
+    dep_act = DepartmentAction(filters=request.GET.items(), sort=sort_input, page=paging_input)
     departments = dep_act.get_departments()
+
     return {'records': departments,
             'sortdir': dep_act.reverse_sort,
             'query': req_get_todict(request.GET),
