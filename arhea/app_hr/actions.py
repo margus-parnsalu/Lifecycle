@@ -17,13 +17,13 @@ class DepartmentAction(BaseAction):
         return cls.get_by_pk(pk)
 
     @classmethod
-    def add_department(cls, form):
-        dep = cls.add_form_model(form)
+    def add_department(cls, data):
+        dep = cls.create_model_object(data)
         return cls.db_load(dep)
 
     @classmethod
-    def edit_department(cls, model, form):
-        dep = cls.edit_form_model(model, form)
+    def edit_department(cls, object, data):
+        dep = cls.update_model_object(object, data)
         return cls.db_load(dep)
 
 
