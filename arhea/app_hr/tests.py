@@ -92,6 +92,15 @@ class DepartmentActionsTests(unittest.TestCase):
         self.assertEqual(len(info), 1)
         self.assertEqual(info[0].department_name, 'Z Minu Test')
 
+    def test_it_get_departments_page(self):
+        page = {'current_page': 2,
+                'url_for_page': lambda p: '/department/page/'+p+'?sort=-department',
+                'items_per_page': 1}
+        info = DepartmentAction(page=page).get_departments()
+        self.assertEqual(len(info), 1)
+        self.assertEqual(info[0].department_name, 'Z Minu Test')
+        self.assertEqual(info.page_count, 2)
+        self.assertEqual(info.items_per_page, 1)
 
     def test_it_add_department(self):
         data = {'department_name': 'GangOfFour'}

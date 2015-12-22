@@ -77,7 +77,7 @@ class BaseAction(object):
         return query
 
     def sorting(self):
-        # Sorting custom code from sorts.py
+        """Sorting custom code from sorts.py"""
         sort = SortValue(self.sort)
         sort_value = sort.sort_str()
         if sort_value == '':
@@ -85,12 +85,14 @@ class BaseAction(object):
         return sort_value, sort.reverse_direction()
 
     def paging(self, query):
+        """Creating paging response object with records"""
         return (SqlalchemyOrmPage(query,
                                   page=self.page['current_page'],
                                   url_maker=self.page['url_for_page'],
                                   items_per_page=self.page['items_per_page']))
 
     def filtering(self):
+        """Based on filter dict extend query object"""
         for attr, value in self.filter.items():
             if value == '':
                 value = '%'
@@ -98,7 +100,7 @@ class BaseAction(object):
                 self.query = (self.query.filter(coalesce(getattr(self.__model__, attr), '').
                                                     ilike(value)))
             except:
-                pass#When model object does not have dictionary value do nothing
+                pass  # When model object does not have dictionary value do nothing
 
     @classmethod
     def get_by_pk(cls, pk):
