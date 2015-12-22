@@ -1,23 +1,14 @@
 """
 Apps package views
 """
-from pyramid.view import view_config, forbidden_view_config
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.response import Response
-
-from sqlalchemy import text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import subqueryload, load_only
-from sqlalchemy.orm.exc import NoResultFound
+from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPFound
 
 import re
-from ..core import SortError, NoResultError, DBError
 from .actions import AppsAction, TagsAction
-from ..models import (DBSession_EA, conn_err_msg)
-from ..utils.sorts import SortValue
-from ..utils.filters import sqla_dyn_filters, req_get_todict, req_paging_dict
+from ..utils.utils import req_get_todict
 from .forms_apps import (ApplicationForm, TagUpdateForm, ApplicationTagForm)
-from .models_apps import (TObject, TPackage, TObjectproperty, languages_lov)
+from .models_apps import (languages_lov)
 
 
 @view_config(route_name='application_view', renderer='application_r.jinja2',

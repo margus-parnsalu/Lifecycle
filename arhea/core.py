@@ -11,7 +11,7 @@ from abc import ABCMeta
 
 from .models import DBSession
 from .utils.sorts import SortValue
-from .utils.filters import sqla_dyn_filters
+from .utils.utils import sqla_dyn_filters
 
 
 class CoreError(Exception):
@@ -105,6 +105,30 @@ class BaseAction(object):
         return cls.__DBSession__.add(modelobj)
 
     @classmethod
+    def create_model_object(cls, data):
+        """Maps  data against Model class. Returns Model instance"""
+        kvmap = {}
+        #import pdb; pdb.set_trace()
+        for key, value in data.items():
+            if hasattr(cls.__model__, key):  # validate
+                kvmap[key] = value
+            else:
+                pass
+        return cls.__model__(**kvmap)  # new model
+
+    @staticmethod
+    def update_model_object(object, data):
+        """Updates model instace attribute values from form"""
+        for key, value in data.items():
+            if hasattr(object, key):  # validate
+                setattr(object, key, value)
+            else:
+                #raise CoreError('Missing attribute in model.')
+                pass
+        return object
+
+
+    @classmethod
     def add_form_model(cls, form):
         """Maps form object fields and data against Model class. Returns Model instance"""
         kvmap = {}
@@ -114,6 +138,7 @@ class BaseAction(object):
             else:
                 pass
         return cls.__model__(**kvmap)  # new model
+
 
     @staticmethod
     def edit_form_model(model, form):

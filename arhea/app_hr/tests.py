@@ -1,10 +1,8 @@
 # Run tests with Nose and Coverage: nosetests --with-coverage --cover-package=arhea
-
 import unittest
 import transaction
 
 from pyramid import testing
-
 
 
 def _initTestingDB():
@@ -59,6 +57,38 @@ class DummyRoute(object):
     """Trick for supporting request.matched_route in case of DummyRequest()"""
     def __init__(self, name):
         self.name = name
+
+from .actions import DepartmentAction
+
+class DepartmentActionsTests(unittest.TestCase):
+    def setUp(self):
+        self.session = _initTestingDB()
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        self.session.remove()
+        testing.tearDown()
+
+    def test_it_get_department(self):
+        info = DepartmentAction.get_department(1)
+        self.assertEqual(info.department_name, 'A Minu Test')
+
+    def test_it_get_departments_no_options(self):
+        info = DepartmentAction().get_departments()
+        self.assertEqual(len(info), 2)
+
+    def test_it_add_department(self):
+        data = {'department_name': 'GangOfFour'}
+        DepartmentAction.add_department(data)
+        info = DepartmentAction.get_department(3)
+        self.assertEqual(info.department_name, 'GangOfFour')
+
+    def test_it_edit_department(self):
+        data = {'department_name': 'GangOfFour'}
+        object = DepartmentAction.get_department(1)
+        DepartmentAction.edit_department(object, data)
+        info = DepartmentAction.get_department(1)
+        self.assertEqual(info.department_name, 'GangOfFour')
 
 
 class ViewHomeTests(unittest.TestCase):
@@ -179,10 +209,6 @@ class ViewEmployeeTests(unittest.TestCase):
         self.assertEqual(info['records'][0].Employee.first_name, 'Tom')
         self.assertEqual(info['records'][1].Employee.first_name, 'John')
         self.assertEqual(info['sortdir'], '+')
-
-
-
-
 
 
 

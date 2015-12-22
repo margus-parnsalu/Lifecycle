@@ -1,5 +1,5 @@
 """
-Helper function to modify SqlAlchemy query object
+Helper functions
 """
 from sqlalchemy.sql.functions import coalesce
 
@@ -26,6 +26,7 @@ def req_get_todict(request_get):
 
 
 def req_paging_dict(request, sort, items):
+    """Create SqlAlchemmyOrmPage class input"""
     route_name = request.matched_route.name
     if route_name[-5:] !=':page':
         route_name = request.matched_route.name+':page'
@@ -34,3 +35,8 @@ def req_paging_dict(request, sort, items):
                                                         page=p,
                                                         _query=(('sort', sort), )),
             'items_per_page': items}
+
+
+def form_to_dict(form):
+    """Create dict structure based on form instance"""
+    return {field: value for field, value in form.data.items()}

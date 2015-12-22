@@ -4,23 +4,14 @@ HR Views
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.security import authenticated_userid
 
 from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import text
 
-#SqlAlchemy object pagination logic extends Paginate
-from paginate_sqlalchemy import SqlalchemyOrmPage
-
-#Sorting logic
-from ..utils.sorts import SortValue
-from ..utils.filters import sqla_dyn_filters, req_get_todict, req_paging_dict
+from ..utils.utils import req_get_todict, req_paging_dict, form_to_dict
 from ..models import (DBSession, ITEMS_PER_PAGE, conn_err_msg)
 from .forms_hr import (DepartmentForm, EmployeeForm)
 from .models_hr import (Department, Employee)
 from .actions import DepartmentAction, EmployeeAction
-from ..core import SortError, DBError, NoResultError
 
 from cornice.resource import resource
 
@@ -110,7 +101,7 @@ def department_add(request):
     form = DepartmentForm(request.POST, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        DepartmentAction.add_department(form=form)
+        DepartmentAction.add_department(data=form_to_dict(form))
 
         request.session.flash('Department Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
@@ -128,7 +119,7 @@ def department_edit(request):
     form = DepartmentForm(request.POST, department, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        DepartmentAction().edit_department(department, form)
+        DepartmentAction.edit_department(object=department, data=form_to_dict(form))
 
         request.session.flash('Department Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
