@@ -5,7 +5,7 @@ from sqlalchemy.sql.functions import coalesce
 
 def sqla_dyn_filters(filter_dict, query_object, validation_class):
     """SqlAlchemy query object modification with dynamic filters"""
-    for attr, value in filter_dict:
+    for attr, value in filter_dict.items():
         if value == '':
             value = '%'
         try:

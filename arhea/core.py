@@ -5,6 +5,7 @@ Modules implement actions in actions.py files.
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql.functions import coalesce
 from paginate_sqlalchemy import SqlalchemyOrmPage
 
 from abc import ABCMeta
@@ -40,11 +41,11 @@ class BaseAction(object):
     __model__ = None
     __DBSession__ = DBSession
 
-    def __init__(self, filters=None, sort=None, limit=None, page=None):
+    def __init__(self, filter=None, sort=None, limit=None, page=None):
         self.sort = sort
         self.page = page
         self.limit = limit
-        self.filter = filters
+        self.filter = filter
         self.query = self.base_query()
 
     def base_query(self):
@@ -54,7 +55,7 @@ class BaseAction(object):
     def run_query(self):
         # Filter
         if self.filter:
-            self.query = self.filtering()
+            self.filtering()
         # Sorting
         reverse_sort = None
         if self.sort:
@@ -90,7 +91,14 @@ class BaseAction(object):
                                   items_per_page=self.page['items_per_page']))
 
     def filtering(self):
-        return sqla_dyn_filters(self.filter, self.query, self.__model__)
+        for attr, value in self.filter.items():
+            if value == '':
+                value = '%'
+            try:
+                self.query = (self.query.filter(coalesce(getattr(self.__model__, attr), '').
+                                                    ilike(value)))
+            except:
+                pass#When model object does not have dictionary value do nothing
 
     @classmethod
     def get_by_pk(cls, pk):

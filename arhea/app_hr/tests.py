@@ -76,6 +76,22 @@ class DepartmentActionsTests(unittest.TestCase):
     def test_it_get_departments_no_options(self):
         info = DepartmentAction().get_departments()
         self.assertEqual(len(info), 2)
+        self.assertEqual(info[0].department_name, 'A Minu Test')
+
+    def test_it_get_departments_sort(self):
+        info = DepartmentAction(sort='-department').get_departments()
+        self.assertEqual(len(info), 2)
+        self.assertEqual(info[0].department_name, 'Z Minu Test')
+
+    def test_it_get_departments_limit(self):
+        info = DepartmentAction(limit=1).get_departments()
+        self.assertEqual(len(info), 1)
+
+    def test_it_get_departments_filter(self):
+        info = DepartmentAction(filter={'department_name': 'Z%'}).get_departments()
+        self.assertEqual(len(info), 1)
+        self.assertEqual(info[0].department_name, 'Z Minu Test')
+
 
     def test_it_add_department(self):
         data = {'department_name': 'GangOfFour'}
