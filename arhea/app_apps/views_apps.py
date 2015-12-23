@@ -19,7 +19,7 @@ def application_view(request):
     form = ApplicationForm(request.GET, csrf_context=request.session)
     form.gentype.choices = [("", 'Language'), ("", '------')] + languages_lov()
 
-    app_act = AppsAction(filters=request.GET.items(), sort=sort_input, limit=1000)
+    app_act = AppsAction(filters={'Department': request.GET.items()}, sort=sort_input, limit=1000)
     applications = app_act.get_applications()
 
     return {'records': applications,

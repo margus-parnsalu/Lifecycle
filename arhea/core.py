@@ -41,11 +41,12 @@ class BaseAction(object):
     __model__ = None
     __DBSession__ = DBSession
 
-    def __init__(self, filter=None, sort=None, limit=None, page=None):
+    def __init__(self, filter=None, extd_filter=None, sort=None, limit=None, page=None):
         self.sort = sort
         self.page = page
         self.limit = limit
-        self.filter = filter
+        self.filter = filter  # Filter dict
+        self.extd_filter = extd_filter  # Dict list key=validation class, value=filter dict
         self.query = self.base_query()
 
     def base_query(self):
@@ -55,7 +56,9 @@ class BaseAction(object):
     def run_query(self):
         # Filter
         if self.filter:
-            self.filtering()
+            self.crud_filtering()
+        if self.extd_filter:
+            self.extended_filtering()
         # Sorting
         reverse_sort = None
         if self.sort:
@@ -91,16 +94,28 @@ class BaseAction(object):
                                   url_maker=self.page['url_for_page'],
                                   items_per_page=self.page['items_per_page']))
 
-    def filtering(self):
-        """Based on filter dict extend query object"""
+    def crud_filtering(self):
+        """Based on filter dict extend query object. Validation based on self __model__ class"""
         for attr, value in self.filter.items():
             if value == '':
                 value = '%'
             try:
-                self.query = (self.query.filter(coalesce(getattr(self.__model__, attr), '').
+                self.query = (self.query.filter(getattr(self.__model__, attr).
                                                     ilike(value)))
             except:
                 pass  # When model object does not have dictionary value do nothing
+
+    def extended_filtering(self):
+        """Based on validation class and filter dict list extend query object"""
+        for validation_class, filter in self.extd_filter.items():
+            for attr, value in filter.items():
+                if value == '':
+                    value = '%'
+                try:
+                    self.query = (self.query.filter(getattr(validation_class, attr).
+                                                        ilike(value)))
+                except:
+                    pass  # When model object does not have dictionary value do nothing
 
     @classmethod
     def get_by_pk(cls, pk):

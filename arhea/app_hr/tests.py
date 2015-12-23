@@ -3,13 +3,12 @@ import unittest
 import transaction
 
 from pyramid import testing
-
+from .models_hr import (Department, Employee)
 
 def _initTestingDB():
     from sqlalchemy import create_engine
     from ..models import (DBSession, Base)
     from ..app_sec.models_sec import (User, Group)
-    from .models_hr import (Department, Employee)
     import datetime
     import hashlib
     engine = create_engine('sqlite://')
@@ -89,6 +88,12 @@ class DepartmentActionsTests(unittest.TestCase):
 
     def test_it_get_departments_filter(self):
         info = DepartmentAction(filter={'department_name': 'Z%'}).get_departments()
+        self.assertEqual(len(info), 1)
+        self.assertEqual(info[0].department_name, 'Z Minu Test')
+
+    def test_it_get_departments_filter(self):
+        info = DepartmentAction(extd_filter={Department:{'department_name': 'Z%'},
+                                             Employee: {'first_name': 'Tom'}}).get_departments()
         self.assertEqual(len(info), 1)
         self.assertEqual(info[0].department_name, 'Z Minu Test')
 
