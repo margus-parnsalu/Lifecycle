@@ -31,8 +31,8 @@ class AppsAction(BaseAction):
         return cls.get_by_pk(pk)
 
     @classmethod
-    def edit_app(cls, model, form):
-        app = cls.edit_form_model(model, form)
+    def edit_app(cls, object, data):
+        app = cls.update_model_object(object, data)
         return cls.db_load(app)
 
 
@@ -46,8 +46,8 @@ class TagsAction(BaseAction):
         return cls.get_by_pk(pk)
 
     @classmethod
-    def edit_tag(cls, model, form):
-        tag = cls.edit_form_model(model, form)
+    def edit_tag(cls, object, data):
+        tag = cls.update_model_object(object, data)
         return cls.db_load(tag)
 
     @classmethod

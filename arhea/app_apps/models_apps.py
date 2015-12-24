@@ -11,10 +11,9 @@ from ..models import Base_EA, LogMixin, DBSession_EA
 class TObjectproperty(Base_EA, LogMixin):
     __tablename__ = 't_objectproperties'
 
-    propertyid = Column(Integer, primary_key=True,
-                        server_default=text("nextval(('propertyid_seq'::text)::regclass)"))
+    propertyid = Column(Integer, primary_key=True)
     object_id = Column(Integer, ForeignKey('t_object.object_id'),
-                       index=True, server_default=text("0"))
+                       index=True)
     property = Column(String(255))
     value = Column(String(255))
     notes = Column(Text)
@@ -28,23 +27,22 @@ class TObjectproperty(Base_EA, LogMixin):
 class TObject(Base_EA, LogMixin):
     __tablename__ = 't_object'
 
-    object_id = Column(Integer, primary_key=True, unique=True,
-                       server_default=text("nextval(('object_id_seq'::text)::regclass)"))
+    object_id = Column(Integer, primary_key=True, unique=True)
     object_type = Column(String(255), index=True)
-    diagram_id = Column(Integer, server_default=text("0"))
+    diagram_id = Column(Integer)
     name = Column(String(255))
     alias = Column(String(255))
     author = Column(String(255))
-    version = Column(String(50), server_default=text("'1.0'::character varying"))
+    version = Column(String(50))
     note = Column(Text)
     package_id = Column(Integer, ForeignKey('t_package.package_id'),
-                        index=True, server_default=text("0"))
+                        index=True)
     stereotype = Column(String(255))
-    ntype = Column(Integer, index=True, server_default=text("0"))
-    complexity = Column(String(50), server_default=text("'2'::character varying"))
-    effort = Column(Integer, server_default=text("0"))
-    createddate = Column(DateTime, server_default=text("now()"))
-    modifieddate = Column(DateTime, server_default=text("now()"))
+    ntype = Column(Integer, index=True)
+    complexity = Column(String(50))
+    effort = Column(Integer)
+    createddate = Column(DateTime)
+    modifieddate = Column(DateTime)
     status = Column(String(50))
     abstract = Column(String(1))
     classifier = Column(Integer, index=True)
@@ -71,24 +69,23 @@ class TObject(Base_EA, LogMixin):
 class TPackage(Base_EA):
     __tablename__ = 't_package'
 
-    package_id = Column(Integer, primary_key=True, unique=True,
-                        server_default=text("nextval(('package_id_seq'::text)::regclass)"))
+    package_id = Column(Integer, primary_key=True, unique=True)
     name = Column(String(255), index=True)
-    parent_id = Column(Integer, index=True, server_default=text("0"))
-    createddate = Column(DateTime, server_default=text("now()"))
-    modifieddate = Column(DateTime, server_default=text("now()"))
+    parent_id = Column(Integer, index=True)
+    createddate = Column(DateTime)
+    modifieddate = Column(DateTime)
     notes = Column(Text)
     ea_guid = Column(String(40), unique=True)
     xmlpath = Column(String(255))
-    iscontrolled = Column(Integer, server_default=text("0"))
+    iscontrolled = Column(Integer)
     lastloaddate = Column(DateTime)
     lastsavedate = Column(DateTime)
     version = Column(String(50))
-    protected = Column(Integer, server_default=text("0"))
+    protected = Column(Integer)
     pkgowner = Column(String(255))
     umlversion = Column(String(50))
-    usedtd = Column(Integer, server_default=text("0"))
-    logxml = Column(Integer, server_default=text("0"))
+    usedtd = Column(Integer)
+    logxml = Column(Integer)
     codepath = Column(String(255))
     namespace = Column(String(50))
     tpos = Column(Integer)
@@ -105,8 +102,7 @@ class TDatatype(Base_EA):
     datatype = Column(String(50))
     haslength = Column(String(50))
     generictype = Column(String(255))
-    datatypeid = Column(Integer, primary_key=True,
-                        server_default=text("nextval(('datatypeid_seq'::text)::regclass)"))
+    datatypeid = Column(Integer, primary_key=True)
 
 
 def languages_lov():

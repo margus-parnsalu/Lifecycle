@@ -152,26 +152,3 @@ class BaseAction(object):
                 pass
         return object
 
-
-    @classmethod
-    def add_form_model(cls, form):
-        """Maps form object fields and data against Model class. Returns Model instance"""
-        kvmap = {}
-        for field, value in form.data.items():
-            if hasattr(cls.__model__, field):  # validate
-                kvmap[field] = value
-            else:
-                pass
-        return cls.__model__(**kvmap)  # new model
-
-
-    @staticmethod
-    def edit_form_model(model, form):
-        """Updates model instace attribute values from form"""
-        for field, value in form.data.items():
-            if hasattr(model, field):  # validate
-                setattr(model, field, value)
-            else:
-                #raise CoreError('Missing attribute in model.')
-                pass
-        return model
