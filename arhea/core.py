@@ -5,14 +5,12 @@ Modules implement actions in actions.py files.
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.sql.functions import coalesce
 from paginate_sqlalchemy import SqlalchemyOrmPage
 
 from abc import ABCMeta
 
 from .models import DBSession
 from .utils.sorts import SortValue
-from .utils.utils import sqla_dyn_filters
 
 
 class CoreError(Exception):
@@ -125,11 +123,6 @@ class BaseAction(object):
         return query
 
     @classmethod
-    def db_load(cls, modelobj):
-        """Supports insert, update into DB"""
-        return cls.__DBSession__.add(modelobj)
-
-    @classmethod
     def create_model_object(cls, data):
         """Maps  data against Model class. Returns Model instance"""
         kvmap = {}
@@ -152,3 +145,7 @@ class BaseAction(object):
                 pass
         return object
 
+    @classmethod
+    def db_load(cls, modelobj):
+        """Supports insert, update into DB"""
+        return cls.__DBSession__.add(modelobj)

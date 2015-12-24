@@ -71,7 +71,7 @@ def app_tags_edit(request):
                 TagsAction.edit_tag(object=tags[i], data=form_to_dict(field_set))
         #App
         AppsAction.edit_app(object=app, data=form_to_dict(form.app))
-        
+
         request.session.flash('Application information Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('application_view',
                                                     _anchor=request.GET.get('app', '')))

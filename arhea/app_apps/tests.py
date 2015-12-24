@@ -97,52 +97,8 @@ class TagsActionTests(unittest.TestCase):
         self.assertEqual(tag1_info.value, 'Jane Dow')
         self.assertEqual(tag2_info.value, 'Product')
 
-"""
-    def test_it_get_departments_no_options(self):
-        info = DepartmentAction().get_departments()
+    def test_it_get_app_tags(self):
+        info = TagsAction.get_app_tags(app_id=1)
         self.assertEqual(len(info), 2)
-        self.assertEqual(info[0].department_name, 'A Minu Test')
-
-    def test_it_get_departments_sort(self):
-        info = DepartmentAction(sort='-department').get_departments()
-        self.assertEqual(len(info), 2)
-        self.assertEqual(info[0].department_name, 'Z Minu Test')
-
-    def test_it_get_departments_limit(self):
-        info = DepartmentAction(limit=1).get_departments()
-        self.assertEqual(len(info), 1)
-
-    def test_it_get_departments_filter(self):
-        info = DepartmentAction(filter={'department_name': 'Z%'}).get_departments()
-        self.assertEqual(len(info), 1)
-        self.assertEqual(info[0].department_name, 'Z Minu Test')
-
-    def test_it_get_departments_filter(self):
-        info = DepartmentAction(extd_filter={Department:{'department_name': 'Z%'},
-                                             Employee: {'first_name': 'Tom'}}).get_departments()
-        self.assertEqual(len(info), 1)
-        self.assertEqual(info[0].department_name, 'Z Minu Test')
-
-    def test_it_get_departments_page(self):
-        page = {'current_page': 2,
-                'url_for_page': lambda p: '/department/page/'+p+'?sort=-department',
-                'items_per_page': 1}
-        info = DepartmentAction(page=page).get_departments()
-        self.assertEqual(len(info), 1)
-        self.assertEqual(info[0].department_name, 'Z Minu Test')
-        self.assertEqual(info.page_count, 2)
-        self.assertEqual(info.items_per_page, 1)
-
-    def test_it_add_department(self):
-        data = {'department_name': 'GangOfFour'}
-        DepartmentAction.add_department(data)
-        info = DepartmentAction.get_department(3)
-        self.assertEqual(info.department_name, 'GangOfFour')
-
-    def test_it_edit_department(self):
-        data = {'department_name': 'GangOfFour'}
-        object = DepartmentAction.get_department(1)
-        DepartmentAction.edit_department(object, data)
-        info = DepartmentAction.get_department(1)
-        self.assertEqual(info.department_name, 'GangOfFour')
-"""
+        self.assertEqual(info[0].property, 'Architect')
+        self.assertEqual(info[1].value, 'CRM')
