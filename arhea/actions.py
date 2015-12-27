@@ -39,12 +39,12 @@ class BaseAction(object):
     __model__ = None
     __DBSession__ = DBSession
 
-    def __init__(self, filter=None, extd_filter=None, sort=None, limit=None, page=None):
+    def __init__(self, filters=None, extd_filter=None, sort=None, limit=None, page=None):
         self.sort = sort
         self.reverse_sort = '-'
         self.page = page
         self.limit = limit
-        self.filter = filter  # Filter dict
+        self.filter = filters  # Filter dict
         self.extd_filter = extd_filter  # Dict list key=validation class, value=filter dict
         self.query = self.base_query()
 
@@ -108,8 +108,8 @@ class BaseAction(object):
 
     def extended_filtering(self):
         """Based on validation class and filter dict list extend query object"""
-        for validation_class, filter in self.extd_filter.items():
-            for attr, value in filter.items():
+        for validation_class, filter_kv in self.extd_filter.items():
+            for attr, value in filter_kv.items():
                 if value == '':
                     value = '%'
                 try:
@@ -139,15 +139,15 @@ class BaseAction(object):
         return cls.__model__(**kvmap)  # new model
 
     @staticmethod
-    def update_model_object(object, data):
+    def update_model_object(obj, data):
         """Updates model instace attribute values from form"""
         for key, value in data.items():
-            if hasattr(object, key):  # validate
-                setattr(object, key, value)
+            if hasattr(obj, key):  # validate
+                setattr(obj, key, value)
             else:
                 # raise CoreError('Missing attribute in model.')
                 pass
-        return object
+        return obj
 
     @classmethod
     def db_load(cls, modelobj):

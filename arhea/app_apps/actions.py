@@ -31,10 +31,9 @@ class AppsAction(BaseAction):
         return cls.get_by_pk(pk)
 
     @classmethod
-    def edit_app(cls, object, data):
-        app = cls.update_model_object(object, data)
+    def edit_app(cls, obj, data):
+        app = cls.update_model_object(obj, data)
         return cls.db_load(app)
-
 
 
 class TagsAction(BaseAction):
@@ -46,14 +45,12 @@ class TagsAction(BaseAction):
         return cls.get_by_pk(pk)
 
     @classmethod
-    def edit_tag(cls, object, data):
-        tag = cls.update_model_object(object, data)
+    def edit_tag(cls, obj, data):
+        tag = cls.update_model_object(obj, data)
         return cls.db_load(tag)
 
     @classmethod
     def get_app_tags(cls, app_id):
-        cls.query = (cls.__DBSession__.query(cls.__model__).filter(cls.__model__.object_id == app_id))
+        cls.query = (cls.__DBSession__.query(cls.__model__).
+                     filter(cls.__model__.object_id == app_id))
         return cls.query.all()
-
-
-

@@ -15,11 +15,11 @@ from .models_apps import (languages_lov)
              request_method='GET', permission='view')
 def application_view(request):
     sort_input = request.GET.get('sort', '+application')
-    #Search form
+    # Search form
     form = ApplicationForm(request.GET, csrf_context=request.session)
     form.gentype.choices = [("", 'Language'), ("", '------')] + languages_lov()
 
-    app_act = AppsAction(filter=request.GET, sort=sort_input, limit=1000)
+    app_act = AppsAction(filters=request.GET, sort=sort_input, limit=1000)
     applications = app_act.get_applications()
 
     return {'records': applications,
@@ -38,7 +38,7 @@ def tag_edit(request):
     form = TagUpdateForm(request.POST, tag_property, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        TagsAction.edit_tag(object=tag_property, data=form_to_dict(form))
+        TagsAction.edit_tag(obj=tag_property, data=form_to_dict(form))
 
         request.session.flash('Tag Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('application_view',
@@ -53,7 +53,7 @@ def tag_edit(request):
              request_method=['GET', 'POST'], permission='edit_app')
 def app_tags_edit(request):
 
-    app_id= request.matchdict['app_id']
+    app_id = request.matchdict['app_id']
     app = AppsAction.get_app(app_id)
     tags = TagsAction.get_app_tags(app_id)
 
@@ -61,16 +61,16 @@ def app_tags_edit(request):
     form.app.gentype.choices = languages_lov()
 
     if request.method == 'POST' and form.validate():
-        #Tags
+        # Tags
         for field_set in form.tags.entries:
             if field_set.value.data:
-                #Find fieldset number to match query object
+                # Find fieldset number to match query object
                 match = re.search(r'\d', field_set.property.name)
                 i = int(match.group())
 
-                TagsAction.edit_tag(object=tags[i], data=form_to_dict(field_set))
-        #App
-        AppsAction.edit_app(object=app, data=form_to_dict(form.app))
+                TagsAction.edit_tag(obj=tags[i], data=form_to_dict(field_set))
+        # App
+        AppsAction.edit_app(obj=app, data=form_to_dict(form.app))
 
         request.session.flash('Application information Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('application_view',

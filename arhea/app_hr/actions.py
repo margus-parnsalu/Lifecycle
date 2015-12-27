@@ -8,7 +8,6 @@ from .models_hr import Department, Employee
 class DepartmentAction(BaseAction):
     __model__ = Department
 
-
     def get_departments(self):
         return self.run_query()
 
@@ -22,8 +21,8 @@ class DepartmentAction(BaseAction):
         return cls.db_load(dep)
 
     @classmethod
-    def edit_department(cls, object, data):
-        dep = cls.update_model_object(object, data)
+    def edit_department(cls, obj, data):
+        dep = cls.update_model_object(obj, data)
         return cls.db_load(dep)
 
 
@@ -41,11 +40,11 @@ class EmployeeAction(BaseAction):
         return cls.get_by_pk(pk)
 
     @classmethod
-    def add_employee(cls, form):
-        emp = cls.add_form_model(form)
+    def add_employee(cls, data):
+        emp = cls.create_model_object(data)
         return cls.db_load(emp)
 
     @classmethod
-    def edit_employee(cls, model, form):
-        emp = cls.edit_form_model(model, form)
+    def edit_employee(cls, obj, data):
+        emp = cls.update_model_object(obj, data)
         return cls.db_load(emp)

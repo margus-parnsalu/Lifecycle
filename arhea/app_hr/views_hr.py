@@ -3,19 +3,19 @@ HR Views
 """
 from pyramid.view import view_config
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound
 
 from sqlalchemy.exc import DBAPIError
 
 from ..utils.utils import req_get_todict, req_paging_dict, form_to_dict
 from ..models import (DBSession, ITEMS_PER_PAGE, conn_err_msg)
 from .forms_hr import (DepartmentForm, EmployeeForm)
-from .models_hr import (Department, Employee)
+from .models_hr import (Department)
 from .actions import DepartmentAction, EmployeeAction
 
 from cornice.resource import resource
+from marshmallow import Schema, fields
 
-from marshmallow import Schema, fields, ValidationError, pre_load
 
 class DepartmentSchema(Schema):
     department_id = fields.Int(dump_only=True)
@@ -28,8 +28,6 @@ class DepartmentSchema(Schema):
 department_schema = DepartmentSchema()
 departments_schema = DepartmentSchema(many=True)
 
-
-#departments = Service(name='Departments', path='/api/departments/{dep}', description="Cornice Demo")
 
 @resource(collection_path='/api/departments', path='/api/departments/{id:\d+}')
 class DepartmentResource(object):
@@ -44,12 +42,13 @@ class DepartmentResource(object):
 
     def get(self):
         department = DBSession.query(Department).get(self.request.matchdict['id'])
-        #import pdb; pdb.set_trace()
+
         result = department_schema.dump(department)
         return {'departments': result.data}
 
     def collection_post(self):
-        # curl -H "Content-Type: application/json" -X POST -d '{"department_name":"cornice"}' http://localhost:6544/api/departments
+        # curl -H "Content-Type: application/json" -X POST -d '{"department_name":"cornice"}'
+        # http://localhost:6544/api/departments
 
         data, errors = department_schema.load(self.request.json)
         if errors:
@@ -59,7 +58,8 @@ class DepartmentResource(object):
         return {'department': self.request.json}
 
     def put(self):
-        # curl -H "Content-Type: application/json" -X PUT -d '{"department_name":"PUT"}' http://localhost:6544/api/departments/1
+        # curl -H "Content-Type: application/json" -X PUT -d '{"department_name":"PUT"}'
+        # http://localhost:6544/api/departments/1
 
         data, errors = department_schema.load(self.request.json)
         if errors:
@@ -70,7 +70,7 @@ class DepartmentResource(object):
             return Response(conn_err_msg, content_type='text/plain', status_int=500)
         if not department:
             raise Exception('Department not found!')
-        department.department_name=data['department_name']
+        department.department_name = data['department_name']
         DBSession.add(department)
         return {'department': self.request.json}
 
@@ -84,14 +84,13 @@ def department_view(request):
     sort_input = request.GET.get('sort', '+department')
     paging_input = req_paging_dict(request, sort_input, ITEMS_PER_PAGE)
 
-    dep_act = DepartmentAction(filter=request.GET, sort=sort_input, page=paging_input)
+    dep_act = DepartmentAction(filters=request.GET, sort=sort_input, page=paging_input)
     departments = dep_act.get_departments()
 
     return {'records': departments,
             'sortdir': dep_act.reverse_sort,
             'query': req_get_todict(request.GET),
             'logged_in': request.authenticated_userid}
-
 
 
 @view_config(route_name='department_add', renderer='department_f.jinja2',
@@ -119,7 +118,7 @@ def department_edit(request):
     form = DepartmentForm(request.POST, department, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        DepartmentAction.edit_department(object=department, data=form_to_dict(form))
+        DepartmentAction.edit_department(obj=department, data=form_to_dict(form))
 
         request.session.flash('Department Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('department_view'))
@@ -153,7 +152,7 @@ def employee_add(request):
     form = EmployeeForm(request.POST, csrf_context=request.session)
 
     if request.method == 'POST' and form.validate():
-        EmployeeAction().add_employee(form=form)
+        EmployeeAction.add_employee(data=form)
 
         request.session.flash('Employee Added!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
@@ -169,9 +168,9 @@ def employee_edit(request):
     employee = EmployeeAction.get_employee(request.matchdict['emp_id'])
 
     form = EmployeeForm(request.POST, employee, csrf_context=request.session)
-    #import pdb; pdb.set_trace()
+
     if request.method == 'POST' and form.validate():
-        EmployeeAction().edit_employee(model=employee, form=form)
+        EmployeeAction.edit_employee(obj=employee, data=form)
 
         request.session.flash('Employee Updated!', allow_duplicate=False)
         return HTTPFound(location=request.route_url('employee_view'))
