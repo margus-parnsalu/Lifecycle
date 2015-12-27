@@ -1,7 +1,7 @@
 """
 App_hr actions module. Extends BaseAction from core.
 """
-from ..core import BaseAction
+from ..actions import BaseAction
 from .models_hr import Department, Employee
 
 

@@ -2,12 +2,10 @@
 General application views
 """
 from pyramid.view import view_config
-from pyramid.security import authenticated_userid
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.response import Response
 
-from .core import SortError, NoResultError, DBError
-from .models import conn_err_msg
+from .actions import SortError, NoResultError, DBError
 
 import logging
 log = logging.getLogger(__name__)

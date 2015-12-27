@@ -3,7 +3,7 @@ App_apps actions module. Extends BaseAction from core.
 """
 from sqlalchemy.orm import subqueryload, load_only
 
-from ..core import BaseAction
+from ..actions import BaseAction
 from ..models import DBSession_EA
 
 from.models_apps import TObject, TPackage, TObjectproperty
