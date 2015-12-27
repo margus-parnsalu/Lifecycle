@@ -29,8 +29,8 @@ class DBError(DBAPIError):
 
 
 class NoResultError(NoResultFound):
-    def __init__(self, msg='Resource not found!'):
-        self.msg = msg
+    def __init__(self, resource='', msg='Resource not found!'):
+        self.msg = resource + ' - ' + msg
 
 
 class BaseAction(object):
@@ -41,6 +41,7 @@ class BaseAction(object):
 
     def __init__(self, filter=None, extd_filter=None, sort=None, limit=None, page=None):
         self.sort = sort
+        self.reverse_sort = '-'
         self.page = page
         self.limit = limit
         self.filter = filter  # Filter dict
@@ -58,23 +59,24 @@ class BaseAction(object):
         if self.extd_filter:
             self.extended_filtering()
         # Sorting
-        reverse_sort = None
         if self.sort:
-            sort, reverse_sort = self.sorting()
+            sort, self.reverse_sort = self.sorting()
             self.query = self.query.order_by(text(sort))
-            self.reverse_sort = reverse_sort
         # Limit
         if self.limit:
             self.query = self.query.limit(self.limit)
         # Paging
-        if self.page: # SqlAlchemyORMPaging object is created
-            self.query = self.paging(self.query)
-            query = self.query
-        else: # If no paging then query all.
-            query = self.query.all()
+        if self.page:  # SqlAlchemyORMPaging object is created
+            try:
+                query = self.paging(self.query)
+            except DBAPIError:
+                raise DBError
+        else:  # If no paging then query all.
+            try:
+                query = self.query.all()
+            except DBAPIError:
+                raise DBError
 
-        if not query:
-            raise NoResultError()
         return query
 
     def sorting(self):
@@ -86,7 +88,9 @@ class BaseAction(object):
         return sort_value, sort.reverse_direction()
 
     def paging(self, query):
-        """Creating paging response object with records"""
+        """Creating paging response object with records
+            query - SqlAlchemy query object
+        """
         return (SqlalchemyOrmPage(query,
                                   page=self.page['current_page'],
                                   url_maker=self.page['url_for_page'],
@@ -98,10 +102,9 @@ class BaseAction(object):
             if value == '':
                 value = '%'
             try:
-                self.query = (self.query.filter(getattr(self.__model__, attr).
-                                                    ilike(value)))
-            except:
-                pass  # When model object does not have dictionary value do nothing
+                self.query = (self.query.filter(getattr(self.__model__, attr).ilike(value)))
+            except AttributeError:
+                pass  # When model object does not have dictionary attribute do nothing
 
     def extended_filtering(self):
         """Based on validation class and filter dict list extend query object"""
@@ -110,23 +113,24 @@ class BaseAction(object):
                 if value == '':
                     value = '%'
                 try:
-                    self.query = (self.query.filter(getattr(validation_class, attr).
-                                                        ilike(value)))
-                except:
+                    self.query = (self.query.filter(getattr(validation_class, attr).ilike(value)))
+                except AttributeError:
                     pass  # When model object does not have dictionary value do nothing
 
     @classmethod
     def get_by_pk(cls, pk):
-        query = cls.__DBSession__.query(cls.__model__).get(pk)
+        try:
+            query = cls.__DBSession__.query(cls.__model__).get(pk)
+        except DBAPIError:
+                raise DBError
         if not query:
-            raise NoResultError()
+            raise NoResultError(resource=cls.__model__.__name__)
         return query
 
     @classmethod
     def create_model_object(cls, data):
         """Maps  data against Model class. Returns Model instance"""
         kvmap = {}
-        #import pdb; pdb.set_trace()
         for key, value in data.items():
             if hasattr(cls.__model__, key):  # validate
                 kvmap[key] = value
@@ -141,7 +145,7 @@ class BaseAction(object):
             if hasattr(object, key):  # validate
                 setattr(object, key, value)
             else:
-                #raise CoreError('Missing attribute in model.')
+                # raise CoreError('Missing attribute in model.')
                 pass
         return object
 

@@ -38,13 +38,13 @@ def failed_sort_exception(exc, request):
 @view_config(context=NoResultError)
 def noresult_query_exception(exc, request):
     """Common handling of Core module exceptions. Query returned no values."""
-    return HTTPNotFound('Resource not found!')
+    return HTTPNotFound(exc.msg)
 
 
 @view_config(context=DBError)
 def dpapi_connection_exception(exc, request):
     """Common handling of Core module exceptions. DBAPI raised exception."""
-    return Response(conn_err_msg, content_type='text/plain', status_int=500)
+    return Response(exc.msg, content_type='text/plain', status_int=500)
 
 
 
