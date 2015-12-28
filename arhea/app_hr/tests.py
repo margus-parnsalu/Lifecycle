@@ -87,11 +87,11 @@ class DepartmentActionsTests(unittest.TestCase):
         self.assertEqual(len(info), 1)
 
     def test_it_get_departments_filter(self):
-        info = DepartmentAction(filter={'department_name': 'Z%'}).get_departments()
+        info = DepartmentAction(filters={'department_name': 'Z%'}).get_departments()
         self.assertEqual(len(info), 1)
         self.assertEqual(info[0].department_name, 'Z Minu Test')
 
-    def test_it_get_departments_filter(self):
+    def test_it_get_departments_extd_filter(self):
         info = DepartmentAction(extd_filter={Department:{'department_name': 'Z%'},
                                              Employee: {'first_name': 'Tom'}}).get_departments()
         self.assertEqual(len(info), 1)

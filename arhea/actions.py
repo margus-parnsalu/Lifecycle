@@ -104,17 +104,27 @@ class BaseAction(object):
                                   url_maker=self.page['url_for_page'],
                                   items_per_page=self.page['items_per_page']))
 
+    def filtering(self, attr, value, validation):
+        if isinstance(value, int):
+                try:
+                    self.query = (self.query.filter(getattr(validation, attr) == value))
+                except AttributeError:
+                    pass  # When model object does not have dictionary value do nothing
+        else:
+            if value == '' or value == 'None':
+                value = None
+            if value != None:
+                try:
+                    self.query = (self.query.filter(getattr(validation, attr).ilike(value)))
+                except AttributeError:
+                    pass  # When model object does not have dictionary attribute do nothing
+
     def crud_filtering(self):
         """
         Based on filter dict extend query object. Validation based on self __model__ class
         """
         for attr, value in self.filter.items():
-            if value == '':
-                value = '%'
-            try:
-                self.query = (self.query.filter(getattr(self.__model__, attr).ilike(value)))
-            except AttributeError:
-                pass  # When model object does not have dictionary attribute do nothing
+            self.filtering(attr, value, self.__model__)
 
     def extended_filtering(self):
         """
@@ -122,12 +132,7 @@ class BaseAction(object):
         """
         for validation_class, filter_kv in self.extd_filter.items():
             for attr, value in filter_kv.items():
-                if value == '':
-                    value = '%'
-                try:
-                    self.query = (self.query.filter(getattr(validation_class, attr).ilike(value)))
-                except AttributeError:
-                    pass  # When model object does not have dictionary value do nothing
+                self.filtering(attr, value, validation_class)
 
     @classmethod
     def get_by_pk(cls, pk):
