@@ -10,7 +10,7 @@ from paginate_sqlalchemy import SqlalchemyOrmPage
 from abc import ABCMeta
 
 from .models import DBSession
-from .utils.sorts import SortValue
+from .utils.sorts import SORT_DICT
 
 
 class CoreError(Exception):
@@ -38,9 +38,11 @@ class BaseAction(object):
 
     __model__ = None
     __DBSession__ = DBSession
+    __sort_mapper__ = SORT_DICT
 
     def __init__(self, filters=None, extd_filter=None, sort=None, limit=None, page=None):
         self.sort = sort
+        self.sort_dict = self.__sort_mapper__
         self.reverse_sort = '-'
         self.page = page
         self.limit = limit
@@ -53,6 +55,9 @@ class BaseAction(object):
         return self.__DBSession__.query(self.__model__)
 
     def run_query(self):
+        """
+        Main query function for dynamic query based on input
+        """
         # Filter
         if self.filter:
             self.crud_filtering()
@@ -80,16 +85,19 @@ class BaseAction(object):
         return query
 
     def sorting(self):
-        """Sorting custom code from sorts.py"""
-        sort = SortValue(self.sort)
+        """
+        Sorting custom code with validation based on imported SORT_DICT
+        """
+        sort = SortValue(self.sort, self.sort_dict)
         sort_value = sort.sort_str()
         if sort_value == '':
             raise SortError()
         return sort_value, sort.reverse_direction()
 
     def paging(self, query):
-        """Creating paging response object with records
-            query - SqlAlchemy query object
+        """
+        Creating paging response object with records
+        :param query: SqlAlchemyQuery object
         """
         return (SqlalchemyOrmPage(query,
                                   page=self.page['current_page'],
@@ -97,7 +105,9 @@ class BaseAction(object):
                                   items_per_page=self.page['items_per_page']))
 
     def crud_filtering(self):
-        """Based on filter dict extend query object. Validation based on self __model__ class"""
+        """
+        Based on filter dict extend query object. Validation based on self __model__ class
+        """
         for attr, value in self.filter.items():
             if value == '':
                 value = '%'
@@ -107,7 +117,9 @@ class BaseAction(object):
                 pass  # When model object does not have dictionary attribute do nothing
 
     def extended_filtering(self):
-        """Based on validation class and filter dict list extend query object"""
+        """
+        Based on validation class and filter dict list extend query object
+        """
         for validation_class, filter_kv in self.extd_filter.items():
             for attr, value in filter_kv.items():
                 if value == '':
@@ -119,6 +131,12 @@ class BaseAction(object):
 
     @classmethod
     def get_by_pk(cls, pk):
+        """
+        Query class __model__ based on pk
+        :param pk: int
+        :param pk:
+        :return:
+        """
         try:
             query = cls.__DBSession__.query(cls.__model__).get(pk)
         except DBAPIError:
@@ -129,7 +147,10 @@ class BaseAction(object):
 
     @classmethod
     def create_model_object(cls, data):
-        """Maps  data against Model class. Returns Model instance"""
+        """
+        Maps  data against Model class. Returns Model instance
+        :param data: dict of attributes and values
+        """
         kvmap = {}
         for key, value in data.items():
             if hasattr(cls.__model__, key):  # validate
@@ -140,7 +161,11 @@ class BaseAction(object):
 
     @staticmethod
     def update_model_object(obj, data):
-        """Updates model instace attribute values from form"""
+        """
+        Updates model instace attribute values from form
+        :param obj: SqlAlchemy model object
+        :param data: dict of attributes and new values
+        """
         for key, value in data.items():
             if hasattr(obj, key):  # validate
                 setattr(obj, key, value)
@@ -151,5 +176,41 @@ class BaseAction(object):
 
     @classmethod
     def db_load(cls, modelobj):
-        """Supports insert, update into DB"""
+        """
+        Supports insert, update into DB
+        :param modelobj: SqlAlchemy model class object
+        """
         return cls.__DBSession__.add(modelobj)
+
+
+class SortValue:
+    """
+    Sort input validation and Sql Order By string mapping
+    :param sort_parameter: str
+    :param sort_dict: key=sort str, value=sql order by condition
+    """
+
+    def __init__(self, sort_parameter, sort_dict):
+        self.sort_parameter = sort_parameter
+        self.sort_dict = sort_dict
+
+    def _validate(self):
+        """URL Query sort attribute validation"""
+        if self.sort_parameter in self.sort_dict:
+            return True
+        return False
+
+    def sort_str(self):
+        """Return order_by string validated by key"""
+        if self._validate():
+            return self.sort_dict[self.sort_parameter]
+        return ''
+
+    def reverse_direction(self):
+        """Reverses sort direction for two-way sorting"""
+        direction = ''
+        if self.sort_parameter[0] == '+':
+            direction = self.sort_parameter.replace('+', '-', 1)
+        if self.sort_parameter[0] == '-':
+            direction = self.sort_parameter.replace('-', '+', 1)
+        return direction[0]
