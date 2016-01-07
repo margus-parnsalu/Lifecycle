@@ -54,13 +54,21 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-4">
+
+        <div class="col-md-3">
             <label for="searchInput">Filter</label>
             <br>
             <input id="searchInput"
                    placeholder="Type for filtering page results. _ for multiple matches"
                    class="form-control input-sm">
         </div>
+        {% if 'Arhea_Editors' in request.session.user_groups or 'Editors' in request.session.user_groups %}
+        <div class="col-md-1">
+            <label>Export</label>
+            <br>
+            <a href="{{ request.route_url('apps_csv_view') }}">CSV</a>
+        </div>
+        {% endif %}
     </div>
 </div>
 

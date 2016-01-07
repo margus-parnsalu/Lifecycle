@@ -10,6 +10,7 @@ def include(config):
 
     #Applications
     config.add_route('application_view', '/apps')
+    config.add_route('apps_csv_view', '/apps/csv')
     config.add_route('tag_edit', '/apps/tag/{tag_id:\d+}/edit')
     config.add_route('app_tags_edit', '/apps/{app_id:\d+}/edit')
 

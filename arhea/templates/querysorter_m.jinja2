@@ -2,7 +2,7 @@
 
 
     {% do query.update({'sort': sortdir+sort}) %}
-    <a href="{{ request.route_url( view, _query=( query )) }}">{{ name }}
+    <a href="{{ request.route_url( request.matched_route.name, _query=( query )) }}">{{ name }}
             <span class="glyphicon glyphicon-sort"></span></a>
 
 {%- endmacro %}
