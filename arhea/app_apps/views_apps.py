@@ -6,6 +6,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 
 import csv
+import io
+import codecs
 import re
 from .actions import AppsAction, TagsAction
 from ..utils.utils import req_get_todict, form_to_dict
@@ -39,17 +41,18 @@ def apps_csv_view(request):
     applications = app_act.get_applications()
 
     response = Response()
-    response.content_type = "text/csv"
+    response.content_type = "text/plain"
     # If download needs to be triggered add "attachment; " before filename=...
-    response.headers.add("Content-Disposition", "attachment; filename=applications.csv")
+    response.headers.add("Content-Disposition", "attachment; filename=applications.txt")
 
-    writer = csv.writer(response, delimiter=';', escapechar='"')
+    response.write(codecs.BOM_UTF8)
+    writer = csv.writer(response, delimiter=';', escapechar='"', quoting=csv.QUOTE_ALL)
     writer.writerow(['Nr', 'Name', 'Alias', 'Brand', 'Lifecycle', 'Lang', 'Note', 'Tag name',
                      'Tag value', 'EA GUID'])
     for i, app in enumerate(applications):
         for tag in app.properties:
             writer.writerow([i+1, app.name, app.alias, app.stereotype, app.status, app.gentype,
-                         app.note, tag.property, tag.value, app.ea_guid])
+                             (app.note or '').replace('\r\n', ' '), tag.property, tag.value, app.ea_guid])
 
     return response
 
