@@ -57,6 +57,22 @@ def apps_csv_view(request):
     return response
 
 
+@view_config(route_name='apps_domain_stat_view', renderer='stats_r.jinja2',
+             request_method='GET', permission='view')
+def apps_domain_stat_view(request):
+
+    app_act = AppsAction()
+    domain_stats = app_act.get_domain_stats()
+    app_count = app_act.get_app_count()
+    langs = app_act.get_lang_count()
+
+    #import pdb; pdb.set_trace()
+    return {'records': domain_stats,
+            'langs': langs,
+            'app_count': app_count,
+            'logged_in': request.authenticated_userid}
+
+
 @view_config(route_name='tag_edit', renderer='tag_f.jinja2',
              request_method=['GET', 'POST'], permission='edit_tag')
 def tag_edit(request):

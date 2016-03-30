@@ -1,0 +1,55 @@
+{% extends "base.jinja2" %}
+{% block content %}
+
+{% from 'querysorter_m.jinja2' import qsorter with context %}
+
+<h3>Stats</h3>
+<h4>Total number of Applications: {{ app_count.count }}</h4>
+
+<br>
+
+
+<table class="table table-hover" style="table-layout: fixed; word-wrap: break-word;">
+    <thead>
+    <tr>
+        <th style="width:20%">Development Domain</th>
+        <th style="width:30%">Status count</th>
+    </tr>
+    <tbody id="fbody">
+    {% for stat in records: %}
+
+
+    <tr>
+        {% if previous_domain != stat.value %}
+        <td>
+            <h4>{{ stat.value  or ''  }}</h4>
+        </td>
+        {% else %}
+        <td></td>
+        {% endif %}
+        <td>
+            {% if stat.status == 'Target' %}
+            <button class="btn btn-success" type="button">
+                {% elif stat.status == 'Freeze' %}
+                <button class="btn btn-warning" type="button">
+                    {% elif stat.status == 'Phase Out' %}
+                <button class="btn btn-danger" type="button">
+            {% else %}
+            <button class="btn btn-primary" type="button">
+                {% endif %}
+                {{ stat.status  or '' }} <span class="badge">{{ stat.count or ''}}</span>
+            </button>
+        </td>
+    </tr>
+
+
+    {% set previous_domain = stat.value %}
+    {% endfor %}
+    </tbody>
+</table>
+
+
+
+
+
+{% endblock %}

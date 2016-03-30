@@ -11,6 +11,7 @@
     <script src="/static/js/jquery-1.11.3.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/bootstrap-datepicker.min.js"></script>
+    <script src="/static/js/Chart.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -56,6 +57,8 @@ $(document).ready(function() {
                         class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a href="{{ request.route_url('application_view') }}">Application list</a>
+                    </li>
+                    <li><a href="{{ request.route_url('apps_domain_stat_view') }}">Statistics</a>
                     </li>
                     <li class="divider"></li>
                 </ul>
