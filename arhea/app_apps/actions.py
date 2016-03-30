@@ -62,6 +62,8 @@ class AppsAction(BaseAction):
                       outerjoin(TPackage, TObject.package_id == TPackage.package_id).
                       filter(TObject.object_type == 'Package').
                       filter(TObject.stereotype.like('system%')).
+                      filter(TObject.status != 'Proposed').
+                      filter(TObject.status != 'Retired').
                       filter(TPackage.parent_id.in_([74, 9054, 9055]))
                       )
         return self.run_query()[0]
