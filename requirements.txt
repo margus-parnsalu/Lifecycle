@@ -22,3 +22,4 @@ WTForms==2.0.2
 zope.deprecation==4.1.2
 zope.interface==4.1.2
 zope.sqlalchemy==0.7.6
+cornice
