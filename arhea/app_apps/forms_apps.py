@@ -1,7 +1,7 @@
 """
 Apps package forms
 """
-from wtforms import (validators, StringField, HiddenField, PasswordField, SelectField, Form,
+from wtforms import (validators, StringField, HiddenField, SelectField, Form,
                      TextAreaField, FormField, FieldList, IntegerField)
 from wtforms.widgets import HiddenInput
 from ..forms import BaseForm
@@ -62,4 +62,4 @@ class TagUpdateForm(BaseForm, InlineTagForm):
 class ApplicationTagForm(BaseForm):
     """Master-Detail form for updating application and related tag information"""
     app = FormField(ApplicationForm)
-    tags =  FieldList(FormField(InlineTagForm), max_entries=6)
+    tags = FieldList(FormField(InlineTagForm), max_entries=6)
