@@ -24,6 +24,7 @@ requires = [
     'WebTest',
     'pyramid-multiauth==0.5.0',
     'ldap3==0.9.9.3',
+    'requests==2.7.0'
     #'uwsgi==2.0.11'
     ]
 

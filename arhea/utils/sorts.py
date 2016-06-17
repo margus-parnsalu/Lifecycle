@@ -24,7 +24,15 @@ SORT_DICT = {'-department':'upper(hr_departments.department_name) desc',
              '+lifecycle':'upper(t_object.status) asc',
              '-lifecycle':'upper(t_object.status) desc',
              '+lang':'upper(t_object.gentype) asc',
-             '-lang':'upper(t_object.gentype) desc',}
+             '-lang':'upper(t_object.gentype) desc',
+             '+name':'upper(sd_ci.name) asc',
+             '-name':'upper(sd_ci.name) desc',
+             '+owner':'upper(sd_ci.owner) asc',
+             '-owner':'upper(sd_ci.owner) desc',
+             '+system_id':'upper(sd_ci.system_id) asc',
+             '-system_id':'upper(sd_ci.system_id) desc',
+             '+code':'upper(sd_ci.code) asc',
+             '-code':'upper(sd_ci.code) desc',}
 
 class SortValue:
     """Sort input validation and Sql Order By string mapping"""

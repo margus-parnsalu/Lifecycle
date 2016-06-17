@@ -20,6 +20,7 @@ from ..models import (
     )
 from ..app_hr.models_hr import (Employee, Department)
 from ..app_sec.models_sec import (User, Group, user_groups)
+from ..app_sd.models import (CI)
 
 
 

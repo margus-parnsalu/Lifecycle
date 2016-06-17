@@ -93,6 +93,8 @@ def main(global_config, **settings):
     #HR package apps include
     config.include('.app_hr.include')
 
+    #SD package apps include
+    config.include('.app_sd.include')
 
     config.scan()
     return config.make_wsgi_app()
