@@ -40,7 +40,9 @@ def main(argv=sys.argv):
     settings = get_appsettings(config_uri, options=options)
     engine = engine_from_config(settings, 'sqlalchemy.default.')
     DBSession.configure(bind=engine)
+    print('start')
     Base.metadata.create_all(engine)
+    print('end')
 
     #Starter admin and viewer, editor account
     #with transaction.manager:
