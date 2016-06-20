@@ -20,7 +20,7 @@ def ci_load_view(request):
     #payload = {'par_id': source_invoice_id}
     r = requests.get(host + '/sd_api_new/rest/ci/category/application', auth=(user, pwd))
     if r.status_code == 200:
-        CIAction.purge()  # Clean db from CI-s.
+        #CIAction.purge()  # Clean db from CI-s.
         codes = json.loads(r.content.decode('UTF-8'))
         for code in codes:
             r = requests.get(host + '/sd_api_new/rest/ci/' + code['code'], auth=(user, pwd))
