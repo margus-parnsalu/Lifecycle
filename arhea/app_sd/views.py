@@ -57,7 +57,8 @@ def ci_codes_view(request):
 
     return {'sdcis': sdci,
             'query': req_get_todict(request.GET),
-            'sortdir': sdci_act.reverse_sort,}
+            'sortdir': sdci_act.reverse_sort,
+            'logged_in': request.authenticated_userid}
 
 
 @view_config(route_name='ci_admin_view', renderer='sdci_admin_f.jinja2',
@@ -66,4 +67,14 @@ def ci_admin_view(request):
 
     #sdci = CIAction.get_internal_cis()
 
-    return {'sdcis': 'test'}
+    return {'sdcis': 'test',
+            'logged_in': request.authenticated_userid}
+
+
+@view_config(route_name='ci_clean_view',
+             request_method='GET', permission='admin')
+def ci_clean_view(request):
+
+    CIAction.purge()  # Clean db from CI-s.
+
+    return HTTPFound(location=request.route_url('ci_codes_view'))

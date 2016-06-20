@@ -6,4 +6,5 @@ def include(config):
     #Applications
     config.add_route('ci_admin_view', '/ci/admin')
     config.add_route('ci_load_view', '/ci/load')
+    config.add_route('ci_clean_view', '/ci/purge')
     config.add_route('ci_codes_view', '/ci/codes')
