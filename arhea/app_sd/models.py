@@ -16,6 +16,7 @@ class CI(Base):
     remark = Column(String(100))
     performer1 = Column(String(30))
     performer2 = Column(String(30))
+    performer_new = Column(String(30))
 
     def __repr__(self):
         return '<CI %r>' % (self.code)

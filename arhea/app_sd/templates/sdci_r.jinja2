@@ -42,12 +42,19 @@
         <th style="width:15%">{{ qsorter('ci_codes_view', 'System Id', 'system_id') }}</th>
         <th style="width:15%">{{ qsorter('ci_codes_view', 'Name', 'name') }}</th>
         <th style="width:10%">{{ qsorter('ci_codes_view', 'Owner', 'owner') }}</th>
-        <th style="width:30%">Remark</th>
-        <th style="width:15%">Performers</th>
+        <th style="width:25%">Remark</th>
+        <th style="width:20%">Performers</th>
     </tr>
     <tbody id="fbody">
     {% for ci in sdcis: %}
+
+    {% if ci.performer_new != none %}
+    <tr class="success">
+    {% elif ci.performer_new == none %}
+    <tr class="danger">
+    {% else %}
     <tr>
+        {% endif %}
         <td>
             {{ loop.index }}
         </td>
@@ -68,7 +75,8 @@
             {{ ci.remark or '' }}
         </td>
         <td>
-            1:{{ ci.performer1 or '' }}<br>2:{{ ci.performer2 or '' }}
+            1: {{ ci.performer1 or '' }}<br>2: {{ ci.performer2 or '' }}<br>
+            New: {{ ci.performer_new or '' }}
         </td>
 
     </tr>

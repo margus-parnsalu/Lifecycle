@@ -72,7 +72,11 @@ class CIAction(BaseAction):
                     data['remark'] = ci_data['remark']
                     data['performer1'] = ci_data['performer1']
                     data['performer2'] = ci_data['performer2']
-                    CIAction.create_ci(data)
+                    data['performer_new'] = ci_data['future_performer1']
+
+                    if ci_data['owner'] in ['ELION', 'TELIAEESTI', 'EMT']:
+                        CIAction.create_ci(data)
+
             end = datetime.datetime.now()
             log.info(('CI Replica - when: {0}; time: {1}').format(start, end-start ))
             return 'OK'
