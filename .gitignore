@@ -12,3 +12,7 @@ alembic.ini
 build/
 dist/
 
+
+*.db
+
+*.sqlite-journal
