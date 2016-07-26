@@ -8,7 +8,6 @@ from arhea.models import (DBSession, Base)
 # When worker starts this gets the config from .ini file
 @worker_init.connect
 def bootstrap_pyramid(signal, sender):
-    import os
     from pyramid.paster import bootstrap
     sender.app.settings = bootstrap('../dev.ini')['registry'].settings
 
