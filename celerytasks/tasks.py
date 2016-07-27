@@ -5,10 +5,13 @@ from celeryconfig import app
 
 from arhea.app_sd.actions import CIAction
 
+import logging
+log = logging.getLogger(__name__)
+
 
 # Celery beat config
 app.conf.update(
-    CELERYBEAT_SCHEDULE = {
+    CELERYBEAT_SCHEDULE={
         'replicate_ci':
             {
                 'task': 'tasks.replicate_ci',
