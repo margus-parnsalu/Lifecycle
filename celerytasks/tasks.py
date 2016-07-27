@@ -15,7 +15,7 @@ app.conf.update(
         'replicate_ci':
             {
                 'task': 'tasks.replicate_ci',
-                'schedule': timedelta(minutes=20)
+                'schedule': timedelta(minutes=120)
             },
     }
 )
